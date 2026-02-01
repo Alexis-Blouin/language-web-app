@@ -13,9 +13,17 @@ function WordListHidden({ words }) {
 export default WordListHidden;
 
 function Item({ word }) {
+  const unhideWord = (target) => {
+    console.log(target);
+    target.target.classList.remove("hidden-word");
+  };
+
   return (
     <li>
-      {word.hanzi} - {word.trslt}
+      {word.hanzi} -{" "}
+      <span className="hidden-word" onClick={unhideWord}>
+        {word.trslt}
+      </span>
     </li>
   );
 }

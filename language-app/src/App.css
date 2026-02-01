@@ -2,3 +2,9 @@ html {
   background-color: #111;
   color: #eee;
 }
+
+.hidden-word {
+  background-color: #254146;
+  color: #254146;
+  cursor: pointer;
+}
