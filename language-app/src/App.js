@@ -19,12 +19,18 @@ function App() {
 
   return (
     <Router>
-      <nav>
+      <nav className="header">
         <ul>
           <li>
             <Link to="/">Home</Link>
+          </li>
+          <li>
             <Link to="/add_words">Add Words</Link>
+          </li>
+          <li>
             <Link to="/list_hidden">List Hidden</Link>
+          </li>
+          <li>
             <Link to="/word_guess">Word Guess</Link>
           </li>
         </ul>
