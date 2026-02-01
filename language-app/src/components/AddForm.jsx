@@ -2,24 +2,33 @@ function AddForm({ words, setWords }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const hanzi = event.target.hanzi.value;
-    const trslt = event.target.trslt.value;
-    const newWord = { hanzi: hanzi, trslt: trslt };
+    const translation = event.target.translation.value;
+    const newWord = { hanzi: hanzi, translation: translation };
     setWords((prevWords) => [...prevWords, newWord]);
     localStorage.setItem("words", JSON.stringify([...words, newWord]));
     event.target.reset();
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form id="addForm" onSubmit={handleSubmit}>
       <label htmlFor="hanzi">
         Hanzi:
         <input type="text" name="hanzi" id="hanzi" placeholder="你好" />
       </label>
-      <label htmlFor="trslt">
-        Translation:
-        <input type="text" name="trslt" id="trslt" placeholder="Hello" />
+      <label htmlFor="pinyin">
+        Pinyin:
+        <input type="text" name="pinyin" id="pinyin" placeholder="nǐhǎo" />
       </label>
-      <button>Add</button>
+      <label htmlFor="translation">
+        Translation:
+        <input
+          type="text"
+          name="translation"
+          id="translation"
+          placeholder="Hello"
+        />
+      </label>
+      <button id="addButton">Add</button>
     </form>
   );
 }

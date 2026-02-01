@@ -2,8 +2,8 @@ function WordGuess({ words }) {
   const randomWord = words[Math.floor(Math.random() * words.length)];
   const hideHanzi = Math.random() < 0.5;
   const [question, answer] = hideHanzi
-    ? [randomWord.trslt, randomWord.hanzi]
-    : [randomWord.hanzi, randomWord.trslt];
+    ? [randomWord.translation, randomWord.hanzi]
+    : [randomWord.hanzi, randomWord.translation];
 
   const handleSubmit = (event) => {
     event.preventDefault();

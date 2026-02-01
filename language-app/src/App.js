@@ -7,7 +7,9 @@ import React from "react";
 import WordGuess from "./components/WordGuess";
 
 function App() {
-  const [words, setWords] = React.useState([{ hanzi: "你好", trslt: "hi" }]);
+  const [words, setWords] = React.useState([
+    { hanzi: "你好", pinyin: "nǐhǎo", translation: "hi" },
+  ]);
 
   // Retrieve saved word list.
   React.useEffect(() => {

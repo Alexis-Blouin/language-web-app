@@ -22,7 +22,7 @@ function Item({ word }) {
     <li>
       {word.hanzi} -{" "}
       <span className="hidden-word" onClick={unhideWord}>
-        {word.trslt}
+        {word.translation}
       </span>
     </li>
   );

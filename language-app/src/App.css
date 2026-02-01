@@ -32,3 +32,28 @@ nav.header ul li a {
 nav.header ul li a:hover {
   background-color: #111111;
 }
+
+/* AddForm */
+
+#addForm {
+  margin: 20px;
+  display: grid;
+  grid-template-columns: 120px 240px;
+  row-gap: 0.75rem;
+  column-gap: 1rem;
+  align-items: center;
+}
+
+#addForm label {
+  display: contents;
+}
+
+#addForm input {
+  width: 100%;
+}
+
+#addButton {
+  grid-column: 2;
+  width: calc(100% + 8px);
+  margin: 0 auto;
+}

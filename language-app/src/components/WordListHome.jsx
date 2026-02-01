@@ -15,7 +15,7 @@ export default WordList;
 function Item({ word }) {
   return (
     <li>
-      {word.hanzi} - {word.trslt}
+      {word.hanzi} - {word.translation}
     </li>
   );
 }
