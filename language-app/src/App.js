@@ -1,10 +1,10 @@
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import WordList from "./components/WordList";
+import WordListHome from "./components/WordListHome";
+import WordListHidden from "./components/WordListHidden";
 import AddForm from "./components/AddForm";
 import React from "react";
 import WordGuess from "./components/WordGuess";
-import Test from "./components/Test";
 
 function App() {
   const [words, setWords] = React.useState([{ hanzi: "你好", trslt: "hi" }]);
@@ -18,23 +18,27 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <AddForm words={words} setWords={setWords} />
-      <WordList words={words} />
-      <WordGuess words={words} />
-      <Router>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/test">test</Link>
-            </li>
-          </ul>
-        </nav>
-        <Routes>
-          <Route path="/test" element={<Test />} />
-        </Routes>
-      </Router>
-    </div>
+    <Router>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+            <Link to="/add_words">Add Words</Link>
+            <Link to="/list_hidden">List Hidden</Link>
+            <Link to="/word_guess">Word Guess</Link>
+          </li>
+        </ul>
+      </nav>
+      <Routes>
+        <Route path="/" element={<WordListHome words={words} />} />
+        <Route
+          path="/add_words"
+          element={<AddForm words={words} setWords={setWords} />}
+        />
+        <Route path="/list_hidden" element={<WordListHidden words={words} />} />
+        <Route path="/word_guess" element={<WordGuess words={words} />} />
+      </Routes>
+    </Router>
   );
 }
 

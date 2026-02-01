@@ -1,4 +1,4 @@
-function WordList({ words }) {
+function WordListHome({ words }) {
   return (
     <ul>
       {words && words.length > 0 ? (
@@ -10,7 +10,7 @@ function WordList({ words }) {
   );
 }
 
-export default WordList;
+export default WordListHome;
 
 function Item({ word }) {
   return (
