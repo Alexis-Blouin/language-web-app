@@ -3,7 +3,9 @@ function AddForm({ words, setWords }) {
     event.preventDefault();
     const hanzi = event.target.hanzi.value;
     const trslt = event.target.trslt.value;
-    setWords((prevWords) => [...prevWords, { hanzi: hanzi, trslt: trslt }]);
+    const newWord = { hanzi: hanzi, trslt: trslt };
+    setWords((prevWords) => [...prevWords, newWord]);
+    localStorage.setItem("words", JSON.stringify([...words, newWord]));
     event.target.reset();
   };
 
