@@ -5,6 +5,29 @@ function WordGuess({ words }) {
     ? [randomWord.translation, randomWord.hanzi]
     : [randomWord.hanzi, randomWord.translation];
 
+  return (
+    <div id="wordGuess">
+      <Question question={question} hideHanzi={hideHanzi} />
+      <Guess answer={answer} hideHanzi={!hideHanzi} />
+    </div>
+  );
+}
+
+export default WordGuess;
+
+function Question({ question, hideHanzi }) {
+  const title = hideHanzi ? "Translation" : "Hanzi";
+  return (
+    <div id="questionBox" className="guessContent">
+      <p>{title}:</p>
+      <p id="questionText">{question}</p>
+    </div>
+  );
+}
+
+function Guess({ answer, hideHanzi }) {
+  const title = hideHanzi ? "Translation" : "Hanzi";
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const guess = event.target.guess.value;
@@ -16,13 +39,14 @@ function WordGuess({ words }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="guess">
-        What is {question}:
-        <input type="text" name="guess" id="guess" placeholder="answer" />
-      </label>
-    </form>
+    <div id="guessBox" className="guessContent">
+      <p>{title}:</p>
+      <form id="guessForm" onSubmit={handleSubmit}>
+        <label htmlFor="guess">
+          <input type="text" name="guess" id="guess" placeholder="answer" />
+        </label>
+        <button id="guessButton">Confirm</button>
+      </form>
+    </div>
   );
 }
-
-export default WordGuess;
