@@ -1,10 +1,20 @@
+import { pinyin } from "pinyin-pro";
+
 function AddForm({ words, setWords }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const hanzi = event.target.hanzi.value;
-    const pinyin = event.target.pinyin.value;
+    let pinyinVal = event.target.pinyin.value;
+    // If no pinyin value is entered, will get the one from pinyin-pro
+    if (pinyinVal === "") {
+      pinyinVal = pinyin(hanzi);
+    }
     const translation = event.target.translation.value;
-    const newWord = { hanzi: hanzi, pinyin: pinyin, translation: translation };
+    const newWord = {
+      hanzi: hanzi,
+      pinyin: pinyinVal,
+      translation: translation,
+    };
     setWords((prevWords) => [...prevWords, newWord]);
     localStorage.setItem("words", JSON.stringify([...words, newWord]));
     event.target.reset();
