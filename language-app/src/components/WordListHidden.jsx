@@ -1,12 +1,23 @@
 function WordListHidden({ words }) {
   return (
-    <ul>
-      {words && words.length > 0 ? (
-        words.map((word, index) => <Item word={word} />)
-      ) : (
-        <p>No words yet.</p>
-      )}
-    </ul>
+    <table className="wordList">
+      <thead>
+        <tr>
+          <th>Hanzi</th>
+          <th>Pinyin</th>
+          <th>Translation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {words && words.length > 0 ? (
+          words.map((word, index) => <Item word={word} />)
+        ) : (
+          <tr>
+            <td colSpan={3}>No words yet.</td>
+          </tr>
+        )}
+      </tbody>
+    </table>
   );
 }
 
@@ -14,16 +25,16 @@ export default WordListHidden;
 
 function Item({ word }) {
   const unhideWord = (target) => {
-    console.log(target);
     target.target.classList.remove("hidden-word");
   };
 
   return (
-    <li>
-      {word.hanzi} -{" "}
-      <span className="hidden-word" onClick={unhideWord}>
+    <tr>
+      <td>{word.hanzi}</td>
+      <td>{word.pinyin}</td>
+      <td className="hidden-word" onClick={unhideWord}>
         {word.translation}
-      </span>
-    </li>
+      </td>
+    </tr>
   );
 }

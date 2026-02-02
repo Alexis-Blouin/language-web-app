@@ -2,8 +2,9 @@ function AddForm({ words, setWords }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const hanzi = event.target.hanzi.value;
+    const pinyin = event.target.pinyin.value;
     const translation = event.target.translation.value;
-    const newWord = { hanzi: hanzi, translation: translation };
+    const newWord = { hanzi: hanzi, pinyin: pinyin, translation: translation };
     setWords((prevWords) => [...prevWords, newWord]);
     localStorage.setItem("words", JSON.stringify([...words, newWord]));
     event.target.reset();

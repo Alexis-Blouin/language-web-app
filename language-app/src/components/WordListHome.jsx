@@ -1,12 +1,23 @@
 function WordList({ words }) {
   return (
-    <ul>
-      {words && words.length > 0 ? (
-        words.map((word, index) => <Item word={word} />)
-      ) : (
-        <p>No words yet.</p>
-      )}
-    </ul>
+    <table className="wordList">
+      <thead>
+        <tr>
+          <th>Hanzi</th>
+          <th>Pinyin</th>
+          <th>Translation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {words && words.length > 0 ? (
+          words.map((word, index) => <Item word={word} />)
+        ) : (
+          <tr>
+            <td colSpan={3}>No words yet.</td>
+          </tr>
+        )}
+      </tbody>
+    </table>
   );
 }
 
@@ -14,8 +25,10 @@ export default WordList;
 
 function Item({ word }) {
   return (
-    <li>
-      {word.hanzi} - {word.translation}
-    </li>
+    <tr>
+      <td>{word.hanzi}</td>
+      <td>{word.pinyin}</td>
+      <td>{word.translation}</td>
+    </tr>
   );
 }

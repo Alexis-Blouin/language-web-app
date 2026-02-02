@@ -3,12 +3,6 @@ html {
   color: #eee;
 }
 
-.hidden-word {
-  background-color: #254146;
-  color: #254146;
-  cursor: pointer;
-}
-
 nav.header ul {
   list-style-type: none;
   margin: 0;
@@ -56,4 +50,27 @@ nav.header ul li a:hover {
   grid-column: 2;
   width: calc(100% + 8px);
   margin: 0 auto;
+}
+
+/* WordLists */
+
+table.wordList {
+  margin: 20px;
+}
+
+table.wordList,
+table.wordList th,
+table.wordList td {
+  border: 1px solid rgb(155, 155, 155);
+}
+
+table.wordList th,
+table.wordList td {
+  padding: 5px;
+}
+
+.hidden-word {
+  background-color: #254146;
+  color: #254146;
+  cursor: pointer;
 }
