@@ -13,7 +13,13 @@ function AddForm({ words, setWords }) {
     <form id="addForm" onSubmit={handleSubmit}>
       <label htmlFor="hanzi">
         Hanzi:
-        <input type="text" name="hanzi" id="hanzi" placeholder="你好" />
+        <input
+          type="text"
+          name="hanzi"
+          id="hanzi"
+          placeholder="你好"
+          required
+        />
       </label>
       <label htmlFor="pinyin">
         Pinyin:
@@ -26,6 +32,7 @@ function AddForm({ words, setWords }) {
           name="translation"
           id="translation"
           placeholder="Hello"
+          required
         />
       </label>
       <button id="addButton">Add</button>
