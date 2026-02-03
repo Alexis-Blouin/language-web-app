@@ -1,3 +1,14 @@
+import toast, { toastConfig } from "react-simple-toasts";
+import "react-simple-toasts/dist/style.css"; // Will give a warning, but works anyway.
+import "react-simple-toasts/dist/theme/dark.css";
+import "react-simple-toasts/dist/theme/success.css";
+import "react-simple-toasts/dist/theme/failure.css";
+
+// specify the theme in toastConfig
+toastConfig({
+  theme: "dark",
+});
+
 function WordGuess({ words }) {
   const randomWord = words[Math.floor(Math.random() * words.length)];
   const hideHanzi = Math.random() < 0.5;
@@ -32,9 +43,9 @@ function Guess({ answer, hideHanzi }) {
     event.preventDefault();
     const guess = event.target.guess.value;
     if (guess === answer) {
-      console.log("Correct!");
+      toast("Correct!", { theme: "success" });
     } else {
-      console.log("Incorrect...");
+      toast("Incorrect...", { theme: "failure" });
     }
   };
 
