@@ -92,15 +92,20 @@ table.wordList td {
   display: contents;
 }
 
-.guessContent * {
+.fullWidth {
   width: 100%;
 }
 
 #questionText {
   font-weight: bold;
   font-size: large;
+  width: calc(100% + 8px);
 }
 
 .guessContent > * {
   margin: 0;
+}
+
+#changeGuessButton {
+  float: right;
 }
