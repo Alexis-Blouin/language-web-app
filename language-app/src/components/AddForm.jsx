@@ -11,6 +11,7 @@ function AddForm({ words, setWords }) {
     }
     const translation = event.target.translation.value;
     const newWord = {
+      id: crypto.randomUUID(),
       hanzi: hanzi,
       pinyin: pinyinVal,
       translation: translation,

@@ -38,7 +38,10 @@ function App() {
         </ul>
       </nav>
       <Routes>
-        <Route path="/" element={<WordListHome words={words} />} />
+        <Route
+          path="/"
+          element={<WordListHome words={words} setWords={setWords} />}
+        />
         <Route
           path="/add_words"
           element={<AddForm words={words} setWords={setWords} />}
