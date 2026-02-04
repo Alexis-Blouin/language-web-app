@@ -24,6 +24,7 @@ function WordGuess({ words }) {
     };
   };
   const [word, setWord] = useState(pickRandomWord);
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
 
   const changeWord = () => {
     setWord(pickRandomWord());
@@ -35,11 +36,14 @@ function WordGuess({ words }) {
         question={word.question}
         hideHanzi={word.hideHanzi}
         changeWord={changeWord}
+        buttonDisabled={isButtonDisabled}
       />
       <Guess
         answer={word.answer}
         hideHanzi={!word.hideHanzi}
         changeWord={changeWord}
+        buttonDisabled={isButtonDisabled}
+        setButtonDisabled={setButtonDisabled}
       />
     </div>
   );
@@ -47,7 +51,7 @@ function WordGuess({ words }) {
 
 export default WordGuess;
 
-function Question({ question, hideHanzi, changeWord }) {
+function Question({ question, hideHanzi, changeWord, buttonDisabled }) {
   const title = hideHanzi ? "Translation" : "Hanzi";
   // <a href="https://www.flaticon.com/free-icons/reload" title="reload icons">Reload icons created by shin_icons - Flaticon</a>
   return (
@@ -56,7 +60,11 @@ function Question({ question, hideHanzi, changeWord }) {
       <div>
         <p id="questionText" className="fullWidth">
           {question}
-          <button id="changeGuessButton" onClick={changeWord}>
+          <button
+            id="changeGuessButton"
+            onClick={changeWord}
+            disabled={buttonDisabled}
+          >
             <img src={reload} alt="Reload" />
           </button>
         </p>
@@ -65,15 +73,25 @@ function Question({ question, hideHanzi, changeWord }) {
   );
 }
 
-function Guess({ answer, hideHanzi, changeWord }) {
+function Guess({
+  answer,
+  hideHanzi,
+  changeWord,
+  buttonDisabled,
+  setButtonDisabled,
+}) {
   const title = hideHanzi ? "Translation" : "Hanzi";
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const guess = event.target.guess.value;
     if (guess === answer) {
-      event.target.guess.value = "";
-      changeWord();
+      setButtonDisabled(true);
+      setTimeout(() => {
+        event.target.guess.value = "";
+        setButtonDisabled(false);
+        changeWord();
+      }, 2000);
       toast("Correct!", { theme: "success" });
     } else {
       toast("Incorrect...", { theme: "failure" });
@@ -93,7 +111,9 @@ function Guess({ answer, hideHanzi, changeWord }) {
             placeholder="answer"
           />
         </label>
-        <button id="guessButton">Confirm</button>
+        <button id="guessButton" disabled={buttonDisabled}>
+          Confirm
+        </button>
       </form>
     </div>
   );
