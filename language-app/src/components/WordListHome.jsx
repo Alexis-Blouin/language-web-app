@@ -1,4 +1,5 @@
 import React from "react";
+import { pinyin } from "pinyin-pro";
 import delete_icon from "../assets/images/delete.png";
 import edit_icon from "../assets/images/edit.png";
 import cancel_icon from "../assets/images/cancel.png";
@@ -52,14 +53,24 @@ function Item({ word, words, setWords }) {
 
   const editSubmit = (event) => {
     event.preventDefault();
+
+    const hanzi = event.target.hanzi.value;
+    // If the pinyin value was edited, we take this one, else, we get the pinyin with pinyin-pro
+    const pinyinVal =
+      (event.target.pinyin.value === word.pinyin && hanzi !== word.hanzi) ||
+      event.target.pinyin.value === ""
+        ? pinyin(hanzi)
+        : event.target.pinyin.value;
+    const translation = event.target.translation.value;
+
     setWords((prevWords) =>
       prevWords.map((aWord) =>
         aWord.id === word.id
           ? {
               ...aWord,
-              hanzi: event.target.hanzi.value,
-              pinyin: event.target.pinyin.value,
-              translation: event.target.translation.value,
+              hanzi: hanzi,
+              pinyin: pinyinVal,
+              translation: translation,
             }
           : aWord,
       ),
