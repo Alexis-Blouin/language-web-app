@@ -47,7 +47,8 @@ nav.header ul li a:hover {
 }
 
 #addButton,
-#guessButton {
+#guessButton,
+#chapter {
   grid-column: 2;
   width: calc(100% + 8px);
   margin: 0 auto;
