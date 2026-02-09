@@ -120,3 +120,17 @@ table.wordList td {
 #changeGuessButton {
   float: right;
 }
+
+#hanzi-hint {
+  font-weight: normal;
+  font-size: small;
+  grid-column: 3;
+}
+
+#guess {
+  grid-column: 2;
+}
+
+.guessTitle {
+  grid-column: 1;
+}

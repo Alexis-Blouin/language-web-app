@@ -4,6 +4,8 @@ import "react-simple-toasts/dist/theme/dark.css";
 import "react-simple-toasts/dist/theme/success.css";
 import "react-simple-toasts/dist/theme/failure.css";
 import { useState } from "react";
+import { pinyin } from "pinyin-pro";
+import React from "react";
 
 import reload from "../assets/images/reload.png";
 
@@ -56,10 +58,11 @@ function Question({ question, hideHanzi, changeWord, buttonDisabled }) {
   // <a href="https://www.flaticon.com/free-icons/reload" title="reload icons">Reload icons created by shin_icons - Flaticon</a>
   return (
     <div id="questionBox" className="guessContent">
-      <p className="fullWidth">{title}:</p>
+      <p className="guessTitle fullWidth">{title}:</p>
       <div>
         <p id="questionText" className="fullWidth">
           {question}
+          {!hideHanzi && <span id="hazi-hint"> ({pinyin(question)})</span>}
           <button
             id="changeGuessButton"
             onClick={changeWord}
@@ -81,10 +84,11 @@ function Guess({
   setButtonDisabled,
 }) {
   const title = hideHanzi ? "Translation" : "Hanzi";
+  const [guess, setGuess] = React.useState("");
+  const [pinyinHint, setPinyinHint] = React.useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const guess = event.target.guess.value;
     if (guess === answer) {
       setButtonDisabled(true);
       setTimeout(() => {
@@ -98,9 +102,17 @@ function Guess({
     }
   };
 
+  const handleChange = (event) => {
+    const val = event.target.value;
+    setGuess(val);
+    if (true) {
+      setPinyinHint(pinyin(val));
+    }
+  };
+
   return (
     <div id="guessBox" className="guessContent">
-      <p className="fullWidth">{title}:</p>
+      <p className="guessTitle fullWidth">{title}:</p>
       <form id="guessForm" onSubmit={handleSubmit}>
         <label htmlFor="guess">
           <input
@@ -109,8 +121,13 @@ function Guess({
             name="guess"
             id="guess"
             placeholder="answer"
+            value={guess}
+            onChange={handleChange}
           />
         </label>
+        {!hideHanzi && pinyinHint !== "" && (
+          <span id="hanzi-hint"> ({pinyinHint})</span>
+        )}
         <button id="guessButton" disabled={buttonDisabled}>
           Confirm
         </button>
