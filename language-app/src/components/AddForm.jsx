@@ -1,5 +1,6 @@
 import { pinyin } from "pinyin-pro";
 import React from "react";
+import toast from "react-simple-toasts";
 
 function AddForm({ words, setWords, chapters }) {
   const [hanzi, setHanzi] = React.useState();
@@ -24,7 +25,11 @@ function AddForm({ words, setWords, chapters }) {
     };
     setWords((prevWords) => [...prevWords, newWord]);
     localStorage.setItem("words", JSON.stringify([...words, newWord]));
-    event.target.reset();
+    setHanzi("");
+    setPinyinVal("");
+    setTranslation("");
+    // TODO reset chapter select to proper chapter as well after adding
+    toast("Word Added!", { theme: "success" });
   };
 
   const handleHanziChange = (event) => {
