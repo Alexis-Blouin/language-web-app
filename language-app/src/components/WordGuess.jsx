@@ -41,7 +41,7 @@ function WordGuess({ words }) {
         buttonDisabled={isButtonDisabled}
       />
       <Guess
-        answer={word.answer}
+        answer={word.answer.toLowerCase()}
         hideHanzi={!word.hideHanzi}
         changeWord={changeWord}
         buttonDisabled={isButtonDisabled}
@@ -89,10 +89,11 @@ function Guess({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (guess === answer) {
+    if (guess.toLowerCase() === answer) {
       setButtonDisabled(true);
       setTimeout(() => {
-        event.target.guess.value = "";
+        setGuess("");
+        setPinyinHint("");
         setButtonDisabled(false);
         changeWord();
       }, 2000);
