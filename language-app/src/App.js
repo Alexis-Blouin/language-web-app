@@ -11,6 +11,24 @@ function App() {
     { hanzi: "你好", pinyin: "nǐhǎo", translation: "hi" },
   ]);
 
+  const chapters = React.useMemo(() => {
+    words.forEach((word) => {
+      console.log(typeof word.chapter);
+    });
+    return [
+      ...new Set(
+        words
+          .map((word) =>
+            typeof word.chapter === "undefined"
+              ? ""
+              : word.chapter.toString().trim(),
+          )
+          .filter(Boolean)
+          .sort(),
+      ),
+    ];
+  }, [words]);
+
   // Retrieve saved word list.
   React.useEffect(() => {
     const storedWords = localStorage.getItem("words");
@@ -44,7 +62,9 @@ function App() {
         />
         <Route
           path="/add_words"
-          element={<AddForm words={words} setWords={setWords} />}
+          element={
+            <AddForm words={words} setWords={setWords} chapters={chapters} />
+          }
         />
         <Route path="/list_hidden" element={<WordListHidden words={words} />} />
         <Route path="/word_guess" element={<WordGuess words={words} />} />

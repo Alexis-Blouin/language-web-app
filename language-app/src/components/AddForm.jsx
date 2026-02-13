@@ -1,11 +1,12 @@
 import { pinyin } from "pinyin-pro";
 import React from "react";
 
-function AddForm({ words, setWords }) {
+function AddForm({ words, setWords, chapters }) {
   const [hanzi, setHanzi] = React.useState();
   const [pinyinVal, setPinyinVal] = React.useState();
   const [translation, setTranslation] = React.useState();
   const [chapter, setChapter] = React.useState(1); // Default value is 1
+  const [newChapter, setNewChapter] = React.useState();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -19,7 +20,7 @@ function AddForm({ words, setWords }) {
       pinyin:
         pinyinVal === "" || pinyinVal === undefined ? pinyin(hanzi) : pinyinVal,
       translation: translation,
-      chapter: chapter,
+      chapter: chapter === "add" ? newChapter : chapter,
     };
     setWords((prevWords) => [...prevWords, newWord]);
     localStorage.setItem("words", JSON.stringify([...words, newWord]));
@@ -36,6 +37,10 @@ function AddForm({ words, setWords }) {
 
   const handleTranslationChange = (event) => {
     setTranslation(event.target.value);
+  };
+
+  const handleNewChapterChange = (event) => {
+    setNewChapter(event.target.value);
   };
 
   const handleChapterChange = (event) => {
@@ -81,10 +86,22 @@ function AddForm({ words, setWords }) {
       </label>
       <label htmlFor="chapter">
         Chapter:
+        {chapter === "add" && (
+          <input
+            type="text"
+            name="translation"
+            id="translation"
+            placeholder="1"
+            value={newChapter}
+            onChange={handleNewChapterChange}
+            required
+          />
+        )}
         <select name="chapter" id="chapter" onChange={handleChapterChange}>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
+          {chapters.map((chapter, index) => (
+            <ChapterOption value={index} option={chapter} />
+          ))}
+          {<ChapterOption value="add" option="Add Chapter" />}
         </select>
       </label>
       <button id="addButton">Add</button>
@@ -93,3 +110,7 @@ function AddForm({ words, setWords }) {
 }
 
 export default AddForm;
+
+function ChapterOption({ value, option }) {
+  return <option value={value}>{option}</option>;
+}
