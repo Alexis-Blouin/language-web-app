@@ -73,7 +73,10 @@ function App() {
             <AddForm words={words} setWords={setWords} chapters={chapters} />
           }
         />
-        <Route path="/list_hidden" element={<WordListHidden words={words} />} />
+        <Route
+          path="/list_hidden"
+          element={<WordListHidden words={words} chapters={chapters} />}
+        />
         <Route path="/word_guess" element={<WordGuess words={words} />} />
       </Routes>
     </Router>

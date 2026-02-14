@@ -1,23 +1,38 @@
-function WordListHidden({ words }) {
+import React from "react";
+import Filters from "./Filters";
+
+function WordListHidden({ words, chapters }) {
+  const [chapter, setChapter] = React.useState("all");
+
   return (
-    <table className="wordList">
-      <thead>
-        <tr>
-          <th>Hanzi</th>
-          <th>Pinyin</th>
-          <th>Translation</th>
-        </tr>
-      </thead>
-      <tbody>
-        {words && words.length > 0 ? (
-          words.map((word, index) => <Item word={word} />)
-        ) : (
+    <>
+      <Filters chapters={chapters} chapter={chapter} setChapter={setChapter} />{" "}
+      <table className="wordList">
+        <thead>
           <tr>
-            <td colSpan={3}>No words yet.</td>
+            <th>Hanzi</th>
+            <th>Pinyin</th>
+            <th>Translation</th>
           </tr>
-        )}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {words && words.length > 0 ? (
+            words
+              .filter(
+                (word) =>
+                  chapter === "all" ||
+                  (chapter === "no-chapter" && "" === word.chapter) ||
+                  chapter === word.chapter,
+              )
+              .map((word, index) => <Item word={word} />)
+          ) : (
+            <tr>
+              <td colSpan={3}>No words yet.</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </>
   );
 }
 
