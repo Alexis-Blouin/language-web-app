@@ -88,6 +88,10 @@ table.wordList td {
   cursor: pointer;
 }
 
+#chapterFilter {
+  margin: 20px 0 0 20px;
+}
+
 /* WordGuess */
 
 #wordGuess {

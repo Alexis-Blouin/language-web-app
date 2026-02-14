@@ -5,9 +5,12 @@ import edit_icon from "../assets/images/edit.png";
 import cancel_icon from "../assets/images/cancel.png";
 import confirmation_icon from "../assets/images/confirmation.png";
 
-function WordList({ words, setWords }) {
+function WordList({ words, setWords, chapters }) {
+  const [chapter, setChapter] = React.useState("all");
+
   return (
     <>
+      <Filters chapters={chapters} chapter={chapter} setChapter={setChapter} />
       <table className="wordList">
         <thead>
           <tr>
@@ -18,9 +21,16 @@ function WordList({ words, setWords }) {
         </thead>
         <tbody>
           {words && words.length > 0 ? (
-            words.map((word, index) => (
-              <Item word={word} words={words} setWords={setWords} />
-            ))
+            words
+              .filter(
+                (word) =>
+                  chapter === "all" ||
+                  (chapter === "no-chapter" && "" === word.chapter) ||
+                  chapter === word.chapter,
+              )
+              .map((word, index) => (
+                <Item word={word} words={words} setWords={setWords} />
+              ))
           ) : (
             <tr>
               <td colSpan={3}>No words yet.</td>
@@ -33,6 +43,26 @@ function WordList({ words, setWords }) {
 }
 
 export default WordList;
+
+function Filters({ chapters, chapter, setChapter }) {
+  const handleChapterChange = (event) => {
+    setChapter(event.target.value);
+  };
+
+  return (
+    <select name="chapter" id="chapterFilter" onChange={handleChapterChange}>
+      {<ChapterOption value="all" option="All Chapters" />}
+      {chapters.map((chapter, index) => (
+        <ChapterOption value={chapter} option={chapter} />
+      ))}
+      {<ChapterOption value="no-chapter" option="No Chapter" />}
+    </select>
+  );
+}
+
+function ChapterOption({ value, option }) {
+  return <option value={value}>{option}</option>;
+}
 
 function Item({ word, words, setWords }) {
   const [editing, setEditing] = React.useState(false);

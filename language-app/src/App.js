@@ -12,17 +12,10 @@ function App() {
   ]);
 
   const chapters = React.useMemo(() => {
-    words.forEach((word) => {
-      console.log(typeof word.chapter);
-    });
     return [
       ...new Set(
         words
-          .map((word) =>
-            typeof word.chapter === "undefined"
-              ? ""
-              : word.chapter.toString().trim(),
-          )
+          .map((word) => word.chapter)
           .filter(Boolean)
           .sort(),
       ),
@@ -33,7 +26,15 @@ function App() {
   React.useEffect(() => {
     const storedWords = localStorage.getItem("words");
     if (storedWords) {
-      setWords(JSON.parse(storedWords));
+      const tmpWords = JSON.parse(storedWords);
+
+      setWords(
+        tmpWords.map((word) =>
+          typeof word.chapter === "undefined"
+            ? { ...word, chapter: "" }
+            : { ...word, chapter: word.chapter.toString().trim() },
+        ),
+      );
     }
   }, []);
 
@@ -58,7 +59,13 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<WordListHome words={words} setWords={setWords} />}
+          element={
+            <WordListHome
+              words={words}
+              setWords={setWords}
+              chapters={chapters}
+            />
+          }
         />
         <Route
           path="/add_words"
