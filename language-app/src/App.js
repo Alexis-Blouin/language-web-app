@@ -56,29 +56,31 @@ function App() {
           </li>
         </ul>
       </nav>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <WordListHome
-              words={words}
-              setWords={setWords}
-              chapters={chapters}
-            />
-          }
-        />
-        <Route
-          path="/add_words"
-          element={
-            <AddForm words={words} setWords={setWords} chapters={chapters} />
-          }
-        />
-        <Route
-          path="/list_hidden"
-          element={<WordListHidden words={words} chapters={chapters} />}
-        />
-        <Route path="/word_guess" element={<WordGuess words={words} />} />
-      </Routes>
+      <div className="content">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <WordListHome
+                words={words}
+                setWords={setWords}
+                chapters={chapters}
+              />
+            }
+          />
+          <Route
+            path="/add_words"
+            element={
+              <AddForm words={words} setWords={setWords} chapters={chapters} />
+            }
+          />
+          <Route
+            path="/list_hidden"
+            element={<WordListHidden words={words} chapters={chapters} />}
+          />
+          <Route path="/word_guess" element={<WordGuess words={words} />} />
+        </Routes>
+      </div>
     </Router>
   );
 }

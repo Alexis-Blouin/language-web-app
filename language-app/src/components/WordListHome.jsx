@@ -4,20 +4,25 @@ import delete_icon from "../assets/images/delete.png";
 import edit_icon from "../assets/images/edit.png";
 import cancel_icon from "../assets/images/cancel.png";
 import confirmation_icon from "../assets/images/confirmation.png";
-import Filters from "./Filters";
+import ChapterSelect from "./ChapterSelect";
 
 function WordList({ words, setWords, chapters }) {
   const [chapter, setChapter] = React.useState("all");
 
   return (
     <>
-      <Filters chapters={chapters} chapter={chapter} setChapter={setChapter} />
+      <ChapterSelect
+        chapters={chapters}
+        defaultChapter={chapter}
+        setChapter={setChapter}
+      />
       <table className="wordList">
         <thead>
           <tr>
             <th>Hanzi</th>
             <th>Pinyin</th>
             <th>Translation</th>
+            <th>Chapter</th>
           </tr>
         </thead>
         <tbody>
@@ -30,7 +35,12 @@ function WordList({ words, setWords, chapters }) {
                   chapter === word.chapter,
               )
               .map((word, index) => (
-                <Item word={word} words={words} setWords={setWords} />
+                <Item
+                  word={word}
+                  words={words}
+                  setWords={setWords}
+                  chapters={chapters}
+                />
               ))
           ) : (
             <tr>
@@ -45,8 +55,9 @@ function WordList({ words, setWords, chapters }) {
 
 export default WordList;
 
-function Item({ word, words, setWords }) {
+function Item({ word, words, setWords, chapters }) {
   const [editing, setEditing] = React.useState(false);
+  const [editChapter, setEditChapter] = React.useState(word.chapter);
 
   const deleteEntry = () => {
     setWords((prevWords) => prevWords.filter((aWord) => aWord.id !== word.id));
@@ -82,6 +93,7 @@ function Item({ word, words, setWords }) {
               hanzi: hanzi,
               pinyin: pinyinVal,
               translation: translation,
+              chapter: editChapter === "no-chapter" ? "" : editChapter,
             }
           : aWord,
       ),
@@ -91,9 +103,10 @@ function Item({ word, words, setWords }) {
       aWord.id === word.id
         ? {
             ...aWord,
-            hanzi: event.target.hanzi.value,
-            pinyin: event.target.pinyin.value,
-            translation: event.target.translation.value,
+            hanzi: hanzi,
+            pinyin: pinyinVal,
+            translation: translation,
+            chapter: editChapter === "no-chapter" ? "" : editChapter,
           }
         : aWord,
     );
@@ -140,6 +153,14 @@ function Item({ word, words, setWords }) {
               name="translation"
               id="translation"
               defaultValue={word.translation}
+            />
+          </td>
+          <td>
+            <ChapterSelect
+              chapters={chapters}
+              defaultChapter={editChapter}
+              setChapter={setEditChapter}
+              allChapters={false}
             />
           </td>
           <td className="options">

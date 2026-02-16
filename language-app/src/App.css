@@ -3,6 +3,12 @@ html {
   color: #eee;
 }
 
+.content {
+  padding: 20px 0 0 20px;
+}
+
+/* Header */
+
 nav.header ul {
   list-style-type: none;
   margin: 0;
@@ -57,7 +63,7 @@ nav.header ul li a:hover {
 /* WordLists */
 
 table.wordList {
-  margin: 20px;
+  margin: 20px 0;
 }
 
 table.wordList,
@@ -86,10 +92,6 @@ table.wordList td {
   border: none;
   /* padding: 0.25rem; */
   cursor: pointer;
-}
-
-#chapterFilter {
-  margin: 20px 0 0 20px;
 }
 
 /* WordGuess */

@@ -1,18 +1,23 @@
 import React from "react";
-import Filters from "./Filters";
+import ChapterSelect from "./ChapterSelect";
 
 function WordListHidden({ words, chapters }) {
   const [chapter, setChapter] = React.useState("all");
 
   return (
     <>
-      <Filters chapters={chapters} chapter={chapter} setChapter={setChapter} />{" "}
+      <ChapterSelect
+        chapters={chapters}
+        defaultChapter={chapter}
+        setChapter={setChapter}
+      />{" "}
       <table className="wordList">
         <thead>
           <tr>
             <th>Hanzi</th>
             <th>Pinyin</th>
             <th>Translation</th>
+            <th>Chapter</th>
           </tr>
         </thead>
         <tbody>
