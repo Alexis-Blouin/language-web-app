@@ -17,7 +17,6 @@ function WordListHidden({ words, chapters }) {
             <th>Hanzi</th>
             <th>Pinyin</th>
             <th>Translation</th>
-            <th>Chapter</th>
           </tr>
         </thead>
         <tbody>

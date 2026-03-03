@@ -23,6 +23,7 @@ function WordList({ words, setWords, chapters }) {
             <th>Pinyin</th>
             <th>Translation</th>
             <th>Chapter</th>
+            <th>Options</th>
           </tr>
         </thead>
         <tbody>

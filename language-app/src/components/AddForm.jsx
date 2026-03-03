@@ -1,6 +1,7 @@
 import { pinyin } from "pinyin-pro";
 import React from "react";
 import toast from "react-simple-toasts";
+import ChapterSelect from "./ChapterSelect";
 
 function AddForm({ words, setWords, chapters }) {
   const [hanzi, setHanzi] = React.useState();
@@ -48,10 +49,6 @@ function AddForm({ words, setWords, chapters }) {
     setNewChapter(event.target.value);
   };
 
-  const handleChapterChange = (event) => {
-    setChapter(event.target.value);
-  };
-
   return (
     <form id="addForm" onSubmit={handleSubmit}>
       <label htmlFor="hanzi">
@@ -91,7 +88,7 @@ function AddForm({ words, setWords, chapters }) {
       </label>
       <label htmlFor="chapter">
         Chapter:
-        {chapter === "add" && (
+        {chapter === "new-chapter" && (
           <input
             type="text"
             name="translation"
@@ -102,12 +99,14 @@ function AddForm({ words, setWords, chapters }) {
             required
           />
         )}
-        <select name="chapter" id="chapter" onChange={handleChapterChange}>
-          {chapters.map((chapter, index) => (
-            <ChapterOption value={index} option={chapter} />
-          ))}
-          {<ChapterOption value="add" option="Add Chapter" />}
-        </select>
+        <ChapterSelect
+          chapters={chapters}
+          defaultChapter={chapter}
+          setChapter={setChapter}
+          id="chapter-add-form"
+          allChapters={false}
+          newChapter={true}
+        />
       </label>
       <button id="addButton">Add</button>
     </form>
@@ -115,7 +114,3 @@ function AddForm({ words, setWords, chapters }) {
 }
 
 export default AddForm;
-
-function ChapterOption({ value, option }) {
-  return <option value={value}>{option}</option>;
-}

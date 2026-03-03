@@ -21,6 +21,7 @@ function App() {
       ),
     ];
   }, [words]);
+  console.log(chapters);
 
   // Retrieve saved word list.
   React.useEffect(() => {
