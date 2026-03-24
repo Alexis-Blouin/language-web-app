@@ -32,8 +32,8 @@ function WordList({ words, setWords, chapters }) {
               .filter(
                 (word) =>
                   chapter === "all" ||
-                  (chapter === "no-chapter" && "" === word.chapter) ||
-                  chapter === word.chapter,
+                  (chapter === "no-chapter" && "" === word.Chapter) ||
+                  chapter === word.Chapter,
               )
               .map((word, index) => (
                 <Item
@@ -125,6 +125,7 @@ function Item({ word, words, setWords, chapters }) {
   //<a href="https://www.flaticon.com/free-icons/delete" title="delete icons">Delete icons created by Ilham Fitrotul Hayat - Flaticon</a>
   //<a href="https://www.flaticon.com/free-icons/cancel" title="cancel icons">Cancel icons created by Fingerprint Designs - Flaticon</a>
   //<a href="https://www.flaticon.com/free-icons/confirm" title="confirm icons">Confirm icons created by bqlqn - Flaticon</a>
+  console.log(word.Hanzi);
   return (
     <tr>
       {editing ? (
@@ -135,7 +136,7 @@ function Item({ word, words, setWords, chapters }) {
               type="text"
               name="hanzi"
               id="hanzi"
-              defaultValue={word.hanzi}
+              defaultValue={word.Hanzi}
             />
           </td>
           <td>
@@ -144,7 +145,7 @@ function Item({ word, words, setWords, chapters }) {
               type="text"
               name="pinyin"
               id="pinyin"
-              defaultValue={word.pinyin}
+              defaultValue={word.Pinyin}
             />
           </td>
           <td>
@@ -153,7 +154,7 @@ function Item({ word, words, setWords, chapters }) {
               type="text"
               name="translation"
               id="translation"
-              defaultValue={word.translation}
+              defaultValue={word.Meaning}
             />
           </td>
           <td>
@@ -177,10 +178,10 @@ function Item({ word, words, setWords, chapters }) {
         </>
       ) : (
         <>
-          <td>{word.hanzi}</td>
-          <td>{word.pinyin}</td>
-          <td>{word.translation}</td>
-          <td>{word.chapter}</td>
+          <td>{word.Hanzi}</td>
+          <td>{word.Pinyin}</td>
+          <td>{word.Meaning}</td>
+          <td>{word.Chapter}</td>
           <td className="options">
             <button className="icon-button" onClick={editEntry}>
               <img src={edit_icon} alt="Edit" />

@@ -55,41 +55,69 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import WordListHome from "./components/WordListHome";
 import WordListHidden from "./components/WordListHidden";
 import AddForm from "./components/AddForm";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import WordGuess from "./components/WordGuess";
+import axios from "axios";
 
 function App() {
-  const [words, setWords] = React.useState([
-    { hanzi: "你好", pinyin: "nǐhǎo", translation: "hi" },
-  ]);
+  // const [words, setWords] = React.useState([
+  //   { hanzi: "你好", pinyin: "nǐhǎo", translation: "hi" },
+  // ]);
+  const [words, setWords] = useState([]);
+  const [chapters, setChapters] = useState([]);
 
-  const chapters = React.useMemo(() => {
-    return [
-      ...new Set(
-        words
-          .map((word) => word.chapter)
-          .filter(Boolean)
-          .sort(),
-      ),
-    ];
-  }, [words]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:8081/words/get")
+      .then((res) => setWords(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+  console.log(words);
+
+  // const chapters = React.useMemo(() => {
+  //   return [
+  //     ...new Set(
+  //       words
+  //         .map((word) => word.chapter)
+  //         .filter(Boolean)
+  //         .sort(),
+  //     ),
+  //   ];
+  // }, [words]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:8081/chapters/get")
+      .then((res) =>
+        setChapters(
+          res.data.map(function (chapter) {
+            return chapter.ChapterName;
+          }),
+        ),
+      )
+      .catch((err) => console.log(err));
+  }, []);
+  // setChapters(
+  //   chapters.map(function (chapter) {
+  //     return chapter.ChapterName;
+  //   }),
+  // );
   console.log(chapters);
 
   // Retrieve saved word list.
-  React.useEffect(() => {
-    const storedWords = localStorage.getItem("words");
-    if (storedWords) {
-      const tmpWords = JSON.parse(storedWords);
+  // React.useEffect(() => {
+  //   const storedWords = localStorage.getItem("words");
+  //   if (storedWords) {
+  //     const tmpWords = JSON.parse(storedWords);
 
-      setWords(
-        tmpWords.map((word) =>
-          typeof word.chapter === "undefined"
-            ? { ...word, chapter: "" }
-            : { ...word, chapter: word.chapter.toString().trim() },
-        ),
-      );
-    }
-  }, []);
+  //     setWords(
+  //       tmpWords.map((word) =>
+  //         typeof word.chapter === "undefined"
+  //           ? { ...word, chapter: "" }
+  //           : { ...word, chapter: word.chapter.toString().trim() },
+  //       ),
+  //     );
+  //   }
+  // }, []);
 
   return (
     <Router>

@@ -11,12 +11,7 @@ app.use(express.json());
 
 // Create a connection to the MySQL database
 require("dotenv").config();
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
+const db = require("./db");
 
 // Connect to db
 db.connect((err) => {
@@ -33,15 +28,13 @@ app.get("/", (req, res) => {
   return res.json("From backend side");
 });
 
-// Define a route to fetch all persons from the 'persons' table
-app.get("/persons", (req, res) => {
-  const sql = "select * from persons"; // SQL query to select all persons
-  db.query(sql, (err, data) => {
-    // Execute the SQL query
-    if (err) return res.json(err); // If there's an error, return the error
-    return res.json(data); // Otherwise, return the data as JSON
-  });
-});
+// import routes
+const wordsRoutes = require("./routes/words");
+const chaptersRoutes = require("./routes/chapters");
+
+// use routes
+app.use("/words", wordsRoutes);
+app.use("/chapters", chaptersRoutes);
 
 // Start the server and listen on port 8081
 app.listen(8081, () => {
