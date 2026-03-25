@@ -2,14 +2,29 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
-// Define a route to fetch all persons from the 'persons' table
-router.get("/get", (req, res) => {
-  const sql = "select ChapterId, ChapterName from chapters"; // SQL query to select all persons
-  db.query(sql, (err, data) => {
-    // Execute the SQL query
-    if (err) return res.json(err); // If there's an error, return the error
-    return res.json(data); // Otherwise, return the data as JSON
-  });
+router.get("/get", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `select ChapterId, ChapterName from chapters`,
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+});
+
+router.post("/add", async (req, res) => {
+  try {
+    const [chapterResult] = await db.query(
+      `insert into chapters (ChapterName) values (?)`,
+      [req.body.ChapterName],
+    );
+    res.json(chapterResult.insertId);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;

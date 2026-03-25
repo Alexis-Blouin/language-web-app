@@ -2,6 +2,7 @@ import { pinyin } from "pinyin-pro";
 import React from "react";
 import toast from "react-simple-toasts";
 import ChapterSelect from "./ChapterSelect";
+import axios from "axios";
 
 function AddForm({ words, setWords, chapters }) {
   const [hanzi, setHanzi] = React.useState();
@@ -10,11 +11,37 @@ function AddForm({ words, setWords, chapters }) {
   const [chapter, setChapter] = React.useState(1); // Default value is 1
   const [newChapter, setNewChapter] = React.useState();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // If no pinyin value is entered, will get the one from pinyin-pro
     if (pinyinVal === "" || pinyinVal === undefined) {
       setPinyinVal(pinyin(hanzi));
+    }
+
+    try {
+      let chapterId = chapter;
+      if (chapter === "new-chapter") {
+        const res = await axios.post("http://localhost:8081/chapters/add", {
+          ChapterName: newChapter,
+        });
+        chapterId = res.data;
+      } else if (chapter === "no-chapter") {
+        chapterId = null;
+      }
+
+      await axios
+        .post("http://localhost:8081/words/add", {
+          Hanzi: hanzi,
+          Pinyin:
+            pinyinVal === "" || pinyinVal === undefined
+              ? pinyin(hanzi)
+              : pinyinVal,
+          ChapterID: chapterId,
+          Meaning: translation,
+        })
+        .catch((err) => console.log(err));
+    } catch (err) {
+      console.error(err);
     }
     console.log("Chapter selected: " + chapter);
     console.log("New chapter : " + newChapter);
@@ -27,11 +54,11 @@ function AddForm({ words, setWords, chapters }) {
       chapter: chapter === "new-chapter" ? newChapter : chapter,
     };
     setWords((prevWords) => [...prevWords, newWord]);
-    localStorage.setItem("words", JSON.stringify([...words, newWord]));
+    //localStorage.setItem("words", JSON.stringify([...words, newWord]));
     setHanzi("");
     setPinyinVal("");
     setTranslation("");
-    // TODO reset chapter select to proper chapter as well after adding
+    // reset chapter select to proper chapter as well after adding
     setNewChapter("");
     if (chapter === "new-chapter") {
       setChapter(newChapter);
