@@ -181,7 +181,7 @@ function Item({ word, words, setWords, chapters }) {
           <td>{word.Hanzi}</td>
           <td>{word.Pinyin}</td>
           <td>{word.Meaning}</td>
-          <td>{word.Chapter}</td>
+          <td>{word.ChapterName}</td>
           <td className="options">
             <button className="icon-button" onClick={editEntry}>
               <img src={edit_icon} alt="Edit" />

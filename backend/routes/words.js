@@ -8,10 +8,13 @@ router.get("/get", (req, res) => {
       w.Hanzi,
       w.Pinyin,
       t.TranslationID,
-      t.Meaning
+      t.Meaning,
+      c.ChapterID,
+      c.ChapterName
     from words w
     join wordtranslations wt on w.WordID = wt.WordID
-    join translations t on wt.TranslationID = t.TranslationID;`;
+    join translations t on wt.TranslationID = t.TranslationID
+    join chapters c on c.ChapterID = w.chapterID;`;
   db.query(sql, (err, data) => {
     if (err) return res.json(err);
     return res.json(data);
