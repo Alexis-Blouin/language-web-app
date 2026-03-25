@@ -31,20 +31,48 @@ router.post("/add", async (req, res) => {
 
     await db.beginTransaction();
 
-    const [wordResult] = await db.query(
-      `insert into words (Hanzi, Pinyin, ChapterID)
-      values (?, ?, ?);`,
-      [Hanzi, Pinyin, ChapterID],
+    // Verify that the word we currently are adding does not already exists in the same chapter
+    const [wordSearchResult] = await db.query(
+      `select WordID from words
+      where Hanzi = ? AND ChapterID = ?`,
+      [Hanzi, ChapterID],
     );
-    const wordId = wordResult.insertId;
 
-    const [translationResult] = await db.query(
-      `insert into translations (Meaning)
-      values (?)`,
+    let wordId;
+
+    if (wordSearchResult.length > 0) {
+      wordId = wordSearchResult[0].WordID;
+    } else {
+      const [wordResult] = await db.query(
+        `insert into words (Hanzi, Pinyin, ChapterID)
+      values (?, ?, ?);`,
+        [Hanzi, Pinyin, ChapterID],
+      );
+
+      wordId = wordResult.insertId;
+    }
+
+    // Verify that the meaning we currently are adding does not already exists
+    const [meaningSearchResult] = await db.query(
+      `select TranslationID from translations
+      where Meaning = ?`,
       [Meaning],
     );
-    const translationId = translationResult.insertId;
 
+    let translationId;
+
+    if (meaningSearchResult.length > 0) {
+      translationId = meaningSearchResult[0].TranslationID;
+    } else {
+      const [translationResult] = await db.query(
+        `insert into translations (Meaning)
+      values (?)`,
+        [Meaning],
+      );
+      translationId = translationResult.insertId;
+    }
+
+    // Inserts the key pair for the word and it's translation
     await db.query(
       `INSERT INTO wordtranslations (WordID, TranslationID)
       VALUES (?, ?)`,
