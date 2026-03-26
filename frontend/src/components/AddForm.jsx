@@ -29,32 +29,34 @@ function AddForm({ words, setWords, chapters }) {
         chapterId = null;
       }
 
-      await axios
-        .post("http://localhost:8081/words/add", {
-          Hanzi: hanzi,
-          Pinyin:
-            pinyinVal === "" || pinyinVal === undefined
-              ? pinyin(hanzi)
-              : pinyinVal,
-          ChapterID: chapterId,
-          Meaning: translation,
-        })
-        .catch((err) => console.log(err));
+      const res = await axios.post("http://localhost:8081/words/add", {
+        Hanzi: hanzi,
+        Pinyin:
+          pinyinVal === "" || pinyinVal === undefined
+            ? pinyin(hanzi)
+            : pinyinVal,
+        ChapterID: chapterId,
+        Meaning: translation,
+      });
+      const wordId = res.data.wordId;
+      const translationId = res.data.translationId;
+      const newWord = {
+        WordId: wordId,
+        Hanzi: hanzi,
+        Pinyin:
+          pinyinVal === "" || pinyinVal === undefined
+            ? pinyin(hanzi)
+            : pinyinVal,
+        TranslationID: translationId,
+        Meaning: translation,
+        ChapterID: parseInt(chapterId),
+        ChapterName: chapter === "new-chapter" ? newChapter : chapter,
+      };
+      setWords((prevWords) => [...prevWords, newWord]);
     } catch (err) {
       console.error(err);
     }
-    console.log("Chapter selected: " + chapter);
-    console.log("New chapter : " + newChapter);
-    const newWord = {
-      id: crypto.randomUUID(),
-      hanzi: hanzi,
-      pinyin:
-        pinyinVal === "" || pinyinVal === undefined ? pinyin(hanzi) : pinyinVal,
-      translation: translation,
-      chapter: chapter === "new-chapter" ? newChapter : chapter,
-    };
-    setWords((prevWords) => [...prevWords, newWord]);
-    //localStorage.setItem("words", JSON.stringify([...words, newWord]));
+    // Resets for next word
     setHanzi("");
     setPinyinVal("");
     setTranslation("");

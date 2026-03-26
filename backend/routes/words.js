@@ -27,7 +27,6 @@ router.get("/get", async (req, res) => {
 router.post("/add", async (req, res) => {
   try {
     const { Hanzi, Pinyin, ChapterID, Meaning } = req.body;
-    console.log(Hanzi, Pinyin, ChapterID, Meaning);
 
     await db.beginTransaction();
 
@@ -81,7 +80,11 @@ router.post("/add", async (req, res) => {
 
     await db.commit();
 
-    res.json({ message: "Word added successfully" });
+    res.json({
+      message: "Word added successfully",
+      wordId: wordId,
+      translationId: translationId,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json(err);
