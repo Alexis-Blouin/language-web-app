@@ -5,6 +5,7 @@ import edit_icon from "../assets/images/edit.png";
 import cancel_icon from "../assets/images/cancel.png";
 import confirmation_icon from "../assets/images/confirmation.png";
 import ChapterSelect from "./ChapterSelect";
+import axios from "axios";
 
 function WordList({ words, setWords, chapters }) {
   const [chapter, setChapter] = React.useState("all");
@@ -60,12 +61,20 @@ function Item({ word, words, setWords, chapters }) {
   const [editing, setEditing] = React.useState(false);
   const [editChapter, setEditChapter] = React.useState(word.chapter);
 
-  const deleteEntry = () => {
-    setWords((prevWords) => prevWords.filter((aWord) => aWord.id !== word.id));
-    const updatedWords = JSON.stringify(
-      words.filter((aWord) => aWord.id !== word.id),
+  const deleteEntry = async () => {
+    // TODO receive success or fail to update or not the data and show a toast
+    await axios.delete("http://localhost:8081/words/delete", {
+      // params here since it's delete and not post
+      params: { WordID: word.WordID, TranslationID: word.TranslationID },
+    });
+    // Updates the visible data
+    setWords((prevWords) =>
+      prevWords.filter(
+        (aWord) =>
+          aWord.WordID !== word.WordID &&
+          aWord.TranslationID !== word.TranslationID,
+      ),
     );
-    localStorage.setItem("words", updatedWords);
   };
 
   // TODO make edit word function
@@ -125,7 +134,6 @@ function Item({ word, words, setWords, chapters }) {
   //<a href="https://www.flaticon.com/free-icons/delete" title="delete icons">Delete icons created by Ilham Fitrotul Hayat - Flaticon</a>
   //<a href="https://www.flaticon.com/free-icons/cancel" title="cancel icons">Cancel icons created by Fingerprint Designs - Flaticon</a>
   //<a href="https://www.flaticon.com/free-icons/confirm" title="confirm icons">Confirm icons created by bqlqn - Flaticon</a>
-  console.log(word.Hanzi);
   return (
     <tr>
       {editing ? (

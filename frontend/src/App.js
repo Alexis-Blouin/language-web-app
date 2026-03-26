@@ -72,7 +72,6 @@ function App() {
       .then((res) => setWords(res.data))
       .catch((err) => console.log(err));
   }, []);
-  console.log(words);
 
   // const chapters = React.useMemo(() => {
   //   return [
@@ -101,7 +100,6 @@ function App() {
   //     return chapter.ChapterName;
   //   }),
   // );
-  console.log(chapters);
 
   // Retrieve saved word list.
   // React.useEffect(() => {

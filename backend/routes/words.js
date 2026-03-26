@@ -88,4 +88,48 @@ router.post("/add", async (req, res) => {
   }
 });
 
+router.delete("/delete", async (req, res) => {
+  try {
+    // .query here since it's delete and not post
+    const WordID = req.query.WordID;
+    const TranslationID = req.query.TranslationID;
+
+    await db.beginTransaction();
+
+    // Delete the pair
+    await db.query(
+      `DELETE FROM wordtranslations 
+      WHERE WordID = ? AND TranslationID = ?`,
+      [WordID, TranslationID],
+    );
+
+    // Possibly delete the word
+    await db.query(
+      `DELETE FROM words 
+      WHERE WordID = ?
+      AND NOT EXISTS (
+        SELECT 1 FROM wordtranslations WHERE WordID = ?
+      );`,
+      [WordID, WordID],
+    );
+
+    // Possibly delete the translation
+    await db.query(
+      `DELETE FROM translations 
+      WHERE TranslationID = ?
+      AND NOT EXISTS (
+        SELECT 1 FROM wordtranslations WHERE TranslationID = ?
+      );`,
+      [TranslationID, TranslationID],
+    );
+
+    await db.commit();
+
+    res.json({ message: "Pair deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
