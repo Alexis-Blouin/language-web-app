@@ -83,7 +83,7 @@ function Item({ word, words, setWords, chapters }) {
     setEditing(true);
   };
 
-  const editSubmit = (event) => {
+  const editSubmit = async (event) => {
     event.preventDefault();
 
     const hanzi = event.target.hanzi.value;
@@ -95,32 +95,31 @@ function Item({ word, words, setWords, chapters }) {
         : event.target.pinyin.value;
     const translation = event.target.translation.value;
 
+    const res = await axios.patch("http://localhost:8081/words/modify", {
+      wordId: word.WordID,
+      translationId: word.TranslationID,
+      newHanzi: hanzi,
+      newPinyin: pinyinVal,
+      newChapterId: word.ChapterID, // TODO update properly the chapter ID
+      newMeaning: translation,
+      wordTranslationId: word.WordTranslationID,
+    });
+
     setWords((prevWords) =>
       prevWords.map((aWord) =>
-        aWord.id === word.id
+        aWord.WordID === word.WordID
           ? {
               ...aWord,
-              hanzi: hanzi,
-              pinyin: pinyinVal,
-              translation: translation,
-              chapter: editChapter === "no-chapter" ? "" : editChapter,
+              WordID: res.data.wordId,
+              Hanzi: hanzi,
+              Pinyin: pinyinVal,
+              TranslationID: res.data.translationId,
+              Translation: translation,
+              ChapterID: word.ChapterID, // TODO update properly the chapter ID
             }
           : aWord,
       ),
     );
-
-    const updatedWords = words.map((aWord) =>
-      aWord.id === word.id
-        ? {
-            ...aWord,
-            hanzi: hanzi,
-            pinyin: pinyinVal,
-            translation: translation,
-            chapter: editChapter === "no-chapter" ? "" : editChapter,
-          }
-        : aWord,
-    );
-    localStorage.setItem("words", JSON.stringify(updatedWords));
 
     setEditing(false);
   };
@@ -140,7 +139,7 @@ function Item({ word, words, setWords, chapters }) {
         <>
           <td>
             <input
-              form={word.id}
+              form={word.WordID + "-" + word.TranslationID}
               type="text"
               name="hanzi"
               id="hanzi"
@@ -149,7 +148,7 @@ function Item({ word, words, setWords, chapters }) {
           </td>
           <td>
             <input
-              form={word.id}
+              form={word.WordID + "-" + word.TranslationID}
               type="text"
               name="pinyin"
               id="pinyin"
@@ -158,7 +157,7 @@ function Item({ word, words, setWords, chapters }) {
           </td>
           <td>
             <input
-              form={word.id}
+              form={word.WordID + "-" + word.TranslationID}
               type="text"
               name="translation"
               id="translation"
@@ -174,7 +173,10 @@ function Item({ word, words, setWords, chapters }) {
             />
           </td>
           <td className="options">
-            <form id={word.id} onSubmit={editSubmit}>
+            <form
+              id={word.WordID + "-" + word.TranslationID}
+              onSubmit={editSubmit}
+            >
               <button className="icon-button" type="submit">
                 <img src={confirmation_icon} alt="Confirm" />
               </button>
