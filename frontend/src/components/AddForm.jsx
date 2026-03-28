@@ -29,30 +29,37 @@ function AddForm({ words, setWords, chapters }) {
         chapterId = null;
       }
 
-      const res = await axios.post("http://localhost:8081/words/add", {
-        Hanzi: hanzi,
-        Pinyin:
-          pinyinVal === "" || pinyinVal === undefined
-            ? pinyin(hanzi)
-            : pinyinVal,
-        ChapterID: chapterId,
-        Meaning: translation,
-      });
-      const wordId = res.data.wordId;
-      const translationId = res.data.translationId;
-      const newWord = {
-        WordId: wordId,
-        Hanzi: hanzi,
-        Pinyin:
-          pinyinVal === "" || pinyinVal === undefined
-            ? pinyin(hanzi)
-            : pinyinVal,
-        TranslationID: translationId,
-        Meaning: translation,
-        ChapterID: parseInt(chapterId),
-        ChapterName: chapter === "new-chapter" ? newChapter : chapter,
-      };
-      setWords((prevWords) => [...prevWords, newWord]);
+      const translations = translation.includes(";")
+        ? translation.split(";")
+        : [translation];
+
+      // Loops for each possible meaning
+      for (const tr of translations) {
+        const res = await axios.post("http://localhost:8081/words/add", {
+          Hanzi: hanzi,
+          Pinyin:
+            pinyinVal === "" || pinyinVal === undefined
+              ? pinyin(hanzi)
+              : pinyinVal,
+          ChapterID: chapterId,
+          Meaning: tr,
+        });
+        const wordId = res.data.wordId;
+        const translationId = res.data.translationId;
+        const newWord = {
+          WordId: wordId,
+          Hanzi: hanzi,
+          Pinyin:
+            pinyinVal === "" || pinyinVal === undefined
+              ? pinyin(hanzi)
+              : pinyinVal,
+          TranslationID: translationId,
+          Meaning: tr,
+          ChapterID: parseInt(chapterId),
+          ChapterName: chapter === "new-chapter" ? newChapter : chapter,
+        };
+        setWords((prevWords) => [...prevWords, newWord]);
+      }
     } catch (err) {
       console.error(err);
     }
