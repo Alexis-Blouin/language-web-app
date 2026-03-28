@@ -21,8 +21,8 @@ function ChapterSelect({
       {allChapters && <option value="all">All Chapters</option>}
 
       {chapters.map((chapter) => (
-        <option key={chapter} value={chapter}>
-          {chapter}
+        <option key={chapter.ChapterID} value={chapter.ChapterID}>
+          {chapter.ChapterName}
         </option>
       ))}
 

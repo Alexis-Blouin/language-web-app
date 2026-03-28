@@ -1,55 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import axios from "axios";
-
-// function App() {
-//   const [users, setUsers] = useState([]);
-//   const [name, setName] = useState("");
-//   const [email, setEmail] = useState("");
-
-//   useEffect(() => {
-//     axios
-//       .get("http://localhost:8081/persons")
-//       .then((res) => setUsers(res.data))
-//       .catch((err) => console.log(err));
-//   }, []);
-
-//   const addUser = () => {
-//     axios
-//       .post("http://localhost:8081/persons", { name, email })
-//       .then((res) => {
-//         alert(res.data.message);
-//         setUsers([...users, { name, email }]);
-//       })
-//       .catch((err) => console.log(err));
-//   };
-
-//   return (
-//     <div>
-//       <h1>React + MySQL Example</h1>
-//       <input
-//         type="text"
-//         placeholder="Name"
-//         onChange={(e) => setName(e.target.value)}
-//       />
-//       <input
-//         type="text"
-//         placeholder="Email"
-//         onChange={(e) => setEmail(e.target.value)}
-//       />
-//       <button onClick={addUser}>Add User</button>
-
-//       <ul>
-//         {users.map((user, i) => (
-//           <li key={i}>
-//             {user.FirstName} - {user.LastName}
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// }
-
-// export default App;
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import WordListHome from "./components/WordListHome";
@@ -60,9 +8,6 @@ import WordGuess from "./components/WordGuess";
 import axios from "axios";
 
 function App() {
-  // const [words, setWords] = React.useState([
-  //   { hanzi: "你好", pinyin: "nǐhǎo", translation: "hi" },
-  // ]);
   const [words, setWords] = useState([]);
   const [chapters, setChapters] = useState([]);
 
@@ -73,49 +18,12 @@ function App() {
       .catch((err) => console.log(err));
   }, []);
 
-  // const chapters = React.useMemo(() => {
-  //   return [
-  //     ...new Set(
-  //       words
-  //         .map((word) => word.chapter)
-  //         .filter(Boolean)
-  //         .sort(),
-  //     ),
-  //   ];
-  // }, [words]);
   useEffect(() => {
     axios
       .get("http://localhost:8081/chapters/get")
-      .then((res) =>
-        setChapters(
-          res.data.map(function (chapter) {
-            return chapter.ChapterName;
-          }),
-        ),
-      )
+      .then((res) => setChapters(res.data))
       .catch((err) => console.log(err));
   }, []);
-  // setChapters(
-  //   chapters.map(function (chapter) {
-  //     return chapter.ChapterName;
-  //   }),
-  // );
-
-  // Retrieve saved word list.
-  // React.useEffect(() => {
-  //   const storedWords = localStorage.getItem("words");
-  //   if (storedWords) {
-  //     const tmpWords = JSON.parse(storedWords);
-
-  //     setWords(
-  //       tmpWords.map((word) =>
-  //         typeof word.chapter === "undefined"
-  //           ? { ...word, chapter: "" }
-  //           : { ...word, chapter: word.chapter.toString().trim() },
-  //       ),
-  //     );
-  //   }
-  // }, []);
 
   return (
     <Router>

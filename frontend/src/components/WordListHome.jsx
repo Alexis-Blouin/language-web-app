@@ -59,7 +59,7 @@ export default WordList;
 
 function Item({ word, words, setWords, chapters }) {
   const [editing, setEditing] = React.useState(false);
-  const [editChapter, setEditChapter] = React.useState(word.chapter);
+  const [editChapter, setEditChapter] = React.useState(word.ChapterName);
 
   const deleteEntry = async () => {
     // TODO receive success or fail to update or not the data and show a toast
@@ -94,13 +94,18 @@ function Item({ word, words, setWords, chapters }) {
         ? pinyin(hanzi)
         : event.target.pinyin.value;
     const translation = event.target.translation.value;
+    console.log(chapters);
+    const chapterName = chapters.filter(
+      (chapter) => chapter.ChapterID === parseInt(editChapter),
+    )[0].ChapterName;
+    console.log(chapterName);
 
     const res = await axios.patch("http://localhost:8081/words/modify", {
       wordId: word.WordID,
       translationId: word.TranslationID,
       newHanzi: hanzi,
       newPinyin: pinyinVal,
-      newChapterId: word.ChapterID, // TODO update properly the chapter ID
+      newChapterId: editChapter,
       newMeaning: translation,
       wordTranslationId: word.WordTranslationID,
     });
@@ -115,7 +120,8 @@ function Item({ word, words, setWords, chapters }) {
               Pinyin: pinyinVal,
               TranslationID: res.data.translationId,
               Translation: translation,
-              ChapterID: word.ChapterID, // TODO update properly the chapter ID
+              ChapterID: editChapter,
+              ChapterName: chapterName,
             }
           : aWord,
       ),

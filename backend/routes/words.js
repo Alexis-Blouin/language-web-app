@@ -128,7 +128,7 @@ router.patch("/modify", async (req, res) => {
       translationId,
       newHanzi,
       newPinyin,
-      newChapterId, // TODO update properly the chapter ID
+      newChapterId,
       newMeaning,
       wordTranslationId,
     } = req.body;
