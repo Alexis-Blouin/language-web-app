@@ -1,8 +1,25 @@
 import React from "react";
 import ChapterSelect from "./ChapterSelect";
 
+import reload from "../assets/images/reload.png";
+
 function WordListHidden({ words, chapters }) {
   const [chapter, setChapter] = React.useState("all");
+  const [hiddenColumns, setHiddenColumns] = React.useState({
+    hanzi: false,
+    pinyin: false,
+    translation: true,
+  });
+
+  const handleHiddenColumnChange = (e) => {
+    setHiddenColumns((values) => ({
+      ...values,
+      [e.target.name]: e.target.checked,
+    }));
+  };
+
+  // TODO
+  const resetHidden = () => {};
 
   return (
     <>
@@ -11,6 +28,36 @@ function WordListHidden({ words, chapters }) {
         defaultChapter={chapter}
         setChapter={setChapter}
       />{" "}
+      <label>
+        Hanzi:
+        <input
+          type="checkbox"
+          name="hanzi"
+          checked={hiddenColumns.hanzi}
+          onChange={handleHiddenColumnChange}
+        />
+      </label>
+      <label>
+        Pinyin:
+        <input
+          type="checkbox"
+          name="pinyin"
+          checked={hiddenColumns.pinyin}
+          onChange={handleHiddenColumnChange}
+        />
+      </label>
+      <label>
+        Translation:
+        <input
+          type="checkbox"
+          name="translation"
+          checked={hiddenColumns.translation}
+          onChange={handleHiddenColumnChange}
+        />
+      </label>
+      <button id="resetHidden" onClick={resetHidden}>
+        <img src={reload} alt="Reload" />
+      </button>
       <table className="wordList">
         <thead>
           <tr>
@@ -26,9 +73,11 @@ function WordListHidden({ words, chapters }) {
                 (word) =>
                   chapter === "all" ||
                   (chapter === "no-chapter" && "" === word.chapter) ||
-                  chapter === word.chapter,
+                  parseInt(chapter) === word.chapter,
               )
-              .map((word, index) => <Item word={word} />)
+              .map((word, index) => (
+                <Item word={word} hiddenColumns={hiddenColumns} />
+              ))
           ) : (
             <tr>
               <td colSpan={3}>No words yet.</td>
@@ -42,17 +91,30 @@ function WordListHidden({ words, chapters }) {
 
 export default WordListHidden;
 
-function Item({ word }) {
+function Item({ word, hiddenColumns }) {
   const unhideWord = (target) => {
     target.target.classList.remove("hidden-word");
   };
 
   return (
     <tr>
-      <td>{word.hanzi}</td>
-      <td>{word.pinyin}</td>
-      <td className="hidden-word" onClick={unhideWord}>
-        {word.translation}
+      <td
+        className={hiddenColumns.hanzi ? "hidden-word" : ""}
+        onClick={unhideWord}
+      >
+        {word.Hanzi}
+      </td>
+      <td
+        className={hiddenColumns.pinyin ? "hidden-word" : ""}
+        onClick={unhideWord}
+      >
+        {word.Pinyin}
+      </td>
+      <td
+        className={hiddenColumns.translation ? "hidden-word" : ""}
+        onClick={unhideWord}
+      >
+        {word.Meaning}
       </td>
     </tr>
   );
