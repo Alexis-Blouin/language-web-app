@@ -16,7 +16,8 @@ router.get("/get", async (req, res) => {
     from words w
     join wordtranslations wt on w.WordID = wt.WordID
     join translations t on wt.TranslationID = t.TranslationID
-    join chapters c on c.ChapterID = w.chapterID;`;
+    join chapters c on c.ChapterID = w.chapterID
+    order by c.ChapterID, w.WordID;`;
     const [rows] = await db.query(sql);
     res.json(rows);
   } catch (err) {
