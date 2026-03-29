@@ -34,7 +34,7 @@ function WordList({ words, setWords, chapters }) {
                 (word) =>
                   chapter === "all" ||
                   (chapter === "no-chapter" && "" === word.Chapter) ||
-                  chapter === word.Chapter,
+                  parseInt(chapter) === word.ChapterID,
               )
               .map((word, index) => (
                 <Item
@@ -119,7 +119,7 @@ function Item({ word, words, setWords, chapters }) {
               Hanzi: hanzi,
               Pinyin: pinyinVal,
               TranslationID: res.data.translationId,
-              Translation: translation,
+              Meaning: translation,
               ChapterID: editChapter,
               ChapterName: chapterName,
             }

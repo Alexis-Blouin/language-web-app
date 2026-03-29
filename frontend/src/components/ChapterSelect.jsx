@@ -2,7 +2,6 @@ function ChapterSelect({
   chapters,
   defaultChapter,
   setChapter,
-  id = "",
   allChapters = true,
   noChapter = true,
   newChapter = false,
@@ -14,7 +13,7 @@ function ChapterSelect({
   return (
     <select
       name="chapter"
-      id={id}
+      id=""
       value={defaultChapter}
       onChange={handleChapterChange}
     >
