@@ -15,13 +15,34 @@ toastConfig({
 });
 
 function WordGuess({ words }) {
+  // TODO Find a solution to avoid having to press the reset button after a reload.
+  const concatWords = React.useMemo(() => {
+    const result = {};
+
+    words.forEach((word) => {
+      const hanzi = word.Hanzi;
+      const translation = word.Meaning.toLowerCase();
+
+      if (result[hanzi]) {
+        result[hanzi].push(translation);
+      } else {
+        result[hanzi] = [translation];
+      }
+    });
+
+    return result;
+  }, [words]);
+
   const pickRandomWord = () => {
-    const randomWord = words[Math.floor(Math.random() * words.length)];
-    const hideHanzi = Math.random() < 0.5;
+    const keys = Object.keys(concatWords);
+    const randomKey = keys[Math.floor(Math.random() * keys.length)];
+    const randomTranslations = concatWords[randomKey];
+    // const hideHanzi = Math.random() < 0.5;
+    const hideHanzi = false; // TODO fix switch between hanzi and translation
 
     return {
-      question: hideHanzi ? randomWord.translation : randomWord.hanzi,
-      answer: hideHanzi ? randomWord.hanzi : randomWord.translation,
+      question: hideHanzi ? randomTranslations : randomKey,
+      answer: hideHanzi ? randomKey : randomTranslations,
       hideHanzi,
     };
   };
@@ -41,7 +62,7 @@ function WordGuess({ words }) {
         buttonDisabled={isButtonDisabled}
       />
       <Guess
-        answer={word.answer.toLowerCase()}
+        answer={word.answer}
         hideHanzi={!word.hideHanzi}
         changeWord={changeWord}
         buttonDisabled={isButtonDisabled}
@@ -89,7 +110,7 @@ function Guess({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (guess.toLowerCase() === answer) {
+    if (answer.includes(guess.toLowerCase())) {
       setButtonDisabled(true);
       setTimeout(() => {
         setGuess("");
