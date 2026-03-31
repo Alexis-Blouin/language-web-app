@@ -58,7 +58,12 @@ function App() {
           <Route
             path="/add_words"
             element={
-              <AddForm words={words} setWords={setWords} chapters={chapters} />
+              <AddForm
+                words={words}
+                setWords={setWords}
+                chapters={chapters}
+                setChapters={setChapters}
+              />
             }
           />
           <Route

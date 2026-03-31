@@ -4,7 +4,7 @@ import toast from "react-simple-toasts";
 import ChapterSelect from "./ChapterSelect";
 import axios from "axios";
 
-function AddForm({ words, setWords, chapters }) {
+function AddForm({ words, setWords, chapters, setChapters }) {
   const [hanzi, setHanzi] = React.useState();
   const [pinyinVal, setPinyinVal] = React.useState();
   const [translation, setTranslation] = React.useState();
@@ -18,16 +18,23 @@ function AddForm({ words, setWords, chapters }) {
       setPinyinVal(pinyin(hanzi));
     }
 
+    let chapterId = chapter;
     try {
-      let chapterId = chapter;
       if (chapter === "new-chapter") {
         const res = await axios.post("http://localhost:8081/chapters/add", {
           ChapterName: newChapter,
         });
         chapterId = res.data;
+
+        const newChapterEntry = {
+          ChapterID: parseInt(chapterId),
+          ChapterName: newChapter,
+        };
+        setChapters((prevChapters) => [...prevChapters, newChapterEntry]);
       } else if (chapter === "no-chapter") {
         chapterId = null;
       }
+      // TODO still add the word if the chapter already exists
 
       const translations = translation.includes(";")
         ? translation.split(";")
@@ -46,7 +53,8 @@ function AddForm({ words, setWords, chapters }) {
         });
         const wordId = res.data.wordId;
         const translationId = res.data.translationId;
-        const newWord = {
+        // TODO the word can't properly be deleted from the table without a page reload (deletes from page, but not db)
+        const newWordEntry = {
           WordId: wordId,
           Hanzi: hanzi,
           Pinyin:
@@ -58,7 +66,7 @@ function AddForm({ words, setWords, chapters }) {
           ChapterID: parseInt(chapterId),
           ChapterName: chapter === "new-chapter" ? newChapter : chapter,
         };
-        setWords((prevWords) => [...prevWords, newWord]);
+        setWords((prevWords) => [...prevWords, newWordEntry]);
       }
     } catch (err) {
       console.error(err);
@@ -70,7 +78,7 @@ function AddForm({ words, setWords, chapters }) {
     // reset chapter select to proper chapter as well after adding
     setNewChapter("");
     if (chapter === "new-chapter") {
-      setChapter(newChapter);
+      setChapter(chapterId);
     }
     toast("Word Added!", { theme: "success" });
   };
