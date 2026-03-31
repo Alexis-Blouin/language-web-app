@@ -106,7 +106,7 @@ function Item({ word, words, setWords, chapters }) {
       newHanzi: hanzi,
       newPinyin: pinyinVal,
       newChapterId: editChapter,
-      newMeaning: translation,
+      newTranslation: translation,
       wordTranslationId: word.WordTranslationID,
     });
 
@@ -119,7 +119,7 @@ function Item({ word, words, setWords, chapters }) {
               Hanzi: hanzi,
               Pinyin: pinyinVal,
               TranslationID: res.data.translationId,
-              Meaning: translation,
+              Translation: translation,
               ChapterID: editChapter,
               ChapterName: chapterName,
             }
@@ -167,7 +167,7 @@ function Item({ word, words, setWords, chapters }) {
               type="text"
               name="translation"
               id="translation"
-              defaultValue={word.Meaning}
+              defaultValue={word.Translation}
             />
           </td>
           <td>
@@ -196,7 +196,7 @@ function Item({ word, words, setWords, chapters }) {
         <>
           <td>{word.Hanzi}</td>
           <td>{word.Pinyin}</td>
-          <td>{word.Meaning}</td>
+          <td>{word.Translation}</td>
           <td>{word.ChapterName}</td>
           <td className="options">
             <button className="icon-button" onClick={editEntry}>

@@ -1,29 +1,36 @@
 /*Initial setup of the db, probly will change and I forget to update it, sry*/
-create table Chapters (
-	ChapterID int NOT NULL AUTO_INCREMENT,
-    ChapterName varchar(255),
-    primary key (ChapterID)
-);
+CREATE TABLE `chapters` (
+    `ChapterID` int NOT NULL AUTO_INCREMENT,
+    `ChapterName` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`ChapterID`),
+    UNIQUE KEY `ChapterName` (`ChapterName`)
+)
 
-create table Words (
-	WordID int NOT NULL AUTO_INCREMENT,
-	Hanzi varchar(50),
-    Pinyin varchar(255),
-    ChapterID int,
-    primary key (WordID),
-    foreign key (ChapterID) references Chapters(ChapterID)
-);
+CREATE TABLE `words` (
+    `WordID` int NOT NULL AUTO_INCREMENT,
+    `Hanzi` varchar(50) DEFAULT NULL,
+    `Pinyin` varchar(255) DEFAULT NULL,
+    `ChapterID` int DEFAULT NULL,
+    PRIMARY KEY (`WordID`),
+    UNIQUE KEY `Hanzi` (`Hanzi`,`Pinyin`,`ChapterID`),
+    KEY `ChapterID` (`ChapterID`),
+    CONSTRAINT `words_ibfk_1` FOREIGN KEY (`ChapterID`) REFERENCES `chapters` (`ChapterID`)
+)
 
-create table Translations (
-    TranslationID int NOT NULL AUTO_INCREMENT,
-    Meaning varchar(255),
-    primary key (TranslationID)
-);
+CREATE TABLE `translations` (
+    `TranslationID` int NOT NULL AUTO_INCREMENT,
+    `Translation` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`TranslationID`),
+    UNIQUE KEY `Meaning` (`Translation`)
+)
 
-create table WordTranslations (
-    WordID int,
-    TranslationID int,
-    primary key (WordID, TranslationID),
-    foreign key (WordID) references Words(WordID),
-    foreign key (TranslationID) references Translations(TranslationID)
-);
+CREATE TABLE `wordtranslations` (
+    `WordID` int NOT NULL,
+    `TranslationID` int NOT NULL,
+    `WordTranslationID` int NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY (`WordTranslationID`),
+    UNIQUE KEY `WordID` (`WordID`,`TranslationID`),
+    KEY `fk_translation` (`TranslationID`),
+    CONSTRAINT `fk_translation` FOREIGN KEY (`TranslationID`) REFERENCES `translations` (`TranslationID`),
+    CONSTRAINT `fk_word` FOREIGN KEY (`WordID`) REFERENCES `words` (`WordID`)
+)

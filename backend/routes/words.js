@@ -9,7 +9,7 @@ router.get("/get", async (req, res) => {
       w.Hanzi,
       w.Pinyin,
       t.TranslationID,
-      t.Meaning,
+      t.Translation,
       c.ChapterID,
       c.ChapterName,
       wt.WordTranslationID
@@ -28,7 +28,7 @@ router.get("/get", async (req, res) => {
 
 router.post("/add", async (req, res) => {
   try {
-    const { Hanzi, Pinyin, ChapterID, Meaning } = req.body;
+    const { Hanzi, Pinyin, ChapterID, Translation } = req.body;
 
     await db.beginTransaction();
 
@@ -53,22 +53,22 @@ router.post("/add", async (req, res) => {
       wordId = wordResult.insertId;
     }
 
-    // Verify that the meaning we currently are adding does not already exists
-    const [meaningSearchResult] = await db.query(
+    // Verify that the translation we currently are adding does not already exists
+    const [translationSearchResult] = await db.query(
       `select TranslationID from translations
-      where Meaning = ?`,
-      [Meaning],
+      where Translation = ?`,
+      [Translation],
     );
 
     let translationId;
 
-    if (meaningSearchResult.length > 0) {
-      translationId = meaningSearchResult[0].TranslationID;
+    if (translationSearchResult.length > 0) {
+      translationId = translationSearchResult[0].TranslationID;
     } else {
       const [translationResult] = await db.query(
-        `insert into translations (Meaning)
+        `insert into translations (Translation)
       values (?)`,
-        [Meaning],
+        [Translation],
       );
       translationId = translationResult.insertId;
     }
@@ -130,17 +130,17 @@ router.patch("/modify", async (req, res) => {
       newHanzi,
       newPinyin,
       newChapterId,
-      newMeaning,
+      newTranslation,
       wordTranslationId,
     } = req.body;
     // Check if new word/translation exists
-    const newWord = await selectOneWord(newHanzi, newPinyin, newChapterId);
+    const wordSelect = await selectOneWord(newHanzi, newPinyin, newChapterId);
     let newWordId;
-    const newTranslation = await selectOneTranslation(newMeaning);
+    const translationSelect = await selectOneTranslation(newTranslation);
     let newTranslationId;
     await db.beginTransaction();
     // Creates a new word and/or translation if they don't exist
-    if (newWord === null) {
+    if (wordSelect === null) {
       const [result] = await db.query(
         `insert into words (Hanzi, Pinyin, ChapterID)
       values (?, ?, ?)`,
@@ -148,17 +148,17 @@ router.patch("/modify", async (req, res) => {
       );
       newWordId = result.insertId;
     } else {
-      newWordId = newWord.WordID;
+      newWordId = wordSelect.WordID;
     }
-    if (newTranslation === null) {
+    if (translationSelect === null) {
       [result] = await db.query(
-        `insert into translations (Meaning)
+        `insert into translations (Translation)
       values (?)`,
-        [newMeaning],
+        [newTranslation],
       );
       newTranslationId = result.insertId;
     } else {
-      newTranslationId = newTranslation.TranslationID;
+      newTranslationId = translationSelect.TranslationID;
     }
     // Update the link table with new Ids
     if (wordId !== newWordId) {
@@ -211,12 +211,12 @@ async function selectOneWord(hanzi, pinyin, chapterId) {
   }
 }
 
-async function selectOneTranslation(meaning) {
+async function selectOneTranslation(translation) {
   try {
     const [result] = await db.query(
       `select TranslationID from translations
-      where Meaning = ?`,
-      [meaning],
+      where Translation = ?`,
+      [translation],
     );
     return result.length > 0 ? result[0] : null;
   } catch (err) {

@@ -114,7 +114,7 @@ function Item({ word, hiddenColumns }) {
         className={hiddenColumns.translation ? "hidden-word" : ""}
         onClick={unhideWord}
       >
-        {word.Meaning}
+        {word.Translation}
       </td>
     </tr>
   );

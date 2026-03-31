@@ -33,7 +33,7 @@ function AddForm({ words, setWords, chapters }) {
         ? translation.split(";")
         : [translation];
 
-      // Loops for each possible meaning
+      // Loops for each possible translation
       for (const tr of translations) {
         const res = await axios.post("http://localhost:8081/words/add", {
           Hanzi: hanzi,
@@ -42,7 +42,7 @@ function AddForm({ words, setWords, chapters }) {
               ? pinyin(hanzi)
               : pinyinVal,
           ChapterID: chapterId,
-          Meaning: tr,
+          Translation: tr,
         });
         const wordId = res.data.wordId;
         const translationId = res.data.translationId;
@@ -54,7 +54,7 @@ function AddForm({ words, setWords, chapters }) {
               ? pinyin(hanzi)
               : pinyinVal,
           TranslationID: translationId,
-          Meaning: tr,
+          Translation: tr,
           ChapterID: parseInt(chapterId),
           ChapterName: chapter === "new-chapter" ? newChapter : chapter,
         };
