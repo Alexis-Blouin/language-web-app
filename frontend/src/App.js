@@ -5,11 +5,14 @@ import WordListHidden from "./components/WordListHidden";
 import AddForm from "./components/AddForm";
 import React, { useState, useEffect } from "react";
 import WordGuess from "./components/WordGuess";
+import Expressions from "./components/Expressions";
 import axios from "axios";
 
 function App() {
   const [words, setWords] = useState([]);
   const [chapters, setChapters] = useState([]);
+  const [expressions, setExpressions] = useState([]);
+  const [types, setTypes] = useState([]);
 
   useEffect(() => {
     axios
@@ -22,6 +25,22 @@ function App() {
     axios
       .get("http://localhost:8081/chapters/get")
       .then((res) => setChapters(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8081/words/get", {
+        params: { WordTypeId: 2 },
+      })
+      .then((res) => setExpressions(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8081/types/get")
+      .then((res) => setTypes(res.data))
       .catch((err) => console.log(err));
   }, []);
 
@@ -40,6 +59,9 @@ function App() {
           </li>
           <li>
             <Link to="/word_guess">Word Guess</Link>
+          </li>
+          <li>
+            <Link to="/expressions">Expressions</Link>
           </li>
         </ul>
       </nav>
@@ -63,6 +85,7 @@ function App() {
                 setWords={setWords}
                 chapters={chapters}
                 setChapters={setChapters}
+                types={types}
               />
             }
           />
@@ -71,6 +94,15 @@ function App() {
             element={<WordListHidden words={words} chapters={chapters} />}
           />
           <Route path="/word_guess" element={<WordGuess words={words} />} />
+          <Route
+            path="/expressions"
+            element={
+              <Expressions
+                expressions={expressions}
+                setExpressions={setExpressions}
+              />
+            }
+          />
         </Routes>
       </div>
     </Router>

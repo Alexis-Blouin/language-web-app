@@ -4,6 +4,9 @@ const db = require("../db");
 
 router.get("/get", async (req, res) => {
   try {
+    // .query here since it's get and not post
+    const WordTypeId = req.query.WordTypeId ?? 1;
+
     const sql = `select 
       w.WordID,
       w.Hanzi,
@@ -17,6 +20,7 @@ router.get("/get", async (req, res) => {
     join wordtranslations wt on w.WordID = wt.WordID
     join translations t on wt.TranslationID = t.TranslationID
     join chapters c on c.ChapterID = w.chapterID
+    where w.TypeID = ${WordTypeId}
     order by c.ChapterID, w.WordID;`;
     const [rows] = await db.query(sql);
     res.json(rows);

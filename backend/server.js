@@ -31,10 +31,12 @@ app.get("/", (req, res) => {
 // import routes
 const wordsRoutes = require("./routes/words");
 const chaptersRoutes = require("./routes/chapters");
+const typesRoutes = require("./routes/types");
 
 // use routes
 app.use("/words", wordsRoutes);
 app.use("/chapters", chaptersRoutes);
+app.use("/types", typesRoutes);
 
 // Start the server and listen on port 8081
 app.listen(8081, () => {

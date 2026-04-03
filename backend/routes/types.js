@@ -5,7 +5,7 @@ const db = require("../db");
 router.get("/get", async (req, res) => {
   try {
     const [rows] = await db.query(
-      `select ChapterID, ChapterName from chapters order by ChapterName`,
+      `select TypeID, TypeName from wordtypes order by TypeID`,
     );
     res.json(rows);
   } catch (err) {
@@ -16,11 +16,11 @@ router.get("/get", async (req, res) => {
 
 router.post("/add", async (req, res) => {
   try {
-    const [chaptersResult] = await db.query(
-      `insert into chapters (ChapterName) values (?)`,
-      [req.body.ChapterName],
+    const [typesResult] = await db.query(
+      `insert into wordtypes (TypeName) values (?)`,
+      [req.body.TypeName],
     );
-    res.json(chaptersResult.insertId);
+    res.json(typesResult.insertId);
   } catch (err) {
     console.error(err);
     res.status(500).json(err);

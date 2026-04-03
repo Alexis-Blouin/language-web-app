@@ -11,9 +11,12 @@ CREATE TABLE `words` (
     `Hanzi` varchar(50) DEFAULT NULL,
     `Pinyin` varchar(255) DEFAULT NULL,
     `ChapterID` int DEFAULT NULL,
+    `TypeID` int NOT NULL,
     PRIMARY KEY (`WordID`),
     UNIQUE KEY `Hanzi` (`Hanzi`,`Pinyin`,`ChapterID`),
     KEY `ChapterID` (`ChapterID`),
+    KEY `fk_type` (`TypeID`),
+    CONSTRAINT `fk_type` FOREIGN KEY (`TypeID`) REFERENCES `wordtypes` (`TypeID`),
     CONSTRAINT `words_ibfk_1` FOREIGN KEY (`ChapterID`) REFERENCES `chapters` (`ChapterID`)
 )
 
@@ -33,4 +36,11 @@ CREATE TABLE `wordtranslations` (
     KEY `fk_translation` (`TranslationID`),
     CONSTRAINT `fk_translation` FOREIGN KEY (`TranslationID`) REFERENCES `translations` (`TranslationID`),
     CONSTRAINT `fk_word` FOREIGN KEY (`WordID`) REFERENCES `words` (`WordID`)
+)
+
+CREATE TABLE `wordtypes` (
+    `TypeID` int NOT NULL AUTO_INCREMENT,
+    `TypeName` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`TypeID`),
+    UNIQUE KEY `TypeName` (`TypeName`)
 )

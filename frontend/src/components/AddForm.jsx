@@ -4,7 +4,7 @@ import toast from "react-simple-toasts";
 import ChapterSelect from "./ChapterSelect";
 import axios from "axios";
 
-function AddForm({ words, setWords, chapters, setChapters }) {
+function AddForm({ words, setWords, chapters, setChapters, types }) {
   const [hanzi, setHanzi] = React.useState();
   const [pinyinVal, setPinyinVal] = React.useState();
   const [translation, setTranslation] = React.useState();
@@ -158,6 +158,18 @@ function AddForm({ words, setWords, chapters, setChapters }) {
           newChapter={true}
         />
       </label>
+      {types.map((type, index) => (
+        <label htmlFor={type.TypeID}>
+          {type.TypeName}
+          <input
+            type="radio"
+            name="type"
+            id={type.TypeID}
+            value={type.TypeID}
+            //checked={type.TypeID === 1} // TODO check default chapter 1
+          />
+        </label>
+      ))}
       <button id="addButton">Add</button>
     </form>
   );
