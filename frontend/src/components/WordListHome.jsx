@@ -89,18 +89,17 @@ function Item({ word, words, setWords, chapters }) {
     event.preventDefault();
 
     const hanzi = event.target.hanzi.value;
+    const pinyinInput = event.target.pinyin.value;
     // If the pinyin value was edited, we take this one, else, we get the pinyin with pinyin-pro
     const pinyinVal =
-      (event.target.pinyin.value === word.pinyin && hanzi !== word.hanzi) ||
-      event.target.pinyin.value === ""
+      (pinyinInput === word.Pinyin && hanzi !== word.Hanzi) ||
+      pinyinInput === ""
         ? pinyin(hanzi)
-        : event.target.pinyin.value;
+        : pinyinInput;
     const translation = event.target.translation.value;
-    console.log(chapters);
     const chapterName = chapters.filter(
       (chapter) => chapter.ChapterId === parseInt(editChapter),
     )[0].ChapterName;
-    console.log(chapterName);
 
     const res = await axios.patch("http://localhost:8081/words/modify", {
       wordId: word.WordId,
@@ -110,6 +109,7 @@ function Item({ word, words, setWords, chapters }) {
       newChapterId: editChapter,
       newTranslation: translation,
       wordTranslationId: word.WordTranslationId,
+      typeId: word.TypeId,
     });
 
     setWords((prevWords) =>

@@ -11,6 +11,7 @@ router.get("/get", async (req, res) => {
       w.WordId,
       w.Hanzi,
       w.Pinyin,
+      w.TypeId,
       t.TranslationId,
       t.Translation,
       c.ChapterId,
@@ -136,9 +137,15 @@ router.patch("/modify", async (req, res) => {
       newChapterId,
       newTranslation,
       wordTranslationId,
+      typeId,
     } = req.body;
     // Check if new word/translation exists
-    const wordSelect = await selectOneWord(newHanzi, newPinyin, newChapterId);
+    const wordSelect = await selectOneWord(
+      newHanzi,
+      newPinyin,
+      newChapterId,
+      typeId,
+    );
     let newWordId;
     const translationSelect = await selectOneTranslation(newTranslation);
     let newTranslationId;
@@ -146,9 +153,9 @@ router.patch("/modify", async (req, res) => {
     // Creates a new word and/or translation if they don't exist
     if (wordSelect === null) {
       const [result] = await db.query(
-        `insert into words (Hanzi, Pinyin, ChapterId)
-      values (?, ?, ?)`,
-        [newHanzi, newPinyin, newChapterId],
+        `insert into words (Hanzi, Pinyin, ChapterId, TypeId)
+      values (?, ?, ?, ?)`,
+        [newHanzi, newPinyin, newChapterId, typeId],
       );
       newWordId = result.insertId;
     } else {
@@ -201,12 +208,12 @@ router.patch("/modify", async (req, res) => {
 
 module.exports = router;
 
-async function selectOneWord(hanzi, pinyin, chapterId) {
+async function selectOneWord(hanzi, pinyin, chapterId, typeId) {
   try {
     const [result] = await db.query(
       `select WordId from words
-      where Hanzi = ? AND Pinyin = ? AND ChapterId = ?`,
-      [hanzi, pinyin, chapterId],
+      where Hanzi = ? AND Pinyin = ? AND ChapterId = ? AND TypeId = ?`,
+      [hanzi, pinyin, chapterId, typeId],
     );
     return result.length > 0 ? result[0] : null;
   } catch (err) {
