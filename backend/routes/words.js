@@ -32,15 +32,15 @@ router.get("/get", async (req, res) => {
 
 router.post("/add", async (req, res) => {
   try {
-    const { Hanzi, Pinyin, ChapterID, Translation } = req.body;
+    const { Hanzi, Pinyin, ChapterID, Translation, TypeID } = req.body;
 
     await db.beginTransaction();
 
     // Verify that the word we currently are adding does not already exists in the same chapter
     const [wordSearchResult] = await db.query(
       `select WordID from words
-      where Hanzi = ? AND ChapterID = ?`,
-      [Hanzi, ChapterID],
+      where Hanzi = ? AND ChapterID = ? AND TypeID = ?`,
+      [Hanzi, ChapterID, TypeID],
     );
 
     let wordId;
@@ -49,9 +49,9 @@ router.post("/add", async (req, res) => {
       wordId = wordSearchResult[0].WordID;
     } else {
       const [wordResult] = await db.query(
-        `insert into words (Hanzi, Pinyin, ChapterID)
-      values (?, ?, ?);`,
-        [Hanzi, Pinyin, ChapterID],
+        `insert into words (Hanzi, Pinyin, ChapterID, TypeID)
+      values (?, ?, ?, ?);`,
+        [Hanzi, Pinyin, ChapterID, TypeID],
       );
 
       wordId = wordResult.insertId;

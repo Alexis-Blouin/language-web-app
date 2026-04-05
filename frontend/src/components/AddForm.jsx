@@ -10,6 +10,7 @@ function AddForm({ words, setWords, chapters, setChapters, types }) {
   const [translation, setTranslation] = React.useState();
   const [chapter, setChapter] = React.useState(1); // Default value is 1
   const [newChapter, setNewChapter] = React.useState();
+  const [typeVal, setTypeVal] = React.useState(1); // Default value is 1
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -55,6 +56,7 @@ function AddForm({ words, setWords, chapters, setChapters, types }) {
               : pinyinVal,
           ChapterID: chapterId,
           Translation: tr,
+          TypeID: typeVal,
         });
         const wordId = res.data.wordId;
         const translationId = res.data.translationId;
@@ -70,6 +72,7 @@ function AddForm({ words, setWords, chapters, setChapters, types }) {
           Translation: tr,
           ChapterID: parseInt(chapterId),
           ChapterName: chapterName,
+          TypeID: typeVal,
         };
         setWords((prevWords) => [...prevWords, newWordEntry]);
       }
@@ -171,7 +174,8 @@ function AddForm({ words, setWords, chapters, setChapters, types }) {
             name="type"
             id={type.TypeID}
             value={type.TypeID}
-            //checked={type.TypeID === 1} // TODO check default chapter 1
+            checked={typeVal === type.TypeID} // TODO check default chapter 1
+            onClick={() => setTypeVal(type.TypeID)}
           />
         </label>
       ))}
