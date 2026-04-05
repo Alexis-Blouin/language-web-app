@@ -5,7 +5,7 @@ const db = require("../db");
 router.get("/get", async (req, res) => {
   try {
     const [rows] = await db.query(
-      `select TypeID, TypeName from wordtypes order by TypeID`,
+      `select TypeId, TypeName from wordtypes order by TypeId`,
     );
     res.json(rows);
   } catch (err) {

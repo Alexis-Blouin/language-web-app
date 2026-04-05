@@ -22,7 +22,7 @@ function AddForm({ words, setWords, chapters, setChapters, types }) {
     let chapterId = chapter;
     // TODO this is a bit hacky, maybe change the chapter select to return the chapter name instead of id, or both and use the name for the toast and the id for the db query
     let chapterName = chapters.filter(
-      (chap) => chap.ChapterID === parseInt(chapter),
+      (chap) => chap.ChapterId === parseInt(chapter),
     )[0]?.ChapterName;
     try {
       if (chapter === "new-chapter") {
@@ -33,7 +33,7 @@ function AddForm({ words, setWords, chapters, setChapters, types }) {
         chapterName = newChapter;
 
         const newChapterEntry = {
-          ChapterID: parseInt(chapterId),
+          ChapterId: parseInt(chapterId),
           ChapterName: newChapter,
         };
         setChapters((prevChapters) => [...prevChapters, newChapterEntry]);
@@ -54,25 +54,25 @@ function AddForm({ words, setWords, chapters, setChapters, types }) {
             pinyinVal === "" || pinyinVal === undefined
               ? pinyin(hanzi)
               : pinyinVal,
-          ChapterID: chapterId,
+          ChapterId: chapterId,
           Translation: tr,
-          TypeID: typeVal,
+          TypeId: typeVal,
         });
         const wordId = res.data.wordId;
         const translationId = res.data.translationId;
         // TODO the word can't properly be deleted from the table without a page reload (deletes from page, but not db)
         const newWordEntry = {
-          WordID: wordId,
+          WordId: wordId,
           Hanzi: hanzi,
           Pinyin:
             pinyinVal === "" || pinyinVal === undefined
               ? pinyin(hanzi)
               : pinyinVal,
-          TranslationID: translationId,
+          TranslationId: translationId,
           Translation: tr,
-          ChapterID: parseInt(chapterId),
+          ChapterId: parseInt(chapterId),
           ChapterName: chapterName,
-          TypeID: typeVal,
+          TypeId: typeVal,
         };
         setWords((prevWords) => [...prevWords, newWordEntry]);
       }
@@ -167,15 +167,15 @@ function AddForm({ words, setWords, chapters, setChapters, types }) {
         />
       </label>
       {types.map((type, index) => (
-        <label htmlFor={type.TypeID}>
+        <label htmlFor={type.TypeId}>
           {type.TypeName}
           <input
             type="radio"
             name="type"
-            id={type.TypeID}
-            value={type.TypeID}
-            checked={typeVal === type.TypeID} // TODO check default chapter 1
-            onClick={() => setTypeVal(type.TypeID)}
+            id={type.TypeId}
+            value={type.TypeId}
+            checked={typeVal === type.TypeId} // TODO check default chapter 1
+            onClick={() => setTypeVal(type.TypeId)}
           />
         </label>
       ))}

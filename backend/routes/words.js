@@ -8,20 +8,20 @@ router.get("/get", async (req, res) => {
     const WordTypeId = req.query.WordTypeId ?? 1;
 
     const sql = `select 
-      w.WordID,
+      w.WordId,
       w.Hanzi,
       w.Pinyin,
-      t.TranslationID,
+      t.TranslationId,
       t.Translation,
-      c.ChapterID,
+      c.ChapterId,
       c.ChapterName,
-      wt.WordTranslationID
+      wt.WordTranslationId
     from words w
-    join wordtranslations wt on w.WordID = wt.WordID
-    join translations t on wt.TranslationID = t.TranslationID
-    join chapters c on c.ChapterID = w.chapterID
-    where w.TypeID = ${WordTypeId}
-    order by c.ChapterID, w.WordID;`;
+    join wordtranslations wt on w.WordId = wt.WordId
+    join translations t on wt.TranslationId = t.TranslationId
+    join chapters c on c.ChapterId = w.chapterId
+    where w.TypeId = ${WordTypeId}
+    order by c.ChapterId, w.WordId;`;
     const [rows] = await db.query(sql);
     res.json(rows);
   } catch (err) {
@@ -32,26 +32,26 @@ router.get("/get", async (req, res) => {
 
 router.post("/add", async (req, res) => {
   try {
-    const { Hanzi, Pinyin, ChapterID, Translation, TypeID } = req.body;
+    const { Hanzi, Pinyin, ChapterId, Translation, TypeId } = req.body;
 
     await db.beginTransaction();
 
     // Verify that the word we currently are adding does not already exists in the same chapter
     const [wordSearchResult] = await db.query(
-      `select WordID from words
-      where Hanzi = ? AND ChapterID = ? AND TypeID = ?`,
-      [Hanzi, ChapterID, TypeID],
+      `select WordId from words
+      where Hanzi = ? AND ChapterId = ? AND TypeId = ?`,
+      [Hanzi, ChapterId, TypeId],
     );
 
     let wordId;
 
     if (wordSearchResult.length > 0) {
-      wordId = wordSearchResult[0].WordID;
+      wordId = wordSearchResult[0].WordId;
     } else {
       const [wordResult] = await db.query(
-        `insert into words (Hanzi, Pinyin, ChapterID, TypeID)
+        `insert into words (Hanzi, Pinyin, ChapterId, TypeId)
       values (?, ?, ?, ?);`,
-        [Hanzi, Pinyin, ChapterID, TypeID],
+        [Hanzi, Pinyin, ChapterId, TypeId],
       );
 
       wordId = wordResult.insertId;
@@ -59,7 +59,7 @@ router.post("/add", async (req, res) => {
 
     // Verify that the translation we currently are adding does not already exists
     const [translationSearchResult] = await db.query(
-      `select TranslationID from translations
+      `select TranslationId from translations
       where Translation = ?`,
       [Translation],
     );
@@ -67,7 +67,7 @@ router.post("/add", async (req, res) => {
     let translationId;
 
     if (translationSearchResult.length > 0) {
-      translationId = translationSearchResult[0].TranslationID;
+      translationId = translationSearchResult[0].TranslationId;
     } else {
       const [translationResult] = await db.query(
         `insert into translations (Translation)
@@ -79,7 +79,7 @@ router.post("/add", async (req, res) => {
 
     // Inserts the key pair for the word and it's translation
     await db.query(
-      `INSERT INTO wordtranslations (WordID, TranslationID)
+      `INSERT INTO wordtranslations (WordId, TranslationId)
       VALUES (?, ?)`,
       [wordId, translationId],
     );
@@ -100,22 +100,22 @@ router.post("/add", async (req, res) => {
 router.delete("/delete", async (req, res) => {
   try {
     // .query here since it's delete and not post
-    const WordID = req.query.WordID;
-    const TranslationID = req.query.TranslationID;
+    const WordId = req.query.WordId;
+    const TranslationId = req.query.TranslationId;
 
     await db.beginTransaction();
 
     // Delete the pair
     await db.query(
       `DELETE FROM wordtranslations 
-      WHERE WordID = ? AND TranslationID = ?`,
-      [WordID, TranslationID],
+      WHERE WordId = ? AND TranslationId = ?`,
+      [WordId, TranslationId],
     );
 
     // Possibly delete the word
-    await maybeDeleteWord(WordID);
+    await maybeDeleteWord(WordId);
     // Possibly delete the translation
-    await maybeDeleteTranslation(TranslationID);
+    await maybeDeleteTranslation(TranslationId);
 
     await db.commit();
 
@@ -146,13 +146,13 @@ router.patch("/modify", async (req, res) => {
     // Creates a new word and/or translation if they don't exist
     if (wordSelect === null) {
       const [result] = await db.query(
-        `insert into words (Hanzi, Pinyin, ChapterID)
+        `insert into words (Hanzi, Pinyin, ChapterId)
       values (?, ?, ?)`,
         [newHanzi, newPinyin, newChapterId],
       );
       newWordId = result.insertId;
     } else {
-      newWordId = wordSelect.WordID;
+      newWordId = wordSelect.WordId;
     }
     if (translationSelect === null) {
       [result] = await db.query(
@@ -162,14 +162,14 @@ router.patch("/modify", async (req, res) => {
       );
       newTranslationId = result.insertId;
     } else {
-      newTranslationId = translationSelect.TranslationID;
+      newTranslationId = translationSelect.TranslationId;
     }
     // Update the link table with new Ids
     if (wordId !== newWordId) {
       await db.query(
         `update wordtranslations
-      set WordID = ?
-      where WordTranslationID = ?`,
+      set WordId = ?
+      where WordTranslationId = ?`,
         [newWordId, wordTranslationId],
       );
       // Check to maybe delete the word
@@ -178,8 +178,8 @@ router.patch("/modify", async (req, res) => {
     if (translationId !== newTranslationId) {
       await db.query(
         `update wordtranslations
-      set TranslationID = ?
-      where WordTranslationID = ?`,
+      set TranslationId = ?
+      where WordTranslationId = ?`,
         [newTranslationId, wordTranslationId],
       );
       // Check to maybe delete the translation
@@ -204,8 +204,8 @@ module.exports = router;
 async function selectOneWord(hanzi, pinyin, chapterId) {
   try {
     const [result] = await db.query(
-      `select WordID from words
-      where Hanzi = ? AND Pinyin = ? AND ChapterID = ?`,
+      `select WordId from words
+      where Hanzi = ? AND Pinyin = ? AND ChapterId = ?`,
       [hanzi, pinyin, chapterId],
     );
     return result.length > 0 ? result[0] : null;
@@ -218,7 +218,7 @@ async function selectOneWord(hanzi, pinyin, chapterId) {
 async function selectOneTranslation(translation) {
   try {
     const [result] = await db.query(
-      `select TranslationID from translations
+      `select TranslationId from translations
       where Translation = ?`,
       [translation],
     );
@@ -233,9 +233,9 @@ async function maybeDeleteWord(wordId) {
   try {
     await db.query(
       `DELETE FROM words 
-      WHERE WordID = ?
+      WHERE WordId = ?
       AND NOT EXISTS (
-        SELECT 1 FROM wordtranslations WHERE WordID = ?
+        SELECT 1 FROM wordtranslations WHERE WordId = ?
       );`,
       [wordId, wordId],
     );
@@ -249,9 +249,9 @@ async function maybeDeleteTranslation(translationId) {
   try {
     await db.query(
       `DELETE FROM translations 
-      WHERE TranslationID = ?
+      WHERE TranslationId = ?
       AND NOT EXISTS (
-        SELECT 1 FROM wordtranslations WHERE TranslationID = ?
+        SELECT 1 FROM wordtranslations WHERE TranslationId = ?
       );`,
       [translationId, translationId],
     );

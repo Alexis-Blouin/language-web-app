@@ -33,7 +33,7 @@ function ExpressionsList({ expressions, setExpressions }) {
                 (expression) =>
                   chapter === "all" ||
                   (chapter === "no-chapter" && "" === expression.Chapter) ||
-                  parseInt(chapter) === expression.ChapterID,
+                  parseInt(chapter) === expression.ChapterId,
               )
               .map((expression, index) => (
                 <Item
@@ -65,16 +65,16 @@ function Item({ expression, expressions, setExpressions, chapters }) {
     await axios.delete("http://localhost:8081/words/delete", {
       // params here since it's delete and not post
       params: {
-        ExpressionID: expression.ExpressionID,
-        TranslationID: expression.TranslationID,
+        ExpressionId: expression.ExpressionId,
+        TranslationId: expression.TranslationId,
       },
     });
     // Updates the visible data
     setExpressions((prevExpressions) =>
       prevExpressions.filter(
         (anExpression) =>
-          anExpression.ExpressionID !== expression.ExpressionID &&
-          anExpression.TranslationID !== expression.TranslationID,
+          anExpression.ExpressionId !== expression.ExpressionId &&
+          anExpression.TranslationId !== expression.TranslationId,
       ),
     );
   };
@@ -99,31 +99,31 @@ function Item({ expression, expressions, setExpressions, chapters }) {
     const translation = event.target.translation.value;
     // console.log(chapters);
     // const chapterName = chapters.filter(
-    //   (chapter) => chapter.ChapterID === parseInt(editChapter),
+    //   (chapter) => chapter.ChapterId === parseInt(editChapter),
     // )[0].ChapterName;
     // console.log(chapterName);
 
     const res = await axios.patch("http://localhost:8081/words/modify", {
-      expressionId: expression.ExpressionID,
-      translationId: expression.TranslationID,
+      expressionId: expression.ExpressionId,
+      translationId: expression.TranslationId,
       newHanzi: hanzi,
       newPinyin: pinyinVal,
       // newChapterId: editChapter,
       newTranslation: translation,
-      expressionTranslationId: expression.ExpressionTranslationID,
+      expressionTranslationId: expression.ExpressionTranslationId,
     });
 
     setExpressions((prevExpressions) =>
       prevExpressions.map((anExpression) =>
-        anExpression.ExpressionID === expression.ExpressionID
+        anExpression.ExpressionId === expression.ExpressionId
           ? {
               ...anExpression,
-              ExpressionID: res.data.expressionId,
+              ExpressionId: res.data.expressionId,
               Hanzi: hanzi,
               Pinyin: pinyinVal,
-              TranslationID: res.data.translationId,
+              TranslationId: res.data.translationId,
               Translation: translation,
-              // ChapterID: editChapter,
+              // ChapterId: editChapter,
               // ChapterName: chapterName,
             }
           : anExpression,
@@ -148,7 +148,7 @@ function Item({ expression, expressions, setExpressions, chapters }) {
         <>
           <td>
             <input
-              form={expression.ExpressionID + "-" + expression.TranslationID}
+              form={expression.ExpressionId + "-" + expression.TranslationId}
               type="text"
               name="hanzi"
               id="hanzi"
@@ -157,7 +157,7 @@ function Item({ expression, expressions, setExpressions, chapters }) {
           </td>
           <td>
             <input
-              form={expression.ExpressionID + "-" + expression.TranslationID}
+              form={expression.ExpressionId + "-" + expression.TranslationId}
               type="text"
               name="pinyin"
               id="pinyin"
@@ -166,7 +166,7 @@ function Item({ expression, expressions, setExpressions, chapters }) {
           </td>
           <td>
             <input
-              form={expression.ExpressionID + "-" + expression.TranslationID}
+              form={expression.ExpressionId + "-" + expression.TranslationId}
               type="text"
               name="translation"
               id="translation"
@@ -183,7 +183,7 @@ function Item({ expression, expressions, setExpressions, chapters }) {
           </td> */}
           <td className="options">
             <form
-              id={expression.ExpressionID + "-" + expression.TranslationID}
+              id={expression.ExpressionId + "-" + expression.TranslationId}
               onSubmit={editSubmit}
             >
               <button className="icon-button" type="submit">

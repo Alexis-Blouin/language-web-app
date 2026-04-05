@@ -34,7 +34,7 @@ function WordList({ words, setWords, chapters }) {
                 (word) =>
                   chapter === "all" ||
                   (chapter === "no-chapter" && "" === word.Chapter) ||
-                  parseInt(chapter) === word.ChapterID,
+                  parseInt(chapter) === word.ChapterId,
               )
               .map((word, index) => (
                 <Item
@@ -65,15 +65,15 @@ function Item({ word, words, setWords, chapters }) {
     // TODO receive success or fail to update or not the data and show a toast
     await axios.delete("http://localhost:8081/words/delete", {
       // params here since it's delete and not post
-      params: { WordID: word.WordID, TranslationID: word.TranslationID },
+      params: { WordId: word.WordId, TranslationId: word.TranslationId },
     });
     // Updates the visible data
     setWords((prevWords) =>
       prevWords.filter(
         (aWord) =>
           !(
-            aWord.WordID === word.WordID &&
-            aWord.TranslationID === word.TranslationID
+            aWord.WordId === word.WordId &&
+            aWord.TranslationId === word.TranslationId
           ),
       ),
     );
@@ -98,31 +98,31 @@ function Item({ word, words, setWords, chapters }) {
     const translation = event.target.translation.value;
     console.log(chapters);
     const chapterName = chapters.filter(
-      (chapter) => chapter.ChapterID === parseInt(editChapter),
+      (chapter) => chapter.ChapterId === parseInt(editChapter),
     )[0].ChapterName;
     console.log(chapterName);
 
     const res = await axios.patch("http://localhost:8081/words/modify", {
-      wordId: word.WordID,
-      translationId: word.TranslationID,
+      wordId: word.WordId,
+      translationId: word.TranslationId,
       newHanzi: hanzi,
       newPinyin: pinyinVal,
       newChapterId: editChapter,
       newTranslation: translation,
-      wordTranslationId: word.WordTranslationID,
+      wordTranslationId: word.WordTranslationId,
     });
 
     setWords((prevWords) =>
       prevWords.map((aWord) =>
-        aWord.WordID === word.WordID
+        aWord.WordId === word.WordId
           ? {
               ...aWord,
-              WordID: res.data.wordId,
+              WordId: res.data.wordId,
               Hanzi: hanzi,
               Pinyin: pinyinVal,
-              TranslationID: res.data.translationId,
+              TranslationId: res.data.translationId,
               Translation: translation,
-              ChapterID: editChapter,
+              ChapterId: editChapter,
               ChapterName: chapterName,
             }
           : aWord,
@@ -147,7 +147,7 @@ function Item({ word, words, setWords, chapters }) {
         <>
           <td>
             <input
-              form={word.WordID + "-" + word.TranslationID}
+              form={word.WordId + "-" + word.TranslationId}
               type="text"
               name="hanzi"
               id="hanzi"
@@ -156,7 +156,7 @@ function Item({ word, words, setWords, chapters }) {
           </td>
           <td>
             <input
-              form={word.WordID + "-" + word.TranslationID}
+              form={word.WordId + "-" + word.TranslationId}
               type="text"
               name="pinyin"
               id="pinyin"
@@ -165,7 +165,7 @@ function Item({ word, words, setWords, chapters }) {
           </td>
           <td>
             <input
-              form={word.WordID + "-" + word.TranslationID}
+              form={word.WordId + "-" + word.TranslationId}
               type="text"
               name="translation"
               id="translation"
@@ -182,7 +182,7 @@ function Item({ word, words, setWords, chapters }) {
           </td>
           <td className="options">
             <form
-              id={word.WordID + "-" + word.TranslationID}
+              id={word.WordId + "-" + word.TranslationId}
               onSubmit={editSubmit}
             >
               <button className="icon-button" type="submit">
