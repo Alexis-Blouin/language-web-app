@@ -19,12 +19,17 @@ function AddForm({ words, setWords, chapters, setChapters, types }) {
     }
 
     let chapterId = chapter;
+    // TODO this is a bit hacky, maybe change the chapter select to return the chapter name instead of id, or both and use the name for the toast and the id for the db query
+    let chapterName = chapters.filter(
+      (chap) => chap.ChapterID === parseInt(chapter),
+    )[0]?.ChapterName;
     try {
       if (chapter === "new-chapter") {
         const res = await axios.post("http://localhost:8081/chapters/add", {
           ChapterName: newChapter,
         });
         chapterId = res.data;
+        chapterName = newChapter;
 
         const newChapterEntry = {
           ChapterID: parseInt(chapterId),
@@ -64,7 +69,7 @@ function AddForm({ words, setWords, chapters, setChapters, types }) {
           TranslationID: translationId,
           Translation: tr,
           ChapterID: parseInt(chapterId),
-          ChapterName: chapter === "new-chapter" ? newChapter : chapter,
+          ChapterName: chapterName,
         };
         setWords((prevWords) => [...prevWords, newWordEntry]);
       }
