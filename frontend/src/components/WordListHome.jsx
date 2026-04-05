@@ -97,8 +97,9 @@ function Item({ word, words, setWords, chapters }) {
         ? pinyin(hanzi)
         : pinyinInput;
     const translation = event.target.translation.value;
+    const chapterId = parseInt(editChapter);
     const chapterName = chapters.filter(
-      (chapter) => chapter.ChapterId === parseInt(editChapter),
+      (chapter) => chapter.ChapterId === chapterId,
     )[0].ChapterName;
 
     const res = await axios.patch("http://localhost:8081/words/modify", {
@@ -106,7 +107,7 @@ function Item({ word, words, setWords, chapters }) {
       translationId: word.TranslationId,
       newHanzi: hanzi,
       newPinyin: pinyinVal,
-      newChapterId: editChapter,
+      newChapterId: chapterId,
       newTranslation: translation,
       wordTranslationId: word.WordTranslationId,
       typeId: word.TypeId,
@@ -122,7 +123,7 @@ function Item({ word, words, setWords, chapters }) {
               Pinyin: pinyinVal,
               TranslationId: res.data.translationId,
               Translation: translation,
-              ChapterId: editChapter,
+              ChapterId: chapterId,
               ChapterName: chapterName,
             }
           : aWord,
