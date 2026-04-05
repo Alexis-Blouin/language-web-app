@@ -62,7 +62,7 @@ function AddForm({ words, setWords, chapters, setChapters, types }) {
         const translationId = res.data.translationId;
         // TODO the word can't properly be deleted from the table without a page reload (deletes from page, but not db)
         const newWordEntry = {
-          WordId: wordId,
+          WordID: wordId,
           Hanzi: hanzi,
           Pinyin:
             pinyinVal === "" || pinyinVal === undefined

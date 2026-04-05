@@ -71,8 +71,10 @@ function Item({ word, words, setWords, chapters }) {
     setWords((prevWords) =>
       prevWords.filter(
         (aWord) =>
-          aWord.WordID !== word.WordID &&
-          aWord.TranslationID !== word.TranslationID,
+          !(
+            aWord.WordID === word.WordID &&
+            aWord.TranslationID === word.TranslationID
+          ),
       ),
     );
   };
