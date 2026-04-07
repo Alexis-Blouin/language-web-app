@@ -113,6 +113,7 @@ function Item({ word, words, setWords, chapters }) {
       typeId: word.TypeId,
     });
 
+    // TODO update word Id and translation Id since if re-creating a word it won't allow to delete after
     setWords((prevWords) =>
       prevWords.map((aWord) =>
         aWord.WordId === word.WordId

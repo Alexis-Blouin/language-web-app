@@ -72,8 +72,8 @@ function WordListHidden({ words, chapters }) {
               .filter(
                 (word) =>
                   chapter === "all" ||
-                  (chapter === "no-chapter" && "" === word.chapter) ||
-                  parseInt(chapter) === word.chapter,
+                  (chapter === "no-chapter" && "" === word.Chapter) ||
+                  parseInt(chapter) === word.ChapterId,
               )
               .map((word, index) => (
                 <Item word={word} hiddenColumns={hiddenColumns} />
