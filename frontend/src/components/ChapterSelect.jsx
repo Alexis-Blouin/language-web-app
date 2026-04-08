@@ -25,7 +25,6 @@ function ChapterSelect({
         </option>
       ))}
 
-      {noChapter && <option value="no-chapter">No Chapter</option>}
       {newChapter && <option value="new-chapter">New Chapter</option>}
     </select>
   );

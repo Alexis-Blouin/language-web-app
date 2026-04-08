@@ -4,7 +4,7 @@ import toast from "react-simple-toasts";
 import ChapterSelect from "./ChapterSelect";
 import axios from "axios";
 
-function AddForm({ words, setWords, chapters, setChapters, types }) {
+function AddForm({ setWords, setExpressions, chapters, setChapters, types }) {
   const [hanzi, setHanzi] = React.useState();
   const [pinyinVal, setPinyinVal] = React.useState();
   const [translation, setTranslation] = React.useState();
@@ -74,7 +74,15 @@ function AddForm({ words, setWords, chapters, setChapters, types }) {
           ChapterName: chapterName,
           TypeId: typeVal,
         };
-        setWords((prevWords) => [...prevWords, newWordEntry]);
+        // Adds the new word/expression to the proper list depending on the type
+        if (typeVal === 1) {
+          setWords((prevWords) => [...prevWords, newWordEntry]);
+        } else {
+          setExpressions((prevExpressions) => [
+            ...prevExpressions,
+            newWordEntry,
+          ]);
+        }
       }
     } catch (err) {
       console.error(err);

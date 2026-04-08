@@ -7,16 +7,16 @@ import confirmation_icon from "../assets/images/confirmation.png";
 import ChapterSelect from "./ChapterSelect";
 import axios from "axios";
 
-function ExpressionsList({ expressions, setExpressions }) {
+function ExpressionsList({ expressions, setExpressions, chapters }) {
   const [chapter, setChapter] = React.useState("all");
 
   return (
     <>
-      {/* <ChapterSelect
+      <ChapterSelect
         chapters={chapters}
         defaultChapter={chapter}
         setChapter={setChapter}
-      /> */}
+      />
       <table className="expressionsList">
         <thead>
           <tr>
@@ -40,7 +40,7 @@ function ExpressionsList({ expressions, setExpressions }) {
                   expression={expression}
                   expressions={expressions}
                   setExpressions={setExpressions}
-                  // chapters={chapters}
+                  chapters={chapters}
                 />
               ))
           ) : (

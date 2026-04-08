@@ -81,8 +81,8 @@ function App() {
             path="/add_words"
             element={
               <AddForm
-                words={words}
                 setWords={setWords}
+                setExpressions={setExpressions}
                 chapters={chapters}
                 setChapters={setChapters}
                 types={types}
@@ -100,6 +100,7 @@ function App() {
               <Expressions
                 expressions={expressions}
                 setExpressions={setExpressions}
+                chapters={chapters}
               />
             }
           />
