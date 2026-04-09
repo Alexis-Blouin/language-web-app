@@ -3,13 +3,18 @@ import React from "react";
 import toast from "react-simple-toasts";
 import ChapterSelect from "./ChapterSelect";
 import axios from "axios";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormLabel from "@mui/material/FormLabel";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 function AddForm({ setWords, setExpressions, chapters, setChapters, types }) {
-  const [hanzi, setHanzi] = React.useState();
-  const [pinyinVal, setPinyinVal] = React.useState();
-  const [translation, setTranslation] = React.useState();
+  const [hanzi, setHanzi] = React.useState("");
+  const [pinyinVal, setPinyinVal] = React.useState("");
+  const [translation, setTranslation] = React.useState("");
   const [chapter, setChapter] = React.useState(1); // Default value is 1
-  const [newChapter, setNewChapter] = React.useState();
+  const [newChapter, setNewChapter] = React.useState("");
   const [typeVal, setTypeVal] = React.useState(1); // Default value is 1
 
   const handleSubmit = async (event) => {
@@ -117,77 +122,77 @@ function AddForm({ setWords, setExpressions, chapters, setChapters, types }) {
 
   return (
     <form id="addForm" onSubmit={handleSubmit}>
-      <label htmlFor="hanzi">
-        Hanzi:
-        <input
-          type="text"
-          name="hanzi"
-          id="hanzi"
-          placeholder="你好"
-          value={hanzi}
-          onChange={handleHanziChange}
+      <TextField
+        required
+        id="hanzi"
+        name="hanzi"
+        label="Hanzi"
+        placeholder="你好"
+        value={hanzi}
+        onChange={handleHanziChange}
+      />
+      <TextField
+        id="pinyin"
+        name="pinyin"
+        label="Pinyin"
+        placeholder="nǐhǎo"
+        value={pinyinVal}
+        onChange={handlePinyinChange}
+      />
+      <TextField
+        required
+        id="translation"
+        name="translation"
+        label="Translation"
+        placeholder="Hello"
+        value={translation}
+        onChange={handleTranslationChange}
+      />
+      {chapter === "new-chapter" && (
+        <TextField
           required
+          id="new-chapter"
+          name="new-chapter"
+          label="New Chapter Name"
+          placeholder="1"
+          value={newChapter}
+          onChange={handleNewChapterChange}
         />
-      </label>
-      <label htmlFor="pinyin">
-        Pinyin:
-        <input
-          type="text"
-          name="pinyin"
-          id="pinyin"
-          placeholder="nǐhǎo"
-          value={pinyinVal}
-          onChange={handlePinyinChange}
-        />
-      </label>
-      <label htmlFor="translation">
-        Translation:
-        <input
-          type="text"
-          name="translation"
-          id="translation"
-          placeholder="Hello"
-          value={translation}
-          onChange={handleTranslationChange}
-          required
-        />
-      </label>
-      <label htmlFor="chapter">
-        Chapter:
-        {chapter === "new-chapter" && (
-          <input
-            type="text"
-            name="translation"
-            id="translation"
-            placeholder="1"
-            value={newChapter}
-            onChange={handleNewChapterChange}
-            required
-          />
-        )}
-        <ChapterSelect
-          chapters={chapters}
-          defaultChapter={chapter}
-          setChapter={setChapter}
-          id="chapter-add-form"
-          allChapters={false}
-          newChapter={true}
-        />
-      </label>
-      {types.map((type, index) => (
-        <label htmlFor={type.TypeId}>
-          {type.TypeName}
-          <input
-            type="radio"
-            name="type"
-            id={type.TypeId}
+      )}
+      <ChapterSelect
+        chapters={chapters}
+        defaultChapter={chapter}
+        setChapter={setChapter}
+        id="chapter-add-form"
+        allChapters={false}
+        newChapter={true}
+      />
+      <FormLabel id="type-radio-buttons-group-label">Type</FormLabel>
+      <RadioGroup
+        row
+        aria-labelledby="demo-row-radio-buttons-group-label"
+        name="row-radio-buttons-group"
+      >
+        {types.map((type, index) => (
+          <FormControlLabel
+            key={index}
             value={type.TypeId}
-            checked={typeVal === type.TypeId} // TODO check default chapter 1
-            onClick={() => setTypeVal(type.TypeId)}
+            control={
+              <input
+                type="radio"
+                name="type"
+                id={type.TypeId}
+                checked={typeVal === type.TypeId}
+                onClick={() => setTypeVal(type.TypeId)}
+              />
+            }
+            label={type.TypeName}
           />
-        </label>
-      ))}
-      <button id="addButton">Add</button>
+        ))}
+      </RadioGroup>
+      <Button variant="contained" color="primary" type="submit">
+        Add
+      </Button>
     </form>
   );
 }

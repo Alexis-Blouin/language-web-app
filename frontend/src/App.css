@@ -38,26 +38,23 @@ nav.header ul li a:hover {
 #addForm {
   margin: 20px;
   display: grid;
-  grid-template-columns: 120px 240px;
+  grid-template-columns: 240px 120px;
   row-gap: 0.75rem;
   column-gap: 1rem;
   align-items: center;
 }
 
-#addForm label {
-  display: contents;
-}
-
-#addForm input {
+#addForm > .MuiFormControl-root,
+#addForm > .MuiBox-root,
+#addForm > .MuiFormLabel-root,
+#addForm > .MuiFormGroup-root,
+#addForm > .MuiButtonBase-root {
   width: 100%;
+  grid-column: 1;
 }
 
-#addButton,
-#guessButton,
-#chapter-add-form {
+#addForm .secondColumn {
   grid-column: 2;
-  width: calc(100% + 8px);
-  margin: 0 auto;
 }
 
 /* WordLists */
