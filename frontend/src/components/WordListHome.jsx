@@ -5,10 +5,31 @@ import edit_icon from "../assets/images/edit.png";
 import cancel_icon from "../assets/images/cancel.png";
 import confirmation_icon from "../assets/images/confirmation.png";
 import ChapterSelect from "./ChapterSelect";
+import EditForm from "./EditForm";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 import axios from "axios";
 
 function WordList({ words, setWords, chapters }) {
   const [chapter, setChapter] = React.useState("all");
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [modalWord, setModalWord] = React.useState(null);
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
 
   return (
     <>
@@ -42,6 +63,8 @@ function WordList({ words, setWords, chapters }) {
                   words={words}
                   setWords={setWords}
                   chapters={chapters}
+                  handleOpen={handleOpen}
+                  setModalWord={setModalWord}
                 />
               ))
           ) : (
@@ -51,13 +74,29 @@ function WordList({ words, setWords, chapters }) {
           )}
         </tbody>
       </table>
+
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Text in a modal
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+          </Typography>
+        </Box>
+      </Modal>
     </>
   );
 }
 
 export default WordList;
 
-function Item({ word, words, setWords, chapters }) {
+function Item({ word, words, setWords, chapters, handleOpen, setModalWord }) {
   const [editing, setEditing] = React.useState(false);
   const [editChapter, setEditChapter] = React.useState(word.ChapterName);
 
@@ -203,7 +242,13 @@ function Item({ word, words, setWords, chapters }) {
           <td>{word.Translation}</td>
           <td>{word.ChapterName}</td>
           <td className="options">
-            <button className="icon-button" onClick={editEntry}>
+            <button
+              className="icon-button"
+              onClick={() => {
+                setModalWord(word);
+                handleOpen();
+              }}
+            >
               <img src={edit_icon} alt="Edit" />
             </button>
             <button className="icon-button" onClick={deleteEntry}>
