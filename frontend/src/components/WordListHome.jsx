@@ -12,6 +12,10 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 import axios from "axios";
 import Paper from "@mui/material/Paper";
 import TableCell from "@mui/material/TableCell";
@@ -124,8 +128,13 @@ export default WordList;
 function Item({ word, words, setWords, chapters, handleOpen, setModalWord }) {
   const [editing, setEditing] = React.useState(false);
   const [editChapter, setEditChapter] = React.useState(word.ChapterName);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
 
-  const deleteEntry = async () => {
+  const handleDeleteClick = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
     // TODO receive success or fail to update or not the data and show a toast
     await axios.delete("http://localhost:8081/words/delete", {
       // params here since it's delete and not post
@@ -141,6 +150,11 @@ function Item({ word, words, setWords, chapters, handleOpen, setModalWord }) {
           ),
       ),
     );
+    setDeleteDialogOpen(false);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
   };
 
   // TODO make edit word function
@@ -203,11 +217,6 @@ function Item({ word, words, setWords, chapters, handleOpen, setModalWord }) {
     setEditing(false);
   };
 
-  //<a href="https://www.flaticon.com/free-icons/edit" title="edit icons">Edit icons created by Pixel perfect - Flaticon</a>
-  //<a href="https://www.flaticon.com/free-icons/delete" title="delete icons">Delete icons created by Ilham Fitrotul Hayat - Flaticon</a>
-  //<a href="https://www.flaticon.com/free-icons/cancel" title="cancel icons">Cancel icons created by Fingerprint Designs - Flaticon</a>
-  //<a href="https://www.flaticon.com/free-icons/confirm" title="confirm icons">Confirm icons created by bqlqn - Flaticon</a>
-
   return (
     <React.Fragment>
       <TableCell style={{ padding: "8px", alignContent: "center" }}>
@@ -235,11 +244,30 @@ function Item({ word, words, setWords, chapters, handleOpen, setModalWord }) {
           >
             <EditSquareIcon />
           </Button>
-          <Button onClick={deleteEntry}>
+          <Button onClick={handleDeleteClick}>
             <DeleteForeverIcon />
           </Button>
         </Stack>
       </TableCell>
+
+      <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
+        <DialogTitle>Delete Word</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to delete "{word.Hanzi}"?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel}>Cancel</Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            color="error"
+            variant="contained"
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </React.Fragment>
   );
 }
