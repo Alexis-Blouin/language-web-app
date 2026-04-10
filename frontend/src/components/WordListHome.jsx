@@ -8,6 +8,7 @@ import confirmation_icon from "../assets/images/confirmation.png";
 import ChapterSelect from "./ChapterSelect";
 import EditForm from "./EditForm";
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
@@ -15,6 +16,8 @@ import axios from "axios";
 import Paper from "@mui/material/Paper";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
+import EditSquareIcon from "@mui/icons-material/EditSquare";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 const style = {
   position: "absolute",
@@ -104,12 +107,12 @@ function WordList({ words, setWords, chapters }) {
 
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
+          <EditForm
+            word={modalWord}
+            chapters={chapters}
+            setWords={setWords}
+            handleClose={handleClose}
+          />
         </Box>
       </Modal>
     </>
@@ -219,19 +222,23 @@ function Item({ word, words, setWords, chapters, handleOpen, setModalWord }) {
       <TableCell style={{ padding: "8px", alignContent: "center" }}>
         {word.ChapterName}
       </TableCell>
-      <TableCell className="options" style={{ padding: "8px" }}>
-        <button
-          className="icon-button"
-          onClick={() => {
-            setModalWord(word);
-            handleOpen();
-          }}
-        >
-          <img src={edit_icon} alt="Edit" />
-        </button>
-        <button className="icon-button" onClick={deleteEntry}>
-          <img src={delete_icon} alt="Delete" />
-        </button>
+      <TableCell
+        className="options"
+        style={{ padding: "8px", textAlign: "center" }}
+      >
+        <Stack direction="row" spacing={1} justifyContent="center">
+          <Button
+            onClick={() => {
+              setModalWord(word);
+              handleOpen();
+            }}
+          >
+            <EditSquareIcon />
+          </Button>
+          <Button onClick={deleteEntry}>
+            <DeleteForeverIcon />
+          </Button>
+        </Stack>
       </TableCell>
     </React.Fragment>
   );
