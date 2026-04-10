@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormLabel from "@mui/material/FormLabel";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
 
 function AddForm({ setWords, setExpressions, chapters, setChapters, types }) {
   const [hanzi, setHanzi] = React.useState("");
@@ -167,29 +168,31 @@ function AddForm({ setWords, setExpressions, chapters, setChapters, types }) {
         allChapters={false}
         newChapter={true}
       />
-      <FormLabel id="type-radio-buttons-group-label">Type</FormLabel>
-      <RadioGroup
-        row
-        aria-labelledby="demo-row-radio-buttons-group-label"
-        name="row-radio-buttons-group"
-      >
-        {types.map((type, index) => (
-          <FormControlLabel
-            key={index}
-            value={type.TypeId}
-            control={
-              <input
-                type="radio"
-                name="type"
-                id={type.TypeId}
-                checked={typeVal === type.TypeId}
-                onClick={() => setTypeVal(type.TypeId)}
-              />
-            }
-            label={type.TypeName}
-          />
-        ))}
-      </RadioGroup>
+      <FormControl>
+        <FormLabel id="type-radio-buttons-group-label">Type</FormLabel>
+        <RadioGroup
+          row
+          aria-labelledby="demo-row-radio-buttons-group-label"
+          name="row-radio-buttons-group"
+        >
+          {types.map((type, index) => (
+            <FormControlLabel
+              key={index}
+              value={type.TypeId}
+              control={
+                <input
+                  type="radio"
+                  name="type"
+                  id={type.TypeId}
+                  checked={typeVal === type.TypeId}
+                  onClick={() => setTypeVal(type.TypeId)}
+                />
+              }
+              label={type.TypeName}
+            />
+          ))}
+        </RadioGroup>
+      </FormControl>
       <Button variant="contained" color="primary" type="submit">
         Add
       </Button>

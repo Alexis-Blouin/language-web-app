@@ -5,9 +5,12 @@ import ChapterSelect from "./ChapterSelect";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormLabel from "@mui/material/FormLabel";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import Typography from "@mui/material/Typography";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Grid from "@mui/material/Grid";
 
 function EditForm({
   setWords,
@@ -16,13 +19,23 @@ function EditForm({
   setChapters,
   word,
   handleClose,
+  open,
 }) {
-  const [hanzi, setHanzi] = React.useState(word.Hanzi);
-  const [pinyinVal, setPinyinVal] = React.useState(word.Pinyin);
-  const [translation, setTranslation] = React.useState(word.Translation);
-  const [chapter, setChapter] = React.useState(word.ChapterId); // Default value is 1
+  const [hanzi, setHanzi] = React.useState(word?.Hanzi);
+  const [pinyinVal, setPinyinVal] = React.useState(word?.Pinyin);
+  const [translation, setTranslation] = React.useState(word?.Translation);
+  const [chapter, setChapter] = React.useState(word?.ChapterId); // Default value is 1
   const [newChapter, setNewChapter] = React.useState();
-  const [typeVal, setTypeVal] = React.useState(1); // Default value is 1
+
+  // Update form fields when the word changes
+  React.useEffect(() => {
+    if (word) {
+      setHanzi(word.Hanzi);
+      setPinyinVal(word.Pinyin);
+      setTranslation(word.Translation);
+      setChapter(word.ChapterId);
+    }
+  }, [word]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -102,56 +115,71 @@ function EditForm({
   };
 
   return (
-    <form id="addForm" onSubmit={handleSubmit}>
-      <TextField
-        required
-        id="hanzi"
-        name="hanzi"
-        label="Hanzi"
-        placeholder="你好"
-        value={hanzi}
-        onChange={handleHanziChange}
-      />
-      <TextField
-        id="pinyin"
-        name="pinyin"
-        label="Pinyin"
-        placeholder="nǐhǎo"
-        value={pinyinVal}
-        onChange={handlePinyinChange}
-      />
-      <TextField
-        required
-        id="translation"
-        name="translation"
-        label="Translation"
-        placeholder="Hello"
-        value={translation}
-        onChange={handleTranslationChange}
-      />
-      {chapter === "new-chapter" && (
-        <TextField
-          required
-          id="new-chapter"
-          name="new-chapter"
-          label="New Chapter Name"
-          placeholder="1"
-          value={newChapter}
-          onChange={handleNewChapterChange}
-        />
-      )}
-      <ChapterSelect
-        chapters={chapters}
-        defaultChapter={chapter}
-        setChapter={setChapter}
-        id="chapter-add-form"
-        allChapters={false}
-        newChapter={true}
-      />
-      <Button variant="contained" color="primary" type="submit">
-        Confirm
-      </Button>
-    </form>
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>Edit Word "{word?.Hanzi}"</DialogTitle>
+      <DialogContent style={{ paddingTop: "5px" }}>
+        <form id="editForm" onSubmit={handleSubmit}>
+          <Grid container spacing={2} direction="column" alignItems="center">
+            <TextField
+              required
+              id="hanzi"
+              name="hanzi"
+              label="Hanzi"
+              placeholder="你好"
+              value={hanzi}
+              onChange={handleHanziChange}
+            />
+            <TextField
+              id="pinyin"
+              name="pinyin"
+              label="Pinyin"
+              placeholder="nǐhǎo"
+              value={pinyinVal}
+              onChange={handlePinyinChange}
+            />
+            <TextField
+              required
+              id="translation"
+              name="translation"
+              label="Translation"
+              placeholder="Hello"
+              value={translation}
+              onChange={handleTranslationChange}
+            />
+            {chapter === "new-chapter" && (
+              <TextField
+                required
+                id="new-chapter"
+                name="new-chapter"
+                label="New Chapter Name"
+                placeholder="1"
+                value={newChapter}
+                onChange={handleNewChapterChange}
+              />
+            )}
+            <ChapterSelect
+              chapters={chapters}
+              defaultChapter={chapter}
+              setChapter={setChapter}
+              id="chapter-add-form"
+              allChapters={false}
+              newChapter={true}
+            />
+          </Grid>
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button
+          type="submit"
+          form="editForm"
+          color="primary"
+          variant="contained"
+        >
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 

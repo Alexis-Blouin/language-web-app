@@ -22,6 +22,7 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import DeleteDialog from "./DeleteDialog";
 
 const style = {
   position: "absolute",
@@ -38,9 +39,41 @@ const style = {
 function WordList({ words, setWords, chapters }) {
   const [chapter, setChapter] = React.useState("all");
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = (word) => {
+    setModalWord(word);
+    setOpen(true);
+  };
   const handleClose = () => setOpen(false);
   const [modalWord, setModalWord] = React.useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const handleDeleteClick = (word) => {
+    setModalWord(word);
+    setDeleteDialogOpen(true);
+  };
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+  };
+  const handleDeleteConfirm = async () => {
+    // TODO receive success or fail to update or not the data and show a toast
+    await axios.delete("http://localhost:8081/words/delete", {
+      // params here since it's delete and not post
+      params: {
+        WordId: modalWord.WordId,
+        TranslationId: modalWord.TranslationId,
+      },
+    });
+    // Updates the visible data
+    setWords((prevWords) =>
+      prevWords.filter(
+        (aWord) =>
+          !(
+            aWord.WordId === modalWord.WordId &&
+            aWord.TranslationId === modalWord.TranslationId
+          ),
+      ),
+    );
+    setDeleteDialogOpen(false);
+  };
 
   const filteredWords = words
     ? words.filter(
@@ -66,7 +99,6 @@ function WordList({ words, setWords, chapters }) {
         defaultChapter={chapter}
         setChapter={setChapter}
       />
-
       <Paper style={{ marginTop: "20px", height: "600px", width: "650px" }}>
         <TableVirtuoso
           data={filteredWords}
@@ -94,6 +126,7 @@ function WordList({ words, setWords, chapters }) {
               chapters={chapters}
               handleOpen={handleOpen}
               setModalWord={setModalWord}
+              handleDeleteClick={handleDeleteClick}
             />
           )}
           noDataComponent={() => (
@@ -108,54 +141,37 @@ function WordList({ words, setWords, chapters }) {
           )}
         />
       </Paper>
-
-      <Modal open={open} onClose={handleClose}>
-        <Box sx={style}>
-          <EditForm
-            word={modalWord}
-            chapters={chapters}
-            setWords={setWords}
-            handleClose={handleClose}
-          />
-        </Box>
-      </Modal>
+      <EditForm
+        word={modalWord}
+        chapters={chapters}
+        setWords={setWords}
+        handleClose={handleClose}
+        open={open}
+      />
+      {/* TODO toast not appear anymore when deleting */}
+      <DeleteDialog
+        deleteDialogOpen={deleteDialogOpen}
+        handleDeleteCancel={handleDeleteCancel}
+        handleDeleteConfirm={handleDeleteConfirm}
+        word={modalWord}
+      />
     </>
   );
 }
 
 export default WordList;
 
-function Item({ word, words, setWords, chapters, handleOpen, setModalWord }) {
+function Item({
+  word,
+  words,
+  setWords,
+  chapters,
+  handleOpen,
+  setModalWord,
+  handleDeleteClick,
+}) {
   const [editing, setEditing] = React.useState(false);
   const [editChapter, setEditChapter] = React.useState(word.ChapterName);
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-
-  const handleDeleteClick = () => {
-    setDeleteDialogOpen(true);
-  };
-
-  const handleDeleteConfirm = async () => {
-    // TODO receive success or fail to update or not the data and show a toast
-    await axios.delete("http://localhost:8081/words/delete", {
-      // params here since it's delete and not post
-      params: { WordId: word.WordId, TranslationId: word.TranslationId },
-    });
-    // Updates the visible data
-    setWords((prevWords) =>
-      prevWords.filter(
-        (aWord) =>
-          !(
-            aWord.WordId === word.WordId &&
-            aWord.TranslationId === word.TranslationId
-          ),
-      ),
-    );
-    setDeleteDialogOpen(false);
-  };
-
-  const handleDeleteCancel = () => {
-    setDeleteDialogOpen(false);
-  };
 
   // TODO make edit word function
   const editEntry = (event) => {
@@ -236,38 +252,14 @@ function Item({ word, words, setWords, chapters, handleOpen, setModalWord }) {
         style={{ padding: "8px", textAlign: "center" }}
       >
         <Stack direction="row" spacing={1} justifyContent="center">
-          <Button
-            onClick={() => {
-              setModalWord(word);
-              handleOpen();
-            }}
-          >
+          <Button onClick={() => handleOpen(word)}>
             <EditSquareIcon />
           </Button>
-          <Button onClick={handleDeleteClick}>
+          <Button onClick={() => handleDeleteClick(word)}>
             <DeleteForeverIcon />
           </Button>
         </Stack>
       </TableCell>
-
-      <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-        <DialogTitle>Delete Word</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Are you sure you want to delete "{word.Hanzi}"?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDeleteCancel}>Cancel</Button>
-          <Button
-            onClick={handleDeleteConfirm}
-            color="error"
-            variant="contained"
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
     </React.Fragment>
   );
 }
