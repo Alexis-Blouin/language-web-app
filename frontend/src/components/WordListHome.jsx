@@ -1,5 +1,6 @@
 import React from "react";
 import { pinyin } from "pinyin-pro";
+import { TableVirtuoso } from "react-virtuoso";
 import delete_icon from "../assets/images/delete.png";
 import edit_icon from "../assets/images/edit.png";
 import cancel_icon from "../assets/images/cancel.png";
@@ -11,6 +12,21 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import axios from "axios";
+import Paper from "@mui/material/Paper";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 function WordList({ words, setWords, chapters }) {
   const [chapter, setChapter] = React.useState("all");
@@ -19,17 +35,22 @@ function WordList({ words, setWords, chapters }) {
   const handleClose = () => setOpen(false);
   const [modalWord, setModalWord] = React.useState(null);
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
+  const filteredWords = words
+    ? words.filter(
+        (word) =>
+          chapter === "all" ||
+          (chapter === "no-chapter" && "" === word.Chapter) ||
+          parseInt(chapter) === word.ChapterId,
+      )
+    : [];
+
+  const columns = [
+    { key: "hanzi", label: "Hanzi", width: 100 },
+    { key: "pinyin", label: "Pinyin", width: 150 },
+    { key: "translation", label: "Translation", width: 200 },
+    { key: "chapter", label: "Chapter", width: 100 },
+    { key: "options", label: "Options", width: 100 },
+  ];
 
   return (
     <>
@@ -38,49 +59,50 @@ function WordList({ words, setWords, chapters }) {
         defaultChapter={chapter}
         setChapter={setChapter}
       />
-      <table className="wordList">
-        <thead>
-          <tr>
-            <th>Hanzi</th>
-            <th>Pinyin</th>
-            <th>Translation</th>
-            <th>Chapter</th>
-            <th>Options</th>
-          </tr>
-        </thead>
-        <tbody>
-          {words && words.length > 0 ? (
-            words
-              .filter(
-                (word) =>
-                  chapter === "all" ||
-                  (chapter === "no-chapter" && "" === word.Chapter) ||
-                  parseInt(chapter) === word.ChapterId,
-              )
-              .map((word, index) => (
-                <Item
-                  word={word}
-                  words={words}
-                  setWords={setWords}
-                  chapters={chapters}
-                  handleOpen={handleOpen}
-                  setModalWord={setModalWord}
-                />
-              ))
-          ) : (
-            <tr>
-              <td colSpan={3}>No words yet.</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
 
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <Paper style={{ marginTop: "20px", height: "600px", width: "650px" }}>
+        <TableVirtuoso
+          data={filteredWords}
+          // overscan={8}
+          style={{ height: "600px", width: "650px" }}
+          fixedHeaderContent={() => (
+            <TableRow style={{ backgroundColor: "#f5f5f5" }}>
+              {columns.map((col) => (
+                <TableCell
+                  key={col.key}
+                  variant="head"
+                  style={{ width: col.width, padding: "8px" }}
+                  sx={{ backgroundColor: "background.paper" }}
+                >
+                  {col.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          )}
+          itemContent={(index, word) => (
+            <Item
+              word={word}
+              words={words}
+              setWords={setWords}
+              chapters={chapters}
+              handleOpen={handleOpen}
+              setModalWord={setModalWord}
+            />
+          )}
+          noDataComponent={() => (
+            <React.Fragment>
+              <TableCell
+                colSpan={5}
+                style={{ textAlign: "center", padding: "20px" }}
+              >
+                No words yet.
+              </TableCell>
+            </React.Fragment>
+          )}
+        />
+      </Paper>
+
+      <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Text in a modal
@@ -182,81 +204,35 @@ function Item({ word, words, setWords, chapters, handleOpen, setModalWord }) {
   //<a href="https://www.flaticon.com/free-icons/delete" title="delete icons">Delete icons created by Ilham Fitrotul Hayat - Flaticon</a>
   //<a href="https://www.flaticon.com/free-icons/cancel" title="cancel icons">Cancel icons created by Fingerprint Designs - Flaticon</a>
   //<a href="https://www.flaticon.com/free-icons/confirm" title="confirm icons">Confirm icons created by bqlqn - Flaticon</a>
+
   return (
-    <tr>
-      {editing ? (
-        <>
-          <td>
-            <input
-              form={word.WordId + "-" + word.TranslationId}
-              type="text"
-              name="hanzi"
-              id="hanzi"
-              defaultValue={word.Hanzi}
-            />
-          </td>
-          <td>
-            <input
-              form={word.WordId + "-" + word.TranslationId}
-              type="text"
-              name="pinyin"
-              id="pinyin"
-              defaultValue={word.Pinyin}
-            />
-          </td>
-          <td>
-            <input
-              form={word.WordId + "-" + word.TranslationId}
-              type="text"
-              name="translation"
-              id="translation"
-              defaultValue={word.Translation}
-            />
-          </td>
-          <td>
-            <ChapterSelect
-              chapters={chapters}
-              defaultChapter={editChapter}
-              setChapter={setEditChapter}
-              allChapters={false}
-            />
-          </td>
-          <td className="options">
-            <form
-              id={word.WordId + "-" + word.TranslationId}
-              onSubmit={editSubmit}
-            >
-              <button className="icon-button" type="submit">
-                <img src={confirmation_icon} alt="Confirm" />
-              </button>
-              <button className="icon-button" onClick={editCancel}>
-                <img src={cancel_icon} alt="Cancel" />
-              </button>
-            </form>
-          </td>
-        </>
-      ) : (
-        <>
-          <td>{word.Hanzi}</td>
-          <td>{word.Pinyin}</td>
-          <td>{word.Translation}</td>
-          <td>{word.ChapterName}</td>
-          <td className="options">
-            <button
-              className="icon-button"
-              onClick={() => {
-                setModalWord(word);
-                handleOpen();
-              }}
-            >
-              <img src={edit_icon} alt="Edit" />
-            </button>
-            <button className="icon-button" onClick={deleteEntry}>
-              <img src={delete_icon} alt="Delete" />
-            </button>
-          </td>
-        </>
-      )}
-    </tr>
+    <React.Fragment>
+      <TableCell style={{ padding: "8px", alignContent: "center" }}>
+        {word.Hanzi}
+      </TableCell>
+      <TableCell style={{ padding: "8px", alignContent: "center" }}>
+        {word.Pinyin}
+      </TableCell>
+      <TableCell style={{ padding: "8px", alignContent: "left" }}>
+        {word.Translation}
+      </TableCell>
+      <TableCell style={{ padding: "8px", alignContent: "center" }}>
+        {word.ChapterName}
+      </TableCell>
+      <TableCell className="options" style={{ padding: "8px" }}>
+        <button
+          className="icon-button"
+          onClick={() => {
+            setModalWord(word);
+            handleOpen();
+          }}
+        >
+          <img src={edit_icon} alt="Edit" />
+        </button>
+        <button className="icon-button" onClick={deleteEntry}>
+          <img src={delete_icon} alt="Delete" />
+        </button>
+      </TableCell>
+    </React.Fragment>
   );
 }
