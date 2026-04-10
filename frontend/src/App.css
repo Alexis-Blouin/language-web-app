@@ -33,6 +33,10 @@ nav.header ul li a:hover {
   background-color: #111111;
 }
 
+.navBarLink {
+  text-decoration: none;
+}
+
 /* AddForm */
 
 #addForm {
