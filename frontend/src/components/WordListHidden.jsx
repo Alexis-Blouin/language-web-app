@@ -1,7 +1,24 @@
 import React from "react";
+import { TableVirtuoso } from "react-virtuoso";
 import ChapterSelect from "./ChapterSelect";
+import Paper from "@mui/material/Paper";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 
-import reload from "../assets/images/reload.png";
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 function WordListHidden({ words, chapters }) {
   const [chapter, setChapter] = React.useState("all");
@@ -21,70 +38,94 @@ function WordListHidden({ words, chapters }) {
   // TODO
   const resetHidden = () => {};
 
+  const filteredWords = words
+    ? words.filter(
+        (word) =>
+          chapter === "all" ||
+          (chapter === "no-chapter" && "" === word.Chapter) ||
+          parseInt(chapter) === word.ChapterId,
+      )
+    : [];
+
+  const columns = [
+    { key: "hanzi", label: "Hanzi", width: 100 },
+    { key: "pinyin", label: "Pinyin", width: 150 },
+    { key: "translation", label: "Translation", width: 200 },
+  ];
+
   return (
     <>
       <ChapterSelect
         chapters={chapters}
         defaultChapter={chapter}
         setChapter={setChapter}
-      />{" "}
-      <label>
-        Hanzi:
-        <input
-          type="checkbox"
-          name="hanzi"
-          checked={hiddenColumns.hanzi}
-          onChange={handleHiddenColumnChange}
+      />
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Checkbox
+              name="hanzi"
+              checked={hiddenColumns.hanzi}
+              onChange={handleHiddenColumnChange}
+            />
+          }
+          label="Hanzi"
         />
-      </label>
-      <label>
-        Pinyin:
-        <input
-          type="checkbox"
-          name="pinyin"
-          checked={hiddenColumns.pinyin}
-          onChange={handleHiddenColumnChange}
+        <FormControlLabel
+          control={
+            <Checkbox
+              name="pinyin"
+              checked={hiddenColumns.pinyin}
+              onChange={handleHiddenColumnChange}
+            />
+          }
+          label="Pinyin"
         />
-      </label>
-      <label>
-        Translation:
-        <input
-          type="checkbox"
-          name="translation"
-          checked={hiddenColumns.translation}
-          onChange={handleHiddenColumnChange}
+        <FormControlLabel
+          control={
+            <Checkbox
+              name="translation"
+              checked={hiddenColumns.translation}
+              onChange={handleHiddenColumnChange}
+            />
+          }
+          label="Translation"
         />
-      </label>
-      <button id="resetHidden" onClick={resetHidden}>
-        <img src={reload} alt="Reload" />
-      </button>
-      <table className="wordList">
-        <thead>
-          <tr>
-            <th>Hanzi</th>
-            <th>Pinyin</th>
-            <th>Translation</th>
-          </tr>
-        </thead>
-        <tbody>
-          {words && words.length > 0 ? (
-            words
-              .filter(
-                (word) =>
-                  chapter === "all" ||
-                  (chapter === "no-chapter" && "" === word.Chapter) ||
-                  parseInt(chapter) === word.ChapterId,
-              )
-              .map((word, index) => (
-                <Item word={word} hiddenColumns={hiddenColumns} />
-              ))
-          ) : (
-            <tr>
-              <td colSpan={3}>No words yet.</td>
-            </tr>
+      </FormGroup>
+      <Paper style={{ marginTop: "20px", height: "600px", width: "450px" }}>
+        <TableVirtuoso
+          data={filteredWords}
+          // overscan={8}
+          style={{ height: "600px", width: "450px" }}
+          fixedHeaderContent={() => (
+            <TableRow style={{ backgroundColor: "#f5f5f5" }}>
+              {columns.map((col) => (
+                <TableCell
+                  key={col.key}
+                  variant="head"
+                  style={{ width: col.width, padding: "8px" }}
+                  sx={{ backgroundColor: "background.paper" }}
+                >
+                  {col.label}
+                </TableCell>
+              ))}
+            </TableRow>
           )}
-        </tbody>
-      </table>
+          itemContent={(index, word) => (
+            <Item word={word} hiddenColumns={hiddenColumns} />
+          )}
+          noDataComponent={() => (
+            <React.Fragment>
+              <TableCell
+                colSpan={5}
+                style={{ textAlign: "center", padding: "20px" }}
+              >
+                No words yet.
+              </TableCell>
+            </React.Fragment>
+          )}
+        />
+      </Paper>
     </>
   );
 }
@@ -97,25 +138,28 @@ function Item({ word, hiddenColumns }) {
   };
 
   return (
-    <tr>
-      <td
+    <React.Fragment>
+      <TableCell
         className={hiddenColumns.hanzi ? "hidden-word" : ""}
         onClick={unhideWord}
+        style={{ padding: "8px", alignContent: "center" }}
       >
         {word.Hanzi}
-      </td>
-      <td
+      </TableCell>
+      <TableCell
         className={hiddenColumns.pinyin ? "hidden-word" : ""}
         onClick={unhideWord}
+        style={{ padding: "8px", alignContent: "center" }}
       >
         {word.Pinyin}
-      </td>
-      <td
+      </TableCell>
+      <TableCell
         className={hiddenColumns.translation ? "hidden-word" : ""}
         onClick={unhideWord}
+        style={{ padding: "8px", alignContent: "left" }}
       >
         {word.Translation}
-      </td>
-    </tr>
+      </TableCell>
+    </React.Fragment>
   );
 }

@@ -3,8 +3,8 @@
   color: #eee;
 } */
 
-.content {
-  padding: 20px;
+.content-grid {
+  /* padding: 20px; */
 }
 
 /* Header */
@@ -78,11 +78,7 @@ table.wordList td {
   padding: 5px;
 }
 
-.hidden-word {
-  background-color: #254146;
-  color: #254146;
-  cursor: pointer;
-}
+
 
 .options {
   background-color: gray;
@@ -94,6 +90,12 @@ table.wordList td {
   /* padding: 0.25rem; *
   cursor: pointer;
 } */
+
+.hidden-word {
+  background-color: #254146;
+  color: #254146;
+  cursor: pointer;
+}
 
 /* WordGuess */
 

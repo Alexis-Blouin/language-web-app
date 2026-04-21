@@ -22,6 +22,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
+import Grid from "@mui/material/Grid";
 
 // A soft, easy-on-the-eyes theme with a light neutral background and refined colors
 const theme = createTheme({
@@ -245,47 +246,57 @@ function App() {
             </Toolbar>
           </Container>
         </AppBar>
-        <div className="content">
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <WordListHome
-                  words={words}
-                  setWords={setWords}
-                  chapters={chapters}
-                />
-              }
-            />
-            <Route
-              path="/add_words"
-              element={
-                <AddForm
-                  setWords={setWords}
-                  setExpressions={setExpressions}
-                  chapters={chapters}
-                  setChapters={setChapters}
-                  types={types}
-                />
-              }
-            />
-            <Route
-              path="/list_hidden"
-              element={<WordListHidden words={words} chapters={chapters} />}
-            />
-            <Route path="/word_guess" element={<WordGuess words={words} />} />
-            <Route
-              path="/expressions"
-              element={
-                <Expressions
-                  expressions={expressions}
-                  setExpressions={setExpressions}
-                  chapters={chapters}
-                />
-              }
-            />
-          </Routes>
-        </div>
+        <Grid
+          container
+          spacing={0}
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          style={{ padding: "20px" }}
+        >
+          <Grid item>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <WordListHome
+                    words={words}
+                    setWords={setWords}
+                    chapters={chapters}
+                  />
+                }
+              />
+              <Route
+                path="/add_words"
+                element={
+                  <AddForm
+                    setWords={setWords}
+                    setExpressions={setExpressions}
+                    chapters={chapters}
+                    setChapters={setChapters}
+                    types={types}
+                  />
+                }
+              />
+              <Route
+                path="/list_hidden"
+                element={<WordListHidden words={words} chapters={chapters} />}
+              />
+              <Route path="/word_guess" element={<WordGuess words={words} />} />
+              <Route
+                path="/expressions"
+                element={
+                  <Expressions
+                    expressions={expressions}
+                    setExpressions={setExpressions}
+                    chapters={chapters}
+                  />
+                }
+              />
+            </Routes>
+          </Grid>
+        </Grid>
+        <div className="content"></div>
       </Router>
     </ThemeProvider>
   );
