@@ -23,6 +23,7 @@ import TableRow from "@mui/material/TableRow";
 import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DeleteDialog from "./DeleteDialog";
+import TextField from "@mui/material/TextField";
 
 const style = {
   position: "absolute",
@@ -46,6 +47,7 @@ function WordList({ words, setWords, chapters }) {
   const handleClose = () => setOpen(false);
   const [modalWord, setModalWord] = React.useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [search, setSearch] = React.useState("");
   const handleDeleteClick = (word) => {
     setModalWord(word);
     setDeleteDialogOpen(true);
@@ -84,6 +86,28 @@ function WordList({ words, setWords, chapters }) {
       )
     : [];
 
+  const searchFilteredWords = search
+    ? filteredWords.filter(
+        (word) =>
+          word.Hanzi.toLowerCase().includes(search.toLowerCase()) ||
+          word.Pinyin.toLowerCase().includes(
+            search
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/\p{Diacritic}/gu, ""),
+          ) ||
+          word.Translation.toLowerCase().includes(search.toLowerCase()),
+      )
+    : filteredWords;
+
+  searchFilteredWords.forEach((word) => {
+    console.log(
+      word.Pinyin.toLowerCase()
+        .normalize("NFD")
+        .replace(/\p{Diacritic}/gu, ""),
+    );
+  });
+
   const columns = [
     { key: "hanzi", label: "Hanzi", width: 100 },
     { key: "pinyin", label: "Pinyin", width: 150 },
@@ -99,9 +123,16 @@ function WordList({ words, setWords, chapters }) {
         defaultChapter={chapter}
         setChapter={setChapter}
       />
+      <TextField
+        id="outlined-search"
+        label="Search field"
+        type="search"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
       <Paper style={{ marginTop: "20px", height: "600px", width: "650px" }}>
         <TableVirtuoso
-          data={filteredWords}
+          data={searchFilteredWords}
           // overscan={8}
           style={{ height: "600px", width: "650px" }}
           fixedHeaderContent={() => (
