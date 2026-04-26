@@ -60,11 +60,19 @@ function WordListHidden({ words, chapters }) {
       sx={{ width: "50%", margin: "20px auto", justifyContent: "center" }}
       spacing={2}
     >
-      <ChapterSelect
-        chapters={chapters}
-        defaultChapter={chapter}
-        setChapter={setChapter}
-      />
+      <Stack
+        direction="row"
+        sx={{
+          justifyContent: "center",
+        }}
+        spacing={2}
+      >
+        <ChapterSelect
+          chapters={chapters}
+          defaultChapter={chapter}
+          setChapter={setChapter}
+        />
+      </Stack>
       <Paper
         style={{ height: "100%", marginLeft: "auto", marginRight: "auto" }}
       >
