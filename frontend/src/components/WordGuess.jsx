@@ -8,6 +8,11 @@ import { pinyin } from "pinyin-pro";
 import React from "react";
 
 import reload from "../assets/images/reload.png";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 // specify the theme in toastConfig
 toastConfig({
@@ -47,6 +52,9 @@ function WordGuess({ words }) {
     };
   };
   const [word, setWord] = useState(pickRandomWord);
+  const title = word.hideHanzi ? "Hanzi" : "Translation";
+  console.log(word);
+
   const [isButtonDisabled, setButtonDisabled] = useState(false);
 
   const changeWord = () => {
@@ -54,13 +62,28 @@ function WordGuess({ words }) {
   };
 
   return (
-    <div id="wordGuess">
-      <Question
-        question={word.question}
-        hideHanzi={word.hideHanzi}
-        changeWord={changeWord}
-        buttonDisabled={isButtonDisabled}
-      />
+    <Stack
+      direction="column"
+      sx={{ width: "400px", mt: 2, mr: "auto", ml: "auto" }}
+      spacing={2}
+    >
+      <Typography variant="h4" sx={{ textAlign: "center" }}>
+        Guess the {title}
+      </Typography>
+      <Typography variant="h5">
+        {word.question}
+        {!word.hideHanzi && (
+          <Typography variant="caption"> ({pinyin(word.question)})</Typography>
+        )}
+      </Typography>
+
+      {/* <button
+            id="changeGuessButton"
+            onClick={changeWord}
+            disabled={buttonDisabled}
+          >
+            <img src={reload} alt="Reload" />
+          </button> */}
       <Guess
         answer={word.answer}
         hideHanzi={!word.hideHanzi}
@@ -68,34 +91,11 @@ function WordGuess({ words }) {
         buttonDisabled={isButtonDisabled}
         setButtonDisabled={setButtonDisabled}
       />
-    </div>
+    </Stack>
   );
 }
 
 export default WordGuess;
-
-function Question({ question, hideHanzi, changeWord, buttonDisabled }) {
-  const title = hideHanzi ? "Translation" : "Hanzi";
-  // <a href="https://www.flaticon.com/free-icons/reload" title="reload icons">Reload icons created by shin_icons - Flaticon</a>
-  return (
-    <div id="questionBox" className="guessContent">
-      <p className="guessTitle fullWidth">{title}:</p>
-      <div>
-        <p id="questionText" className="fullWidth">
-          {question}
-          {!hideHanzi && <span id="hazi-hint"> ({pinyin(question)})</span>}
-          <button
-            id="changeGuessButton"
-            onClick={changeWord}
-            disabled={buttonDisabled}
-          >
-            <img src={reload} alt="Reload" />
-          </button>
-        </p>
-      </div>
-    </div>
-  );
-}
 
 function Guess({
   answer,
@@ -104,7 +104,6 @@ function Guess({
   buttonDisabled,
   setButtonDisabled,
 }) {
-  const title = hideHanzi ? "Translation" : "Hanzi";
   const [guess, setGuess] = React.useState("");
   const [pinyinHint, setPinyinHint] = React.useState("");
 
@@ -133,27 +132,25 @@ function Guess({
   };
 
   return (
-    <div id="guessBox" className="guessContent">
-      <p className="guessTitle fullWidth">{title}:</p>
-      <form id="guessForm" onSubmit={handleSubmit}>
-        <label htmlFor="guess">
-          <input
-            className="fullWidth"
-            type="text"
-            name="guess"
-            id="guess"
-            placeholder="answer"
-            value={guess}
-            onChange={handleChange}
-          />
-        </label>
-        {!hideHanzi && pinyinHint !== "" && (
-          <span id="hanzi-hint"> ({pinyinHint})</span>
-        )}
-        <button id="guessButton" disabled={buttonDisabled}>
-          Confirm
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <Stack direction="column" spacing={2} alignItems="center">
+        <TextField
+          required
+          name="guess"
+          id="guess"
+          label="Answer"
+          placeholder={hideHanzi ? "Hi" : "你好"}
+          value={guess}
+          onChange={handleChange}
+          autoComplete="off"
+        />
+        <Button type="submit" variant="contained" disabled={buttonDisabled}>
+          Submit
+        </Button>
+        {/* {!hideHanzi && pinyinHint !== "" && (
+        <span id="hanzi-hint"> ({pinyinHint})</span>
+      )} */}
+      </Stack>
+    </form>
   );
 }

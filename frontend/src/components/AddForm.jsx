@@ -125,7 +125,7 @@ function AddForm({ setWords, setExpressions, chapters, setChapters, types }) {
   };
 
   return (
-    <Box sx={{ width: "20%", margin: "20px auto", justifyContent: "center" }}>
+    <Box sx={{ width: "400px", mt: 2, mr: "auto", ml: "auto" }}>
       <form id="addForm" onSubmit={handleSubmit}>
         <Stack direction="column" spacing={2} alignItems="center">
           <TextField

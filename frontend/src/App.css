@@ -28,6 +28,8 @@ nav.header ul li a:hover {
   text-decoration: none;
 }
 
+/* Hidden Word */
+
 .hidden-word {
   background-color: #254146;
   cursor: pointer;
@@ -37,52 +39,4 @@ nav.header ul li a:hover {
 .hidden-word.fade-out {
   cursor: default;
   background-color: transparent;
-}
-
-/* WordGuess */
-
-#wordGuess {
-  margin: 20px;
-  display: grid;
-  grid-template-columns: 120px 240px;
-  row-gap: 0.75rem;
-  column-gap: 1rem;
-  align-items: center;
-}
-
-#guessForm,
-.guessContent {
-  display: contents;
-}
-
-.fullWidth {
-  width: 100%;
-}
-
-#questionText {
-  font-weight: bold;
-  font-size: large;
-  width: calc(100% + 8px);
-}
-
-.guessContent > * {
-  margin: 0;
-}
-
-#changeGuessButton {
-  float: right;
-}
-
-#hanzi-hint {
-  font-weight: normal;
-  font-size: small;
-  grid-column: 3;
-}
-
-#guess {
-  grid-column: 2;
-}
-
-.guessTitle {
-  grid-column: 1;
 }
