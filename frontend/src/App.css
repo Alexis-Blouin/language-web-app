@@ -30,8 +30,13 @@ nav.header ul li a:hover {
 
 .hidden-word {
   background-color: #254146;
-  color: #254146;
   cursor: pointer;
+  transition: background-color 0.5s ease;
+}
+
+.hidden-word.fade-out {
+  cursor: default;
+  background-color: transparent;
 }
 
 /* WordGuess */

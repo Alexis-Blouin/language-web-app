@@ -28,12 +28,21 @@ function WordListHidden({ words, chapters }) {
     pinyin: false,
     translation: true,
   });
+  const [transitioningColumns, setTransitioningColumns] = React.useState({});
 
   const handleHiddenColumnChange = (e) => {
-    setHiddenColumns((values) => ({
-      ...values,
-      [e.target.name]: e.target.checked,
-    }));
+    const column = e.target.name;
+    const willHide = e.target.checked;
+
+    if (willHide) {
+      setHiddenColumns((values) => ({ ...values, [column]: true }));
+    } else {
+      setTransitioningColumns((prev) => ({ ...prev, [column]: true }));
+      setHiddenColumns((values) => ({ ...values, [column]: false }));
+      setTimeout(() => {
+        setTransitioningColumns((prev) => ({ ...prev, [column]: false }));
+      }, 500);
+    }
   };
 
   // TODO
@@ -100,7 +109,11 @@ function WordListHidden({ words, chapters }) {
             </TableRow>
           )}
           itemContent={(index, word) => (
-            <Item word={word} hiddenColumns={hiddenColumns} />
+            <Item
+              word={word}
+              hiddenColumns={hiddenColumns}
+              transitioningColumns={transitioningColumns}
+            />
           )}
           noDataComponent={() => (
             <React.Fragment>
@@ -120,29 +133,38 @@ function WordListHidden({ words, chapters }) {
 
 export default WordListHidden;
 
-function Item({ word, hiddenColumns }) {
+function Item({ word, hiddenColumns, transitioningColumns }) {
   const unhideWord = (target) => {
-    target.target.classList.remove("hidden-word");
+    const cell = target.target;
+    cell.classList.add("fade-out");
+    setTimeout(() => {
+      cell.classList.remove("hidden-word", "fade-out");
+    }, 500);
+  };
+
+  const getClassName = (columnKey) => {
+    if (transitioningColumns[columnKey]) return "hidden-word fade-out";
+    return hiddenColumns[columnKey] ? "hidden-word" : "";
   };
 
   return (
     <React.Fragment>
       <TableCell
-        className={hiddenColumns.hanzi ? "hidden-word" : ""}
+        className={getClassName("hanzi")}
         onClick={unhideWord}
         style={{ padding: "8px", alignContent: "center" }}
       >
         {word.Hanzi}
       </TableCell>
       <TableCell
-        className={hiddenColumns.pinyin ? "hidden-word" : ""}
+        className={getClassName("pinyin")}
         onClick={unhideWord}
         style={{ padding: "8px", alignContent: "center" }}
       >
         {word.Pinyin}
       </TableCell>
       <TableCell
-        className={hiddenColumns.translation ? "hidden-word" : ""}
+        className={getClassName("translation")}
         onClick={unhideWord}
         style={{ padding: "8px", alignContent: "left" }}
       >
