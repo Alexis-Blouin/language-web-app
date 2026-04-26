@@ -7,6 +7,7 @@ import TableRow from "@mui/material/TableRow";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import Stack from "@mui/material/Stack";
 
 const style = {
   position: "absolute",
@@ -54,49 +55,23 @@ function WordListHidden({ words, chapters }) {
   ];
 
   return (
-    <>
+    <Stack
+      direction="column"
+      sx={{ width: "50%", margin: "20px auto", justifyContent: "center" }}
+      spacing={2}
+    >
       <ChapterSelect
         chapters={chapters}
         defaultChapter={chapter}
         setChapter={setChapter}
       />
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="hanzi"
-              checked={hiddenColumns.hanzi}
-              onChange={handleHiddenColumnChange}
-            />
-          }
-          label="Hanzi"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="pinyin"
-              checked={hiddenColumns.pinyin}
-              onChange={handleHiddenColumnChange}
-            />
-          }
-          label="Pinyin"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="translation"
-              checked={hiddenColumns.translation}
-              onChange={handleHiddenColumnChange}
-            />
-          }
-          label="Translation"
-        />
-      </FormGroup>
-      <Paper style={{ marginTop: "20px", height: "600px", width: "450px" }}>
+      <Paper
+        style={{ height: "100%", marginLeft: "auto", marginRight: "auto" }}
+      >
         <TableVirtuoso
           data={filteredWords}
           // overscan={8}
-          style={{ height: "600px", width: "450px" }}
+          style={{ width: "450px", height: "600px" }}
           fixedHeaderContent={() => (
             <TableRow style={{ backgroundColor: "#f5f5f5" }}>
               {columns.map((col) => (
@@ -107,6 +82,11 @@ function WordListHidden({ words, chapters }) {
                   sx={{ backgroundColor: "background.paper" }}
                 >
                   {col.label}
+                  <Checkbox
+                    name={col.label.toLowerCase()}
+                    checked={hiddenColumns[col.key]}
+                    onChange={handleHiddenColumnChange}
+                  />
                 </TableCell>
               ))}
             </TableRow>
@@ -126,7 +106,7 @@ function WordListHidden({ words, chapters }) {
           )}
         />
       </Paper>
-    </>
+    </Stack>
   );
 }
 

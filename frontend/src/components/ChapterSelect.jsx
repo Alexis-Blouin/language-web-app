@@ -15,6 +15,7 @@ function ChapterSelect({
     setChapter(event.target.value);
   };
 
+  // TODO set some kind of width parameter for the select component
   return (
     <Box>
       <FormControl fullWidth>
