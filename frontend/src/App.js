@@ -6,6 +6,7 @@ import AddForm from "./components/AddForm";
 import React, { useState, useEffect } from "react";
 import WordGuess from "./components/WordGuess";
 import Expressions from "./components/Expressions";
+import TestComponent from "./components/TestComponent";
 import axios from "axios";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -58,6 +59,7 @@ const pages = [
   { name: "List Hidden", path: "/list_hidden" },
   { name: "Word Guess", path: "/word_guess" },
   { name: "Expressions", path: "/expressions" },
+  { name: "Test Component", path: "/test" },
 ];
 const settings = ["Profile", "Logout"];
 
@@ -246,57 +248,46 @@ function App() {
             </Toolbar>
           </Container>
         </AppBar>
-        <Grid
-          container
-          spacing={0}
-          direction="column"
-          alignItems="center"
-          justifyContent="center"
-          style={{ padding: "20px" }}
-        >
-          <Grid item>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <WordListHome
-                    words={words}
-                    setWords={setWords}
-                    chapters={chapters}
-                  />
-                }
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <WordListHome
+                words={words}
+                setWords={setWords}
+                chapters={chapters}
               />
-              <Route
-                path="/add_words"
-                element={
-                  <AddForm
-                    setWords={setWords}
-                    setExpressions={setExpressions}
-                    chapters={chapters}
-                    setChapters={setChapters}
-                    types={types}
-                  />
-                }
+            }
+          />
+          <Route
+            path="/add_words"
+            element={
+              <AddForm
+                setWords={setWords}
+                setExpressions={setExpressions}
+                chapters={chapters}
+                setChapters={setChapters}
+                types={types}
               />
-              <Route
-                path="/list_hidden"
-                element={<WordListHidden words={words} chapters={chapters} />}
+            }
+          />
+          <Route
+            path="/list_hidden"
+            element={<WordListHidden words={words} chapters={chapters} />}
+          />
+          <Route path="/word_guess" element={<WordGuess words={words} />} />
+          <Route
+            path="/expressions"
+            element={
+              <Expressions
+                expressions={expressions}
+                setExpressions={setExpressions}
+                chapters={chapters}
               />
-              <Route path="/word_guess" element={<WordGuess words={words} />} />
-              <Route
-                path="/expressions"
-                element={
-                  <Expressions
-                    expressions={expressions}
-                    setExpressions={setExpressions}
-                    chapters={chapters}
-                  />
-                }
-              />
-            </Routes>
-          </Grid>
-        </Grid>
-        <div className="content"></div>
+            }
+          />
+          <Route path="/test" element={<TestComponent />} />
+        </Routes>
       </Router>
     </ThemeProvider>
   );

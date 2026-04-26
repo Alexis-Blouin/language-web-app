@@ -117,24 +117,38 @@ function WordList({ words, setWords, chapters }) {
   ];
 
   return (
-    <>
-      <ChapterSelect
-        chapters={chapters}
-        defaultChapter={chapter}
-        setChapter={setChapter}
-      />
-      <TextField
-        id="outlined-search"
-        label="Search field"
-        type="search"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-      <Paper style={{ marginTop: "20px", height: "600px", width: "650px" }}>
+    <Stack
+      direction="column"
+      sx={{ width: "50%", margin: "20px auto", justifyContent: "center" }}
+      spacing={2}
+    >
+      <Stack
+        direction="row"
+        sx={{
+          justifyContent: "center",
+        }}
+        spacing={2}
+      >
+        <ChapterSelect
+          chapters={chapters}
+          defaultChapter={chapter}
+          setChapter={setChapter}
+        />
+        <TextField
+          label="Search"
+          type="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </Stack>
+
+      <Paper
+        style={{ height: "100%", marginLeft: "auto", marginRight: "auto" }}
+      >
         <TableVirtuoso
           data={searchFilteredWords}
           // overscan={8}
-          style={{ height: "600px", width: "650px" }}
+          style={{ width: "700px", height: "600px" }}
           fixedHeaderContent={() => (
             <TableRow style={{ backgroundColor: "#f5f5f5" }}>
               {columns.map((col) => (
@@ -186,7 +200,7 @@ function WordList({ words, setWords, chapters }) {
         handleDeleteConfirm={handleDeleteConfirm}
         word={modalWord}
       />
-    </>
+    </Stack>
   );
 }
 
