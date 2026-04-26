@@ -16,7 +16,7 @@ function ChapterSelect({
   };
 
   return (
-    <Box sx={{ minWidth: 120, maxWidth: 300 }}>
+    <Box>
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Chapter</InputLabel>
         <Select
