@@ -162,6 +162,7 @@ function ExpressionsList({ expressions, setExpressions, chapters }) {
         setExpressions={setExpressions}
         handleClose={handleClose}
         open={open}
+        action="Expression"
       />
       {/* TODO toast not appear anymore when deleting */}
       <DeleteDialog
@@ -169,6 +170,7 @@ function ExpressionsList({ expressions, setExpressions, chapters }) {
         handleDeleteCancel={handleDeleteCancel}
         handleDeleteConfirm={handleDeleteConfirm}
         word={modalWord}
+        action="Expression"
       />
     </Stack>
   );

@@ -183,6 +183,7 @@ function WordList({ words, setWords, chapters }) {
         setWords={setWords}
         handleClose={handleClose}
         open={open}
+        action="Word"
       />
       {/* TODO toast not appear anymore when deleting */}
       <DeleteDialog
@@ -190,6 +191,7 @@ function WordList({ words, setWords, chapters }) {
         handleDeleteCancel={handleDeleteCancel}
         handleDeleteConfirm={handleDeleteConfirm}
         word={modalWord}
+        action="Word"
       />
     </Stack>
   );

@@ -10,13 +10,14 @@ function DeleteDialog({
   handleDeleteCancel,
   handleDeleteConfirm,
   word,
+  action,
 }) {
   return (
     <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-      <DialogTitle>Delete Word</DialogTitle>
+      <DialogTitle>Delete {action}</DialogTitle>
       <DialogContent>
         <Typography>
-          Are you sure you want to delete "{word ? word.Hanzi : "this word"}"?
+          Are you sure you want to delete "{word?.Hanzi} '?
         </Typography>
       </DialogContent>
       <DialogActions>

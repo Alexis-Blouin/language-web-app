@@ -20,6 +20,7 @@ function EditForm({
   word,
   handleClose,
   open,
+  action,
 }) {
   const [hanzi, setHanzi] = React.useState(word?.Hanzi);
   const [pinyinVal, setPinyinVal] = React.useState(word?.Pinyin);
@@ -65,37 +66,50 @@ function EditForm({
       });
 
       // TODO update word Id and translation Id since if re-creating a word it won't allow to delete after
-      setWords((prevWords) =>
-        prevWords.map((aWord) =>
-          aWord.WordId === word.WordId
-            ? {
-                ...aWord,
-                WordId: res.data.wordId,
-                Hanzi: hanzi,
-                Pinyin: pinyinVal,
-                TranslationId: res.data.translationId,
-                Translation: translation,
-                ChapterId: chapterId,
-                ChapterName: chapterName,
-              }
-            : aWord,
-        ),
-      );
+      if (action === "Word") {
+        setWords((prevWords) =>
+          prevWords.map((aWord) =>
+            aWord.WordId === word.WordId &&
+            aWord.TranslationId === word.TranslationId
+              ? {
+                  ...aWord,
+                  WordId: res.data.wordId,
+                  Hanzi: hanzi,
+                  Pinyin: pinyinVal,
+                  TranslationId: res.data.translationId,
+                  Translation: translation,
+                  ChapterId: chapterId,
+                  ChapterName: chapterName,
+                }
+              : aWord,
+          ),
+        );
+      } else {
+        setExpressions((prevExpressions) =>
+          prevExpressions.map((aExpression) =>
+            aExpression.WordId === word.WordId &&
+            aExpression.TranslationId === word.TranslationId
+              ? {
+                  ...aExpression,
+                  WordId: res.data.wordId,
+                  Hanzi: hanzi,
+                  Pinyin: pinyinVal,
+                  TranslationId: res.data.translationId,
+                  Translation: translation,
+                  ChapterId: chapterId,
+                  ChapterName: chapterName,
+                }
+              : aExpression,
+          ),
+        );
+      }
 
       handleClose();
     } catch (err) {
       console.error(err);
     }
-    // // Resets for next word
-    // setHanzi("");
-    // setPinyinVal("");
-    // setTranslation("");
-    // // reset chapter select to proper chapter as well after adding
-    // setNewChapter("");
-    // if (chapter === "new-chapter") {
-    //   setChapter(chapterId);
-    // }
-    toast("Word Modified!", { theme: "success" });
+
+    toast(`${action} Modified!`, { theme: "success" });
   };
 
   const handleHanziChange = (event) => {
@@ -116,7 +130,9 @@ function EditForm({
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Edit Word "{word?.Hanzi}"</DialogTitle>
+      <DialogTitle>
+        Edit {action} "{word?.Hanzi}"
+      </DialogTitle>
       <DialogContent style={{ paddingTop: "5px" }}>
         <form id="editForm" onSubmit={handleSubmit}>
           <Grid container spacing={2} direction="column" alignItems="center">
