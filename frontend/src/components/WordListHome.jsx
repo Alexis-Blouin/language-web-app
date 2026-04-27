@@ -90,23 +90,14 @@ function WordList({ words, setWords, chapters }) {
     ? filteredWords.filter(
         (word) =>
           word.Hanzi.toLowerCase().includes(search.toLowerCase()) ||
-          word.Pinyin.toLowerCase().includes(
-            search
-              .toLowerCase()
-              .normalize("NFD")
-              .replace(/\p{Diacritic}/gu, ""),
-          ) ||
+          word.Pinyin.toLowerCase()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/\p{Diacritic}/gu, "")
+            .includes(search) ||
           word.Translation.toLowerCase().includes(search.toLowerCase()),
       )
     : filteredWords;
-
-  searchFilteredWords.forEach((word) => {
-    console.log(
-      word.Pinyin.toLowerCase()
-        .normalize("NFD")
-        .replace(/\p{Diacritic}/gu, ""),
-    );
-  });
 
   const columns = [
     { key: "hanzi", label: "Hanzi", width: 100 },

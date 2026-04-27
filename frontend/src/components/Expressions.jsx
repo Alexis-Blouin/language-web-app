@@ -6,57 +6,185 @@ import cancel_icon from "../assets/images/cancel.png";
 import confirmation_icon from "../assets/images/confirmation.png";
 import ChapterSelect from "./ChapterSelect";
 import axios from "axios";
+import Stack from "@mui/material/Stack";
+import Paper from "@mui/material/Paper";
+import TextField from "@mui/material/TextField";
+import { TableVirtuoso } from "react-virtuoso";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import EditSquareIcon from "@mui/icons-material/EditSquare";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import DeleteDialog from "./DeleteDialog";
+import EditForm from "./EditForm";
+import Button from "@mui/material/Button";
 
 function ExpressionsList({ expressions, setExpressions, chapters }) {
   const [chapter, setChapter] = React.useState("all");
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = (word) => {
+    setModalWord(word);
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
+  const [modalWord, setModalWord] = React.useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [search, setSearch] = React.useState("");
+  const handleDeleteClick = (word) => {
+    setModalWord(word);
+    setDeleteDialogOpen(true);
+  };
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+  };
+  const handleDeleteConfirm = async () => {
+    // TODO receive success or fail to update or not the data and show a toast
+    await axios.delete("http://localhost:8081/words/delete", {
+      // params here since it's delete and not post
+      params: {
+        WordId: modalWord.WordId,
+        TranslationId: modalWord.TranslationId,
+      },
+    });
+    // Updates the visible data
+    setExpressions((prevWords) =>
+      prevWords.filter(
+        (aWord) =>
+          !(
+            aWord.WordId === modalWord.WordId &&
+            aWord.TranslationId === modalWord.TranslationId
+          ),
+      ),
+    );
+    setDeleteDialogOpen(false);
+  };
+
+  const filteredExpressions = expressions
+    ? expressions.filter(
+        (word) =>
+          chapter === "all" ||
+          (chapter === "no-chapter" && "" === word.Chapter) ||
+          parseInt(chapter) === word.ChapterId,
+      )
+    : [];
+
+  const searchFilteredExpressions = search
+    ? filteredExpressions.filter(
+        (word) =>
+          word.Hanzi.toLowerCase().includes(search.toLowerCase()) ||
+          word.Pinyin.toLowerCase()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/\p{Diacritic}/gu, "")
+            .includes(search) ||
+          word.Translation.toLowerCase().includes(search.toLowerCase()),
+      )
+    : filteredExpressions;
+
+  const columns = [
+    { key: "hanzi", label: "Hanzi", width: 150 },
+    { key: "pinyin", label: "Pinyin", width: 200 },
+    { key: "translation", label: "Translation", width: 300 },
+    { key: "options", label: "Options", width: 100 },
+  ];
 
   return (
-    <>
-      <ChapterSelect
-        chapters={chapters}
-        defaultChapter={chapter}
-        setChapter={setChapter}
-      />
-      <table className="expressionsList">
-        <thead>
-          <tr>
-            <th>Hanzi</th>
-            <th>Pinyin</th>
-            <th>Translation</th>
-            <th>Options</th>
-          </tr>
-        </thead>
-        <tbody>
-          {expressions && expressions.length > 0 ? (
-            expressions
-              .filter(
-                (expression) =>
-                  chapter === "all" ||
-                  (chapter === "no-chapter" && "" === expression.Chapter) ||
-                  parseInt(chapter) === expression.ChapterId,
-              )
-              .map((expression, index) => (
-                <Item
-                  expression={expression}
-                  expressions={expressions}
-                  setExpressions={setExpressions}
-                  chapters={chapters}
-                />
-              ))
-          ) : (
-            <tr>
-              <td colSpan={3}>No expressions yet.</td>
-            </tr>
+    <Stack
+      direction="column"
+      sx={{ width: "50%", margin: "20px auto", justifyContent: "center" }}
+      spacing={2}
+    >
+      <Stack
+        direction="row"
+        sx={{
+          justifyContent: "center",
+        }}
+        spacing={2}
+      >
+        {/* <ChapterSelect
+          chapters={chapters}
+          defaultChapter={chapter}
+          setChapter={setChapter}
+        /> */}
+        <TextField
+          label="Search"
+          type="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </Stack>
+      <Paper
+        style={{ height: "100%", marginLeft: "auto", marginRight: "auto" }}
+      >
+        <TableVirtuoso
+          data={searchFilteredExpressions}
+          // overscan={8}
+          style={{ width: "700px", height: "600px" }}
+          fixedHeaderContent={() => (
+            <TableRow style={{ backgroundColor: "#f5f5f5" }}>
+              {columns.map((col) => (
+                <TableCell
+                  key={col.key}
+                  variant="head"
+                  style={{ width: col.width, padding: "8px" }}
+                  sx={{ backgroundColor: "background.paper" }}
+                >
+                  {col.label}
+                </TableCell>
+              ))}
+            </TableRow>
           )}
-        </tbody>
-      </table>
-    </>
+          itemContent={(index, expression) => (
+            <Item
+              expression={expression}
+              expressions={expressions}
+              setExpressions={setExpressions}
+              chapters={chapters}
+              handleOpen={handleOpen}
+              setModalWord={setModalWord}
+              handleDeleteClick={handleDeleteClick}
+            />
+          )}
+          noDataComponent={() => (
+            <React.Fragment>
+              <TableCell
+                colSpan={5}
+                style={{ textAlign: "center", padding: "20px" }}
+              >
+                No expressions yet.
+              </TableCell>
+            </React.Fragment>
+          )}
+        />
+      </Paper>
+      <EditForm
+        word={modalWord}
+        chapters={chapters}
+        setExpressions={setExpressions}
+        handleClose={handleClose}
+        open={open}
+      />
+      {/* TODO toast not appear anymore when deleting */}
+      <DeleteDialog
+        deleteDialogOpen={deleteDialogOpen}
+        handleDeleteCancel={handleDeleteCancel}
+        handleDeleteConfirm={handleDeleteConfirm}
+        word={modalWord}
+      />
+    </Stack>
   );
 }
 
 export default ExpressionsList;
 
-function Item({ expression, expressions, setExpressions, chapters }) {
+function Item({
+  expression,
+  expressions,
+  setExpressions,
+  chapters,
+  handleOpen,
+  setModalWord,
+  handleDeleteClick,
+}) {
   const [editing, setEditing] = React.useState(false);
   // const [editChapter, setEditChapter] = React.useState(expression.ChapterName);
 
@@ -138,78 +266,33 @@ function Item({ expression, expressions, setExpressions, chapters }) {
     setEditing(false);
   };
 
-  //<a href="https://www.flaticon.com/free-icons/edit" title="edit icons">Edit icons created by Pixel perfect - Flaticon</a>
-  //<a href="https://www.flaticon.com/free-icons/delete" title="delete icons">Delete icons created by Ilham Fitrotul Hayat - Flaticon</a>
-  //<a href="https://www.flaticon.com/free-icons/cancel" title="cancel icons">Cancel icons created by Fingerprint Designs - Flaticon</a>
-  //<a href="https://www.flaticon.com/free-icons/confirm" title="confirm icons">Confirm icons created by bqlqn - Flaticon</a>
   return (
-    <tr>
-      {editing ? (
-        <>
-          <td>
-            <input
-              form={expression.ExpressionId + "-" + expression.TranslationId}
-              type="text"
-              name="hanzi"
-              id="hanzi"
-              defaultValue={expression.Hanzi}
-            />
-          </td>
-          <td>
-            <input
-              form={expression.ExpressionId + "-" + expression.TranslationId}
-              type="text"
-              name="pinyin"
-              id="pinyin"
-              defaultValue={expression.Pinyin}
-            />
-          </td>
-          <td>
-            <input
-              form={expression.ExpressionId + "-" + expression.TranslationId}
-              type="text"
-              name="translation"
-              id="translation"
-              defaultValue={expression.Translation}
-            />
-          </td>
-          {/* <td>
-            <ChapterSelect
-              chapters={chapters}
-              defaultChapter={editChapter}
-              setChapter={setEditChapter}
-              allChapters={false}
-            />
-          </td> */}
-          <td className="options">
-            <form
-              id={expression.ExpressionId + "-" + expression.TranslationId}
-              onSubmit={editSubmit}
-            >
-              <button className="icon-button" type="submit">
-                <img src={confirmation_icon} alt="Confirm" />
-              </button>
-              <button className="icon-button" onClick={editCancel}>
-                <img src={cancel_icon} alt="Cancel" />
-              </button>
-            </form>
-          </td>
-        </>
-      ) : (
-        <>
-          <td>{expression.Hanzi}</td>
-          <td>{expression.Pinyin}</td>
-          <td>{expression.Translation}</td>
-          <td className="options">
-            <button className="icon-button" onClick={editEntry}>
-              <img src={edit_icon} alt="Edit" />
-            </button>
-            <button className="icon-button" onClick={deleteEntry}>
-              <img src={delete_icon} alt="Delete" />
-            </button>
-          </td>
-        </>
-      )}
-    </tr>
+    <React.Fragment>
+      <TableCell style={{ padding: "8px", alignContent: "center" }}>
+        {expression.Hanzi}
+      </TableCell>
+      <TableCell style={{ padding: "8px", alignContent: "center" }}>
+        {expression.Pinyin}
+      </TableCell>
+      <TableCell style={{ padding: "8px", alignContent: "left" }}>
+        {expression.Translation}
+      </TableCell>
+      {/* <TableCell style={{ padding: "8px", alignContent: "center" }}>
+        {expression.ChapterName}
+      </TableCell> */}
+      <TableCell
+        className="options"
+        style={{ padding: "8px", textAlign: "center" }}
+      >
+        <Stack direction="row" spacing={1} justifyContent="center">
+          <Button onClick={() => handleOpen(expression)}>
+            <EditSquareIcon />
+          </Button>
+          <Button onClick={() => handleDeleteClick(expression)}>
+            <DeleteForeverIcon />
+          </Button>
+        </Stack>
+      </TableCell>
+    </React.Fragment>
   );
 }
