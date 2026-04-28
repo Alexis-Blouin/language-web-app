@@ -6,6 +6,7 @@ import AddForm from "./components/AddForm";
 import React, { useState, useEffect } from "react";
 import WordGuess from "./components/WordGuess";
 import Expressions from "./components/Expressions";
+import WordAttach from "./components/WordAttach";
 import TestComponent from "./components/TestComponent";
 import axios from "axios";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -59,6 +60,7 @@ const pages = [
   { name: "List Hidden", path: "/list_hidden" },
   { name: "Word Guess", path: "/word_guess" },
   { name: "Expressions", path: "/expressions" },
+  { name: "Word Attach", path: "/word_attach" },
   { name: "Test Component", path: "/test" },
 ];
 const settings = ["Profile", "Logout"];
@@ -286,6 +288,7 @@ function App() {
               />
             }
           />
+          <Route path="/word_attach" element={<WordAttach words={words} />} />
           <Route path="/test" element={<TestComponent />} />
         </Routes>
       </Router>
