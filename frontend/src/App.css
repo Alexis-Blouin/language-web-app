@@ -40,3 +40,8 @@ nav.header ul li a:hover {
   cursor: default;
   background-color: transparent;
 }
+
+.hidden-word.fade-in {
+  cursor: default;
+  background-color: #254146;
+}

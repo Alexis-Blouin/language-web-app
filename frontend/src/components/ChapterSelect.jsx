@@ -10,13 +10,15 @@ function ChapterSelect({
   setChapter,
   allChapters = true,
   newChapter = false,
+  onChange = () => {},
 }) {
   const handleChapterChange = (event) => {
     setChapter(event.target.value);
+    onChange(); // Allows to have callback when the chapter changes
   };
 
   return (
-    <Box>
+    <Box sx={{ minWidth: 70 }}>
       <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Chapter</InputLabel>
         <Select

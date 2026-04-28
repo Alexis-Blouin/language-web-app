@@ -8,6 +8,8 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Stack from "@mui/material/Stack";
+import ReplayIcon from "@mui/icons-material/Replay";
+import Button from "@mui/material/Button";
 
 const style = {
   position: "absolute",
@@ -28,7 +30,8 @@ function WordListHidden({ words, chapters }) {
     pinyin: false,
     translation: true,
   });
-  const [transitioningColumns, setTransitioningColumns] = React.useState({});
+  const [showingColumns, setShowingColumns] = React.useState({});
+  const [hiddingColumns, setHiddingColumns] = React.useState({});
 
   const handleHiddenColumnChange = (e) => {
     const column = e.target.name;
@@ -36,17 +39,29 @@ function WordListHidden({ words, chapters }) {
 
     if (willHide) {
       setHiddenColumns((values) => ({ ...values, [column]: true }));
+      setHiddingColumns((prev) => ({ ...prev, [column]: true }));
+      setTimeout(() => {
+        setHiddingColumns((prev) => ({ ...prev, [column]: false }));
+      }, 500);
     } else {
-      setTransitioningColumns((prev) => ({ ...prev, [column]: true }));
+      setShowingColumns((prev) => ({ ...prev, [column]: true }));
       setHiddenColumns((values) => ({ ...values, [column]: false }));
       setTimeout(() => {
-        setTransitioningColumns((prev) => ({ ...prev, [column]: false }));
+        setShowingColumns((prev) => ({ ...prev, [column]: false }));
       }, 500);
     }
   };
 
-  // TODO
-  const resetHidden = () => {};
+  const resetHidden = () => {
+    for (const [key, value] of Object.entries(hiddenColumns)) {
+      if (value) {
+        setHiddingColumns((prev) => ({ ...prev, [key]: true }));
+        setTimeout(() => {
+          setHiddingColumns((prev) => ({ ...prev, [key]: false }));
+        }, 500);
+      }
+    }
+  };
 
   const filteredWords = words
     ? words.filter(
@@ -80,7 +95,15 @@ function WordListHidden({ words, chapters }) {
           chapters={chapters}
           defaultChapter={chapter}
           setChapter={setChapter}
+          onChange={resetHidden}
         />
+        <Button
+          variant="outlined"
+          startIcon={<ReplayIcon />}
+          onClick={resetHidden}
+        >
+          Reset Hidden
+        </Button>
       </Stack>
       <Paper
         style={{ height: "100%", marginLeft: "auto", marginRight: "auto" }}
@@ -100,6 +123,7 @@ function WordListHidden({ words, chapters }) {
                 >
                   {col.label}
                   <Checkbox
+                    id={col.label.toLowerCase()}
                     name={col.label.toLowerCase()}
                     checked={hiddenColumns[col.key]}
                     onChange={handleHiddenColumnChange}
@@ -112,7 +136,8 @@ function WordListHidden({ words, chapters }) {
             <Item
               word={word}
               hiddenColumns={hiddenColumns}
-              transitioningColumns={transitioningColumns}
+              transitioningColumns={showingColumns}
+              test={hiddingColumns}
             />
           )}
           noDataComponent={() => (
@@ -133,7 +158,7 @@ function WordListHidden({ words, chapters }) {
 
 export default WordListHidden;
 
-function Item({ word, hiddenColumns, transitioningColumns }) {
+function Item({ word, hiddenColumns, transitioningColumns, test }) {
   const unhideWord = (target) => {
     const cell = target.target;
     cell.classList.add("fade-out");
@@ -143,6 +168,7 @@ function Item({ word, hiddenColumns, transitioningColumns }) {
   };
 
   const getClassName = (columnKey) => {
+    if (test[columnKey]) return "hidden-word fade-in";
     if (transitioningColumns[columnKey]) return "hidden-word fade-out";
     return hiddenColumns[columnKey] ? "hidden-word" : "";
   };
