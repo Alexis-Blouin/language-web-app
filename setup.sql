@@ -6,18 +6,28 @@ CREATE TABLE `chapters` (
     UNIQUE KEY `ChapterName` (`ChapterName`)
 )
 
+CREATE TABLE `categories` (
+    `CategoryId` int NOT NULL AUTO_INCREMENT,
+    `CategoryName` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`CategoryId`),
+    UNIQUE KEY `CategoryName` (`CategoryName`)
+)
+
 CREATE TABLE `words` (
     `WordId` int NOT NULL AUTO_INCREMENT,
     `Hanzi` varchar(50) DEFAULT NULL,
     `Pinyin` varchar(255) DEFAULT NULL,
     `ChapterId` int DEFAULT NULL,
     `TypeId` int NOT NULL,
+    `CategoryId` int DEFAULT NULL,
     PRIMARY KEY (`WordId`),
     UNIQUE KEY `Hanzi` (`Hanzi`,`Pinyin`,`ChapterId`),
-    KEY `ChapterId` (`ChapterId`),
     KEY `fk_type` (`TypeId`),
+    KEY `words_ibfk_1` (`ChapterId`),
+    KEY `CategoryId` (`CategoryId`),
     CONSTRAINT `fk_type` FOREIGN KEY (`TypeId`) REFERENCES `wordtypes` (`TypeId`),
-    CONSTRAINT `words_ibfk_1` FOREIGN KEY (`ChapterId`) REFERENCES `chapters` (`ChapterId`)
+    CONSTRAINT `words_ibfk_1` FOREIGN KEY (`ChapterId`) REFERENCES `chapters` (`ChapterId`),
+    CONSTRAINT `words_ibfk_2` FOREIGN KEY (`CategoryId`) REFERENCES `categories` (`CategoryId`)
 )
 
 CREATE TABLE `translations` (

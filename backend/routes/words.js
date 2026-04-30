@@ -14,15 +14,18 @@ router.get("/get", async (req, res) => {
       w.TypeId,
       t.TranslationId,
       t.Translation,
-      c.ChapterId,
-      c.ChapterName,
+      ch.ChapterId,
+      ch.ChapterName,
+      ca.CategoryId,
+      ca.CategoryName,
       wt.WordTranslationId
     from words w
     join wordtranslations wt on w.WordId = wt.WordId
     join translations t on wt.TranslationId = t.TranslationId
-    join chapters c on c.ChapterId = w.chapterId
+    join chapters ch on ch.ChapterId = w.ChapterId
+    join categories ca on ca.CategoryId = w.CategoryId
     where w.TypeId = ${WordTypeId}
-    order by c.ChapterId, w.Hanzi;`;
+    order by ch.ChapterId, w.Hanzi;`;
     const [rows] = await db.query(sql);
     res.json(rows);
   } catch (err) {
