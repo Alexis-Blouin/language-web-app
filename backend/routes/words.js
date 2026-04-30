@@ -36,7 +36,8 @@ router.get("/get", async (req, res) => {
 
 router.post("/add", async (req, res) => {
   try {
-    const { Hanzi, Pinyin, ChapterId, Translation, TypeId } = req.body;
+    const { Hanzi, Pinyin, ChapterId, CategoryId, Translation, TypeId } =
+      req.body;
 
     await db.beginTransaction();
 
@@ -53,9 +54,9 @@ router.post("/add", async (req, res) => {
       wordId = wordSearchResult[0].WordId;
     } else {
       const [wordResult] = await db.query(
-        `insert into words (Hanzi, Pinyin, ChapterId, TypeId)
-      values (?, ?, ?, ?);`,
-        [Hanzi, Pinyin, ChapterId, TypeId],
+        `insert into words (Hanzi, Pinyin, ChapterId, CategoryId, TypeId)
+      values (?, ?, ?, ?, ?);`,
+        [Hanzi, Pinyin, ChapterId, CategoryId, TypeId],
       );
 
       wordId = wordResult.insertId;

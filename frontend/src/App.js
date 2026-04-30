@@ -68,6 +68,7 @@ const settings = ["Profile", "Logout"];
 function App() {
   const [words, setWords] = useState([]);
   const [chapters, setChapters] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [expressions, setExpressions] = useState([]);
   const [types, setTypes] = useState([]);
 
@@ -82,6 +83,13 @@ function App() {
     axios
       .get("http://localhost:8081/chapters/get")
       .then((res) => setChapters(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8081/categories/get")
+      .then((res) => setCategories(res.data))
       .catch((err) => console.log(err));
   }, []);
 
@@ -269,6 +277,8 @@ function App() {
                 setExpressions={setExpressions}
                 chapters={chapters}
                 setChapters={setChapters}
+                categories={categories}
+                setCategories={setCategories}
                 types={types}
               />
             }
