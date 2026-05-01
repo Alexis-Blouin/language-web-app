@@ -21,7 +21,7 @@ CREATE TABLE `words` (
     `TypeId` int NOT NULL,
     `CategoryId` int DEFAULT NULL,
     PRIMARY KEY (`WordId`),
-    UNIQUE KEY `Hanzi` (`Hanzi`,`Pinyin`,`ChapterId`),
+    UNIQUE KEY `Hanzi` (`Hanzi`,`Pinyin`,`ChapterId`,`CategoryId`),
     KEY `fk_type` (`TypeId`),
     KEY `words_ibfk_1` (`ChapterId`),
     KEY `CategoryId` (`CategoryId`),

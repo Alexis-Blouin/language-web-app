@@ -37,7 +37,7 @@ const style = {
   p: 4,
 };
 
-function WordList({ words, setWords, chapters }) {
+function WordList({ words, setWords, chapters, categories }) {
   const [chapter, setChapter] = React.useState("all");
   const [open, setOpen] = React.useState(false);
   const handleOpen = (word) => {
@@ -180,6 +180,7 @@ function WordList({ words, setWords, chapters }) {
       <EditForm
         word={modalWord}
         chapters={chapters}
+        categories={categories}
         setWords={setWords}
         handleClose={handleClose}
         open={open}

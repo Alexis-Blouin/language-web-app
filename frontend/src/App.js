@@ -266,6 +266,7 @@ function App() {
                 words={words}
                 setWords={setWords}
                 chapters={chapters}
+                categories={categories}
               />
             }
           />

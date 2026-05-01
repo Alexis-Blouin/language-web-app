@@ -11,22 +11,27 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Grid from "@mui/material/Grid";
+import CategorySelect from "./CategorySelect";
 
 function EditForm({
   setWords,
   setExpressions,
   chapters,
   setChapters,
+  categories,
+  setCategories,
   word,
   handleClose,
   open,
   action,
 }) {
-  const [hanzi, setHanzi] = React.useState(word?.Hanzi);
-  const [pinyinVal, setPinyinVal] = React.useState(word?.Pinyin);
-  const [translation, setTranslation] = React.useState(word?.Translation);
-  const [chapter, setChapter] = React.useState(word?.ChapterId); // Default value is 1
+  const [hanzi, setHanzi] = React.useState();
+  const [pinyinVal, setPinyinVal] = React.useState();
+  const [translation, setTranslation] = React.useState();
+  const [chapter, setChapter] = React.useState();
   const [newChapter, setNewChapter] = React.useState();
+  const [category, setCategory] = React.useState();
+  const [newCategory, setNewCategory] = React.useState();
 
   // Update form fields when the word changes
   React.useEffect(() => {
@@ -35,6 +40,7 @@ function EditForm({
       setPinyinVal(word.Pinyin);
       setTranslation(word.Translation);
       setChapter(word.ChapterId);
+      setCategory(word.CategoryId);
     }
   }, [word]);
 
@@ -53,6 +59,10 @@ function EditForm({
     let chapterName = chapters.filter(
       (chap) => chap.ChapterId === parseInt(chapter),
     )[0]?.ChapterName;
+    let categoryId = category;
+    let categoryName = categories.filter(
+      (cat) => cat.CategoryId === parseInt(category),
+    )[0]?.CategoryName;
     try {
       const res = await axios.patch("http://localhost:8081/words/modify", {
         wordId: word.WordId,
@@ -60,6 +70,7 @@ function EditForm({
         newHanzi: hanzi,
         newPinyin: pinyinVal,
         newChapterId: chapterId,
+        newCategoryId: categoryId,
         newTranslation: translation,
         wordTranslationId: word.WordTranslationId,
         typeId: word.TypeId,
@@ -80,6 +91,8 @@ function EditForm({
                   Translation: translation,
                   ChapterId: chapterId,
                   ChapterName: chapterName,
+                  CategoryId: categoryId,
+                  CategoryName: categoryName,
                 }
               : aWord,
           ),
@@ -98,6 +111,8 @@ function EditForm({
                   Translation: translation,
                   ChapterId: chapterId,
                   ChapterName: chapterName,
+                  CategoryId: categoryId,
+                  CategoryName: categoryName,
                 }
               : aExpression,
           ),
@@ -126,6 +141,10 @@ function EditForm({
 
   const handleNewChapterChange = (event) => {
     setNewChapter(event.target.value);
+  };
+
+  const handleNewCategoryChange = (event) => {
+    setNewCategory(event.target.value);
   };
 
   return (
@@ -180,6 +199,25 @@ function EditForm({
               id="chapter-add-form"
               allChapters={false}
               newChapter={true}
+            />
+            {category === "new-category" && (
+              <TextField
+                required
+                id="new-category"
+                name="new-category"
+                label="New Category Name"
+                placeholder="Fruit"
+                value={newCategory}
+                onChange={handleNewCategoryChange}
+              />
+            )}
+            <CategorySelect
+              categories={categories}
+              defaultCategory={category}
+              setCategory={setCategory}
+              id="category-add-form"
+              allCategories={false}
+              newCategory={true}
             />
           </Grid>
         </form>
