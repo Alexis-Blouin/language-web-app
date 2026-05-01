@@ -24,6 +24,7 @@ import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DeleteDialog from "./DeleteDialog";
 import TextField from "@mui/material/TextField";
+import CategorySelect from "./CategorySelect";
 
 const style = {
   position: "absolute",
@@ -39,6 +40,7 @@ const style = {
 
 function WordList({ words, setWords, chapters, categories }) {
   const [chapter, setChapter] = React.useState("all");
+  const [category, setCategory] = React.useState("all");
   const [open, setOpen] = React.useState(false);
   const handleOpen = (word) => {
     setModalWord(word);
@@ -80,9 +82,12 @@ function WordList({ words, setWords, chapters, categories }) {
   const filteredWords = words
     ? words.filter(
         (word) =>
-          chapter === "all" ||
-          (chapter === "no-chapter" && "" === word.Chapter) ||
-          parseInt(chapter) === word.ChapterId,
+          (chapter === "all" ||
+            (chapter === "no-chapter" && "" === word.Chapter) ||
+            parseInt(chapter) === word.ChapterId) &&
+          (category === "all" ||
+            (category === "no-category" && !word.CategoryId) ||
+            parseInt(category) === word.CategoryId),
       )
     : [];
 
@@ -104,6 +109,7 @@ function WordList({ words, setWords, chapters, categories }) {
     { key: "pinyin", label: "Pinyin", width: 150 },
     { key: "translation", label: "Translation", width: 200 },
     { key: "chapter", label: "Chapter", width: 100 },
+    { key: "category", label: "Category", width: 150 },
     { key: "options", label: "Options", width: 100 },
   ];
 
@@ -125,6 +131,11 @@ function WordList({ words, setWords, chapters, categories }) {
           defaultChapter={chapter}
           setChapter={setChapter}
         />
+        <CategorySelect
+          categories={categories}
+          defaultCategory={category}
+          setCategory={setCategory}
+        />
         <TextField
           label="Search"
           type="search"
@@ -139,7 +150,7 @@ function WordList({ words, setWords, chapters, categories }) {
         <TableVirtuoso
           data={searchFilteredWords}
           // overscan={8}
-          style={{ width: "700px", height: "600px" }}
+          style={{ width: "850px", height: "600px" }}
           fixedHeaderContent={() => (
             <TableRow style={{ backgroundColor: "#f5f5f5" }}>
               {columns.map((col) => (
@@ -209,69 +220,6 @@ function Item({
   setModalWord,
   handleDeleteClick,
 }) {
-  const [editing, setEditing] = React.useState(false);
-  const [editChapter, setEditChapter] = React.useState(word.ChapterName);
-
-  // TODO make edit word function
-  const editEntry = (event) => {
-    event.preventDefault();
-    setEditing(true);
-  };
-
-  const editSubmit = async (event) => {
-    event.preventDefault();
-
-    const hanzi = event.target.hanzi.value;
-    const pinyinInput = event.target.pinyin.value;
-    // If the pinyin value was edited, we take this one, else, we get the pinyin with pinyin-pro
-    const pinyinVal =
-      (pinyinInput === word.Pinyin && hanzi !== word.Hanzi) ||
-      pinyinInput === ""
-        ? pinyin(hanzi)
-        : pinyinInput;
-    const translation = event.target.translation.value;
-    const chapterId = parseInt(editChapter);
-    const chapterName = chapters.filter(
-      (chapter) => chapter.ChapterId === chapterId,
-    )[0].ChapterName;
-
-    const res = await axios.patch("http://localhost:8081/words/modify", {
-      wordId: word.WordId,
-      translationId: word.TranslationId,
-      newHanzi: hanzi,
-      newPinyin: pinyinVal,
-      newChapterId: chapterId,
-      newTranslation: translation,
-      wordTranslationId: word.WordTranslationId,
-      typeId: word.TypeId,
-    });
-
-    // TODO update word Id and translation Id since if re-creating a word it won't allow to delete after
-    setWords((prevWords) =>
-      prevWords.map((aWord) =>
-        aWord.WordId === word.WordId
-          ? {
-              ...aWord,
-              WordId: res.data.wordId,
-              Hanzi: hanzi,
-              Pinyin: pinyinVal,
-              TranslationId: res.data.translationId,
-              Translation: translation,
-              ChapterId: chapterId,
-              ChapterName: chapterName,
-            }
-          : aWord,
-      ),
-    );
-
-    setEditing(false);
-  };
-
-  const editCancel = (event) => {
-    event.preventDefault();
-    setEditing(false);
-  };
-
   return (
     <React.Fragment>
       <TableCell style={{ padding: "8px", alignContent: "center" }}>
@@ -285,6 +233,9 @@ function Item({
       </TableCell>
       <TableCell style={{ padding: "8px", alignContent: "center" }}>
         {word.ChapterName}
+      </TableCell>
+      <TableCell style={{ padding: "8px", alignContent: "center" }}>
+        {word.CategoryName}
       </TableCell>
       <TableCell
         className="options"
