@@ -10,6 +10,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Stack from "@mui/material/Stack";
 import ReplayIcon from "@mui/icons-material/Replay";
 import Button from "@mui/material/Button";
+import CategorySelect from "./CategorySelect";
 
 const style = {
   position: "absolute",
@@ -23,8 +24,9 @@ const style = {
   p: 4,
 };
 
-function WordListHidden({ words, chapters }) {
+function WordListHidden({ words, chapters, categories }) {
   const [chapter, setChapter] = React.useState("all");
+  const [category, setCategory] = React.useState("all");
   const [hiddenColumns, setHiddenColumns] = React.useState({
     hanzi: false,
     pinyin: false,
@@ -66,9 +68,12 @@ function WordListHidden({ words, chapters }) {
   const filteredWords = words
     ? words.filter(
         (word) =>
-          chapter === "all" ||
-          (chapter === "no-chapter" && "" === word.Chapter) ||
-          parseInt(chapter) === word.ChapterId,
+          (chapter === "all" ||
+            (chapter === "no-chapter" && "" === word.Chapter) ||
+            parseInt(chapter) === word.ChapterId) &&
+          (category === "all" ||
+            (category === "no-category" && !word.CategoryId) ||
+            parseInt(category) === word.CategoryId),
       )
     : [];
 
@@ -95,6 +100,12 @@ function WordListHidden({ words, chapters }) {
           chapters={chapters}
           defaultChapter={chapter}
           setChapter={setChapter}
+          onChange={resetHidden}
+        />
+        <CategorySelect
+          categories={categories}
+          defaultCategory={category}
+          setCategory={setCategory}
           onChange={resetHidden}
         />
         <Button

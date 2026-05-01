@@ -286,7 +286,13 @@ function App() {
           />
           <Route
             path="/list_hidden"
-            element={<WordListHidden words={words} chapters={chapters} />}
+            element={
+              <WordListHidden
+                words={words}
+                chapters={chapters}
+                categories={categories}
+              />
+            }
           />
           <Route path="/word_guess" element={<WordGuess words={words} />} />
           <Route
