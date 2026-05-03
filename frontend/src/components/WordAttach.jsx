@@ -3,14 +3,14 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { pinyin } from "pinyin-pro";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import toast from "react-simple-toasts";
 
 function WordAttach({ words }) {
   const [listLeft, setListLeft] = React.useState([]);
   const [listRight, setListRight] = React.useState([]);
   const [wordCount, setWordCount] = React.useState(5);
-  const [confirmDisabled, setConfirmDisabled] = React.useState(true);
+  const [isCorrect, setIsCorrect] = React.useState(false);
   // Lines elements
   const [connections, setConnections] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -41,7 +41,6 @@ function WordAttach({ words }) {
     setListLeft(shuffleList(newLeft));
     setListRight(shuffleList(newRight));
     setConnections([]);
-    setConfirmDisabled(true);
   }, [words, wordCount]);
 
   const shuffleList = (list) => {
@@ -70,11 +69,10 @@ function WordAttach({ words }) {
         { left, right },
       ]);
       setSelected(null);
-      // Since we use states, it won't be updated before the end of the function, so we check for wordCount - 1
-      // TODO fix that check. allows to change the fourth one and enable the button
-      if (connections.length === wordCount - 1) setConfirmDisabled(false);
     }
   };
+
+  const confirmDisabled = connections.length !== wordCount || isCorrect;
 
   const getLineCoords = (leftIndex, rightIndex) => {
     const container = containerRef.current?.getBoundingClientRect();
@@ -92,9 +90,6 @@ function WordAttach({ words }) {
   };
 
   const verify = () => {
-    console.log(connections);
-    console.log(listLeft);
-    console.log(listRight);
     let errorCount = 0;
     connections.forEach((connection) => {
       if (
@@ -105,9 +100,9 @@ function WordAttach({ words }) {
       }
     });
     if (errorCount === 0) {
-      setConfirmDisabled(true);
+      setIsCorrect(true);
       setTimeout(() => {
-        setConfirmDisabled(false);
+        setIsCorrect(false);
         generateRandomWords();
       }, 2000);
       toast("Correct!", { theme: "success" });
