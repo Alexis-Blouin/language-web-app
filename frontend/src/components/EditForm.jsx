@@ -76,7 +76,6 @@ function EditForm({
         typeId: word.TypeId,
       });
 
-      // TODO update word Id and translation Id since if re-creating a word it won't allow to delete after
       if (action === "Word") {
         setWords((prevWords) =>
           prevWords.map((aWord) =>

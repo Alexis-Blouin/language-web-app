@@ -83,18 +83,25 @@ router.post("/add", async (req, res) => {
     }
 
     // Inserts the key pair for the word and it's translation
-    await db.query(
+    const [wordTranslationResult] = await db.query(
       `INSERT INTO wordtranslations (WordId, TranslationId)
       VALUES (?, ?)`,
       [wordId, translationId],
     );
+    wordTranslationId = wordTranslationResult.insertId;
 
     await db.commit();
 
+    console.log({
+      message: "Word added successfully",
+      wordId: wordId,
+      translationId: translationId,
+    });
     res.json({
       message: "Word added successfully",
       wordId: wordId,
       translationId: translationId,
+      wordTranslationId: wordTranslationId,
     });
   } catch (err) {
     console.error(err);
@@ -144,6 +151,12 @@ router.patch("/modify", async (req, res) => {
       wordTranslationId,
       typeId,
     } = req.body;
+    console.log({
+      message: "Word to modify",
+      wordId: wordId,
+      translationId: translationId,
+      wordTranslationId: wordTranslationId,
+    });
     // Check if new word/translation exists
     const wordSelect = await selectOneWord(
       newHanzi,
@@ -168,6 +181,8 @@ router.patch("/modify", async (req, res) => {
       newWordId = wordSelect.WordId;
     }
     if (translationSelect === null) {
+      console.log("insert translation");
+
       [result] = await db.query(
         `insert into translations (Translation)
       values (?)`,
@@ -175,6 +190,7 @@ router.patch("/modify", async (req, res) => {
       );
       newTranslationId = result.insertId;
     } else {
+      console.log("not insert translation");
       newTranslationId = translationSelect.TranslationId;
     }
     // Update the link table with new Ids
@@ -189,6 +205,8 @@ router.patch("/modify", async (req, res) => {
       await maybeDeleteWord(wordId);
     }
     if (translationId !== newTranslationId) {
+      console.log("update translation");
+
       await db.query(
         `update wordtranslations
       set TranslationId = ?
@@ -201,10 +219,15 @@ router.patch("/modify", async (req, res) => {
 
     await db.commit();
 
+    console.log({
+      message: "Word modified successfully",
+      wordId: newWordId,
+      translationId: newTranslationId,
+    });
     res.json({
       message: "Word modified successfully",
-      wordId: wordId,
-      translationId: translationId,
+      wordId: newWordId,
+      translationId: newTranslationId,
     });
   } catch (err) {
     console.error(err);

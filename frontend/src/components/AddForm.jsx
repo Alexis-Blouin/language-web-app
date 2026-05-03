@@ -101,10 +101,11 @@ function AddForm({
           Translation: tr,
           TypeId: typeVal,
         });
+        const wordTranslationId = res.data.wordTranslationId;
         const wordId = res.data.wordId;
         const translationId = res.data.translationId;
-        // TODO the word can't properly be deleted from the table without a page reload (deletes from page, but not db)
         const newWordEntry = {
+          WordTranslationId: wordTranslationId,
           WordId: wordId,
           Hanzi: hanzi,
           Pinyin:
