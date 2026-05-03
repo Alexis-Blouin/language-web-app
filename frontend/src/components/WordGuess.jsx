@@ -20,7 +20,11 @@ toastConfig({
 });
 
 function WordGuess({ words }) {
-  // TODO Find a solution to avoid having to press the reset button after a reload.
+  // Set the word once words is actually loaded
+  React.useEffect(() => {
+    if (words) setWord(pickRandomWord());
+  }, [words]);
+
   const concatWords = React.useMemo(() => {
     const result = {};
 
@@ -48,7 +52,7 @@ function WordGuess({ words }) {
     return {
       question: hideHanzi ? randomTranslations : randomKey,
       answer: hideHanzi ? randomKey : randomTranslations,
-      hideHanzi,
+      hanzi: hideHanzi,
     };
   };
   const [word, setWord] = useState(pickRandomWord);
@@ -73,6 +77,7 @@ function WordGuess({ words }) {
       <Typography variant="h5">
         {word.question}
         {!word.hideHanzi && (
+          // TODO use the pinyin from the DB instead since the function does not always return the same
           <Typography variant="caption"> ({pinyin(word.question)})</Typography>
         )}
       </Typography>
