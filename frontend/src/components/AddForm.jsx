@@ -53,33 +53,39 @@ function AddForm({
         const res = await axios.post("http://localhost:8081/chapters/add", {
           ChapterName: newChapter,
         });
-        chapterId = res.data;
+        chapterId = res.data.chapterId;
+        const added = res.data.added;
         chapterName = newChapter;
 
-        const newChapterEntry = {
-          ChapterId: parseInt(chapterId),
-          ChapterName: newChapter,
-        };
-        setChapters((prevChapters) => [...prevChapters, newChapterEntry]);
+        // If the chapter was added, we add it to the list, else, it means it was already there
+        if (added) {
+          const newChapterEntry = {
+            ChapterId: parseInt(chapterId),
+            ChapterName: newChapter,
+          };
+          setChapters((prevChapters) => [...prevChapters, newChapterEntry]);
+        }
       } else if (chapter === "no-chapter") {
         chapterId = null;
       }
-      // TODO still add the word if the chapter already exists
       if (category === "new-category") {
         const res = await axios.post("http://localhost:8081/categories/add", {
           CategoryName: newCategory,
         });
-        categoryId = res.data;
+        categoryId = res.data.categoryId;
+        const added = res.data.added;
         categoryName = newCategory;
 
-        const newCategoryEntry = {
-          CategoryId: parseInt(categoryId),
-          CategoryName: newCategory,
-        };
-        setCategories((prevCategories) => [
-          ...prevCategories,
-          newCategoryEntry,
-        ]);
+        if (added) {
+          const newCategoryEntry = {
+            CategoryId: parseInt(categoryId),
+            CategoryName: newCategory,
+          };
+          setCategories((prevCategories) => [
+            ...prevCategories,
+            newCategoryEntry,
+          ]);
+        }
       } else if (category === "no-category") {
         categoryId = null;
       }

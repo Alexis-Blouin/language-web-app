@@ -25,6 +25,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DeleteDialog from "./DeleteDialog";
 import TextField from "@mui/material/TextField";
 import CategorySelect from "./CategorySelect";
+import toast from "react-simple-toasts";
 
 const style = {
   position: "absolute",
@@ -77,6 +78,7 @@ function WordList({ words, setWords, chapters, categories }) {
       ),
     );
     setDeleteDialogOpen(false);
+    toast("Word Deleted!", { theme: "success" });
   };
 
   const filteredWords = words

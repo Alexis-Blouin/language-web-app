@@ -16,11 +16,23 @@ router.get("/get", async (req, res) => {
 
 router.post("/add", async (req, res) => {
   try {
-    const [chaptersResult] = await db.query(
-      `insert into chapters (ChapterName) values (?)`,
-      [req.body.ChapterName],
-    );
-    res.json(chaptersResult.insertId);
+    const chapterName = req.body.ChapterName;
+    const chapter = await selectOneChapter(chapterName);
+    if (chapter) {
+      res.json({
+        chapterId: chapter.ChapterId,
+        added: false,
+      });
+    } else {
+      const [chaptersResult] = await db.query(
+        `insert into chapters (ChapterName) values (?)`,
+        [chapterName],
+      );
+      res.json({
+        chapterId: chaptersResult.insertId,
+        added: true,
+      });
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json(err);
@@ -28,3 +40,17 @@ router.post("/add", async (req, res) => {
 });
 
 module.exports = router;
+
+async function selectOneChapter(chapter) {
+  try {
+    const [result] = await db.query(
+      `select ChapterId from chapters
+      where ChapterName = ?`,
+      [chapter],
+    );
+    return result.length > 0 ? result[0] : null;
+  } catch (err) {
+    console.error(err);
+    return {};
+  }
+}
