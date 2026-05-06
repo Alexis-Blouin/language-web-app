@@ -302,6 +302,7 @@ function App() {
                 expressions={expressions}
                 setExpressions={setExpressions}
                 chapters={chapters}
+                categories={categories}
               />
             }
           />

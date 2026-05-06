@@ -138,6 +138,7 @@ router.delete("/delete", async (req, res) => {
   }
 });
 
+// TODO can't add good and Good. Would be nice to make it case sensitive, but need to modify the table settings I think
 router.patch("/modify", async (req, res) => {
   try {
     const {
@@ -153,9 +154,7 @@ router.patch("/modify", async (req, res) => {
     } = req.body;
     console.log({
       message: "Word to modify",
-      wordId: wordId,
-      translationId: translationId,
-      wordTranslationId: wordTranslationId,
+      newTranslation: newTranslation,
     });
     // Check if new word/translation exists
     const wordSelect = await selectOneWord(

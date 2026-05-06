@@ -18,7 +18,12 @@ import DeleteDialog from "./DeleteDialog";
 import EditForm from "./EditForm";
 import Button from "@mui/material/Button";
 
-function ExpressionsList({ expressions, setExpressions, chapters }) {
+function ExpressionsList({
+  expressions,
+  setExpressions,
+  chapters,
+  categories,
+}) {
   const [chapter, setChapter] = React.useState("all");
   const [open, setOpen] = React.useState(false);
   const handleOpen = (word) => {
@@ -159,6 +164,7 @@ function ExpressionsList({ expressions, setExpressions, chapters }) {
       <EditForm
         word={modalWord}
         chapters={chapters}
+        categories={categories}
         setExpressions={setExpressions}
         handleClose={handleClose}
         open={open}
