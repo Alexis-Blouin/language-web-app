@@ -25,6 +25,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Grid from "@mui/material/Grid";
+import Notes from "./components/Notes";
 
 // A soft, easy-on-the-eyes theme with a light neutral background and refined colors
 const theme = createTheme({
@@ -61,6 +62,7 @@ const pages = [
   { name: "Word Guess", path: "/word_guess" },
   { name: "Expressions", path: "/expressions" },
   { name: "Word Attach", path: "/word_attach" },
+  { name: "Notes", path: "/notes" },
   { name: "Test Component", path: "/test" },
 ];
 const settings = ["Profile", "Logout"];
@@ -307,6 +309,7 @@ function App() {
             }
           />
           <Route path="/word_attach" element={<WordAttach words={words} />} />
+          <Route path="/notes" element={<Notes />} />
           <Route path="/test" element={<TestComponent />} />
         </Routes>
       </Router>

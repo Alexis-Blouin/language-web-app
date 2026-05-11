@@ -35,6 +35,7 @@ router.get("/get", async (req, res) => {
 });
 
 router.post("/add", async (req, res) => {
+  // Trim words before adding to database to avoid issues with duplicates and searching
   try {
     const { Hanzi, Pinyin, ChapterId, CategoryId, Translation, TypeId } =
       req.body;

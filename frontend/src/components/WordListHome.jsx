@@ -224,7 +224,9 @@ function Item({
 }) {
   return (
     <React.Fragment>
-      <TableCell style={{ padding: "8px", alignContent: "center" }}>
+      <TableCell
+        style={{ padding: "8px", alignContent: "center", fontSize: "24px" }}
+      >
         {word.Hanzi}
       </TableCell>
       <TableCell style={{ padding: "8px", alignContent: "center" }}>
