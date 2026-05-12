@@ -3,6 +3,10 @@ import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import Button from "@mui/material/Button";
 
 function FocusedNote({ note, open, handleClose, onSave }) {
   const [editingField, setEditingField] = useState(null);
@@ -38,10 +42,14 @@ function FocusedNote({ note, open, handleClose, onSave }) {
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <Box sx={{ p: 4, width: "400px" }}>
+      <DialogTitle>
         {editingField === "title" ? (
           <TextField
             fullWidth
+            id="title"
+            name="title"
+            label="Title"
+            placeholder="My note title"
             value={editValue}
             onChange={(event) => setEditValue(event.target.value)}
             onBlur={saveEdit}
@@ -51,18 +59,23 @@ function FocusedNote({ note, open, handleClose, onSave }) {
         ) : (
           <Typography
             variant="h4"
-            onDoubleClick={() => startEditing("title", note?.title)}
+            onDoubleClick={() => startEditing("title", note?.NoteTitle)}
             sx={{ cursor: "pointer" }}
           >
-            {note?.title}
+            {note?.NoteTitle}
           </Typography>
         )}
-
+      </DialogTitle>
+      <DialogContent sx={{ p: 4, width: "400px" }}>
         {editingField === "content" ? (
           <TextField
             fullWidth
             multiline
             minRows={4}
+            id="content"
+            name="content"
+            label="Content"
+            placeholder="My note content..."
             value={editValue}
             onChange={(event) => setEditValue(event.target.value)}
             onBlur={saveEdit}
@@ -73,13 +86,49 @@ function FocusedNote({ note, open, handleClose, onSave }) {
         ) : (
           <Typography
             variant="body1"
-            onDoubleClick={() => startEditing("content", note?.content)}
+            onDoubleClick={() => startEditing("content", note?.NoteContent)}
             sx={{ mt: 2, cursor: "pointer" }}
           >
-            {note?.content}
+            {note?.NoteContent}
           </Typography>
         )}
-      </Box>
+        {editingField === "example" ? (
+          <TextField
+            fullWidth
+            multiline
+            minRows={4}
+            id="example"
+            name="example"
+            label="Example"
+            placeholder="My note example..."
+            value={editValue}
+            onChange={(event) => setEditValue(event.target.value)}
+            onBlur={saveEdit}
+            onKeyDown={handleKeyDown}
+            autoFocus
+            sx={{ mt: 2 }}
+          />
+        ) : (
+          <Typography
+            variant="body1"
+            onDoubleClick={() => startEditing("example", note?.NoteExample)}
+            sx={{ mt: 2, cursor: "pointer" }}
+          >
+            {note?.NoteExample}
+          </Typography>
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button
+          type="submit"
+          form="editForm"
+          color="primary"
+          variant="contained"
+        >
+          Save
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 }

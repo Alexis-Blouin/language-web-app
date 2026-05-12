@@ -1,4 +1,5 @@
 /*Initial setup of the db, probly will change and I forget to update it, sry*/
+/* TODO rename columns with first letter not capitalized */
 CREATE TABLE `chapters` (
     `ChapterId` int NOT NULL AUTO_INCREMENT,
     `ChapterName` varchar(255) DEFAULT NULL,
@@ -53,4 +54,13 @@ CREATE TABLE `wordtypes` (
     `TypeName` varchar(255) DEFAULT NULL,
     PRIMARY KEY (`TypeId`),
     UNIQUE KEY `TypeName` (`TypeName`)
+)
+
+CREATE TABLE `notes` (
+    `NoteId` int NOT NULL AUTO_INCREMENT,
+    `NoteTitle` varchar(255) NOT NULL,
+    `NoteContent` text NOT NULL,
+    `NoteExample` text,
+    PRIMARY KEY (`NoteId`),
+    UNIQUE KEY `NoteTitle` (`NoteTitle`)
 )
