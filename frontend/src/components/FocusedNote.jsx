@@ -7,127 +7,161 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import Button from "@mui/material/Button";
+import axios from "axios";
+import toast from "react-simple-toasts";
 
-function FocusedNote({ note, open, handleClose, onSave }) {
-  const [editingField, setEditingField] = useState(null);
-  const [editValue, setEditValue] = useState("");
+function FocusedNote({ note, setNotes, open, handleClose }) {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [example, setExample] = useState("");
 
   useEffect(() => {
-    setEditingField(null);
-    setEditValue("");
+    if (note) {
+      setTitle(note.NoteTitle);
+      setContent(note.NoteContent);
+      setExample(note.NoteExample);
+    }
   }, [note]);
 
-  const startEditing = (field, value) => {
-    setEditingField(field);
-    setEditValue(value ?? "");
+  const [isEditing, setIsEditing] = useState(false);
+
+  const startEditing = () => {
+    setIsEditing(true);
   };
 
-  const saveEdit = () => {
-    if (!editingField || !note) {
-      setEditingField(null);
-      return;
-    }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const res = await axios.patch("http://localhost:8081/notes/update", {
+        noteId: note.NoteId,
+        noteTitle: title,
+        noteContent: content,
+        noteExample: example,
+      });
+      const updated = res.data.updated;
 
-    onSave?.({ [editingField]: editValue });
-    setEditingField(null);
+      if (updated) {
+        setNotes((prevNotes) =>
+          prevNotes.map((n) =>
+            n.NoteId === note.NoteId
+              ? {
+                  ...n,
+                  NoteTitle: title,
+                  NoteContent: content,
+                  NoteExample: example,
+                }
+              : n,
+          ),
+        );
+        close();
+        toast("Note updated successfully!");
+      } else {
+        toast("Failed to update note. Please try again.");
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      saveEdit();
-    } else if (event.key === "Escape") {
-      setEditingField(null);
+  const close = () => {
+    handleClose();
+
+    if (isEditing) {
+      setTitle(note.NoteTitle);
+      setContent(note.NoteContent);
+      setExample(note.NoteExample);
     }
+
+    setIsEditing(false);
   };
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>
-        {editingField === "title" ? (
-          <TextField
-            fullWidth
-            id="title"
-            name="title"
-            label="Title"
-            placeholder="My note title"
-            value={editValue}
-            onChange={(event) => setEditValue(event.target.value)}
-            onBlur={saveEdit}
-            onKeyDown={handleKeyDown}
-            autoFocus
-          />
-        ) : (
-          <Typography
-            variant="h4"
-            onDoubleClick={() => startEditing("title", note?.NoteTitle)}
-            sx={{ cursor: "pointer" }}
-          >
-            {note?.NoteTitle}
-          </Typography>
-        )}
-      </DialogTitle>
-      <DialogContent sx={{ p: 4, width: "400px" }}>
-        {editingField === "content" ? (
-          <TextField
-            fullWidth
-            multiline
-            minRows={4}
-            id="content"
-            name="content"
-            label="Content"
-            placeholder="My note content..."
-            value={editValue}
-            onChange={(event) => setEditValue(event.target.value)}
-            onBlur={saveEdit}
-            onKeyDown={handleKeyDown}
-            autoFocus
-            sx={{ mt: 2 }}
-          />
-        ) : (
-          <Typography
-            variant="body1"
-            onDoubleClick={() => startEditing("content", note?.NoteContent)}
-            sx={{ mt: 2, cursor: "pointer" }}
-          >
-            {note?.NoteContent}
-          </Typography>
-        )}
-        {editingField === "example" ? (
-          <TextField
-            fullWidth
-            multiline
-            minRows={4}
-            id="example"
-            name="example"
-            label="Example"
-            placeholder="My note example..."
-            value={editValue}
-            onChange={(event) => setEditValue(event.target.value)}
-            onBlur={saveEdit}
-            onKeyDown={handleKeyDown}
-            autoFocus
-            sx={{ mt: 2 }}
-          />
-        ) : (
-          <Typography
-            variant="body1"
-            onDoubleClick={() => startEditing("example", note?.NoteExample)}
-            sx={{ mt: 2, cursor: "pointer" }}
-          >
-            {note?.NoteExample}
-          </Typography>
-        )}
-      </DialogContent>
+      <form id="editForm" onSubmit={handleSubmit}>
+        <DialogTitle>
+          {isEditing ? (
+            <TextField
+              fullWidth
+              id="title"
+              name="title"
+              label="Title"
+              placeholder="My note title"
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+            />
+          ) : (
+            <Typography
+              variant="h4"
+              onDoubleClick={() => startEditing("title", note?.NoteTitle)}
+              sx={{ cursor: "pointer" }}
+            >
+              {note?.NoteTitle}
+            </Typography>
+          )}
+        </DialogTitle>
+        <DialogContent sx={{ p: 4, width: "400px" }}>
+          {isEditing ? (
+            <TextField
+              fullWidth
+              multiline
+              minRows={4}
+              id="content"
+              name="content"
+              label="Content"
+              placeholder="My note content..."
+              value={content}
+              onChange={(event) => setContent(event.target.value)}
+              sx={{ mt: 2 }}
+            />
+          ) : (
+            <Typography
+              variant="body1"
+              onDoubleClick={() => startEditing("content", note?.NoteContent)}
+              sx={{ mt: 2, cursor: "pointer" }}
+            >
+              {note?.NoteContent}
+            </Typography>
+          )}
+          {isEditing === true ? (
+            <TextField
+              fullWidth
+              multiline
+              minRows={4}
+              id="example"
+              name="example"
+              label="Example"
+              placeholder="My note example..."
+              value={example}
+              onChange={(event) => setExample(event.target.value)}
+              sx={{ mt: 2 }}
+            />
+          ) : (
+            <Typography
+              variant="body1"
+              onDoubleClick={() => startEditing()}
+              sx={{ mt: 2, cursor: "pointer" }}
+            >
+              {note?.NoteExample}
+            </Typography>
+          )}
+        </DialogContent>
+      </form>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button
-          type="submit"
-          form="editForm"
-          color="primary"
-          variant="contained"
-        >
-          Save
-        </Button>
+        {isEditing ? (
+          <>
+            <Button onClick={close}>Cancel</Button>
+            <Button
+              type="submit"
+              form="editForm"
+              color="primary"
+              variant="contained"
+            >
+              Save
+            </Button>
+          </>
+        ) : (
+          <Button onClick={startEditing}>Edit</Button>
+        )}
       </DialogActions>
     </Dialog>
   );

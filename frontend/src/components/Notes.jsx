@@ -57,9 +57,9 @@ function Notes() {
       </Grid>
       <FocusedNote
         note={selectedNote}
+        setNotes={setNotes}
         open={openNote}
         handleClose={handleClose}
-        onSave={(updates) => updateNote(selectedNoteIndex, updates)}
       />
       <FocusedAddNote
         setNotes={setNotes}
@@ -82,12 +82,12 @@ function Item({ note, index, handleOpen }) {
         onClick={() => handleOpen(note, index)}
       >
         <Typography variant="h4">{note.NoteTitle}</Typography>
-        <Typography variant="body1">
+        <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
           {note.NoteContent.length > 100
             ? note.NoteContent.substring(0, 100) + "..."
             : note.NoteContent}
         </Typography>
-        <Typography variant="body2">
+        <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
           {note.NoteExample.length > 100
             ? note.NoteExample.substring(0, 100) + "..."
             : note.NoteExample}

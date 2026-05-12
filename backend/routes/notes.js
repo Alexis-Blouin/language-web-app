@@ -41,6 +41,33 @@ router.post("/add", async (req, res) => {
   }
 });
 
+router.patch("/update", async (req, res) => {
+  try {
+    const noteId = req.body.noteId;
+    const noteTitle = req.body.noteTitle;
+    const noteContent = req.body.noteContent;
+    const noteExample = req.body.noteExample;
+
+    const note = await selectOneNote(noteTitle);
+    if (note && note.NoteId !== noteId) {
+      res.json({
+        updated: false,
+      });
+    } else {
+      await db.query(
+        `update notes set NoteTitle = ?, NoteContent = ?, NoteExample = ? where NoteId = ?`,
+        [noteTitle, noteContent, noteExample, noteId],
+      );
+      res.json({
+        updated: true,
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
 
 async function selectOneNote(noteTitle) {
