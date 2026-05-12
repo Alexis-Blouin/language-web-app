@@ -86,7 +86,7 @@ function ExpressionsList({
     : filteredExpressions;
 
   const columns = [
-    { key: "hanzi", label: "Hanzi", width: 150 },
+    { key: "hanzi", label: "Hanzi", width: 300 },
     { key: "pinyin", label: "Pinyin", width: 200 },
     { key: "translation", label: "Translation", width: 300 },
     { key: "options", label: "Options", width: 100 },
@@ -123,7 +123,7 @@ function ExpressionsList({
         <TableVirtuoso
           data={searchFilteredExpressions}
           // overscan={8}
-          style={{ width: "700px", height: "600px" }}
+          style={{ width: "850px", height: "600px" }}
           fixedHeaderContent={() => (
             <TableRow style={{ backgroundColor: "#f5f5f5" }}>
               {columns.map((col) => (
@@ -276,7 +276,9 @@ function Item({
 
   return (
     <React.Fragment>
-      <TableCell style={{ padding: "8px", alignContent: "center" }}>
+      <TableCell
+        style={{ padding: "8px", alignContent: "center", fontSize: "24px" }}
+      >
         {expression.Hanzi}
       </TableCell>
       <TableCell style={{ padding: "8px", alignContent: "center" }}>

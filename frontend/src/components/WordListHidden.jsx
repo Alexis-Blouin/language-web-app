@@ -78,7 +78,7 @@ function WordListHidden({ words, chapters, categories }) {
     : [];
 
   const columns = [
-    { key: "hanzi", label: "Hanzi", width: 100 },
+    { key: "hanzi", label: "Hanzi", width: 200 },
     { key: "pinyin", label: "Pinyin", width: 150 },
     { key: "translation", label: "Translation", width: 200 },
   ];
@@ -122,7 +122,7 @@ function WordListHidden({ words, chapters, categories }) {
         <TableVirtuoso
           data={filteredWords}
           // overscan={8}
-          style={{ width: "450px", height: "600px" }}
+          style={{ width: "550px", height: "600px" }}
           fixedHeaderContent={() => (
             <TableRow style={{ backgroundColor: "#f5f5f5" }}>
               {columns.map((col) => (
@@ -189,7 +189,7 @@ function Item({ word, hiddenColumns, transitioningColumns, test }) {
       <TableCell
         className={getClassName("hanzi")}
         onClick={unhideWord}
-        style={{ padding: "8px", alignContent: "center" }}
+        style={{ padding: "8px", alignContent: "center", fontSize: "24px" }}
       >
         {word.Hanzi}
       </TableCell>

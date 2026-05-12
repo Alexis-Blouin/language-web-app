@@ -107,7 +107,7 @@ function WordList({ words, setWords, chapters, categories }) {
     : filteredWords;
 
   const columns = [
-    { key: "hanzi", label: "Hanzi", width: 100 },
+    { key: "hanzi", label: "Hanzi", width: 200 },
     { key: "pinyin", label: "Pinyin", width: 150 },
     { key: "translation", label: "Translation", width: 200 },
     { key: "chapter", label: "Chapter", width: 100 },
@@ -152,7 +152,7 @@ function WordList({ words, setWords, chapters, categories }) {
         <TableVirtuoso
           data={searchFilteredWords}
           // overscan={8}
-          style={{ width: "850px", height: "600px" }}
+          style={{ width: "950px", height: "600px" }}
           fixedHeaderContent={() => (
             <TableRow style={{ backgroundColor: "#f5f5f5" }}>
               {columns.map((col) => (
