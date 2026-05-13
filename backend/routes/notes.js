@@ -24,6 +24,7 @@ router.post("/add", async (req, res) => {
       res.json({
         noteId: note.NoteId,
         added: false,
+        message: "Note with the same title already exists",
       });
     } else {
       const [notesResult] = await db.query(
@@ -33,6 +34,7 @@ router.post("/add", async (req, res) => {
       res.json({
         noteId: notesResult.insertId,
         added: true,
+        message: "Note added successfully",
       });
     }
   } catch (err) {
@@ -62,6 +64,19 @@ router.patch("/update", async (req, res) => {
         updated: true,
       });
     }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+});
+
+router.delete("/delete", async (req, res) => {
+  try {
+    const noteId = req.query.noteId;
+    await db.query(`delete from notes where NoteId = ?`, [noteId]);
+    res.json({
+      deleted: true,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json(err);

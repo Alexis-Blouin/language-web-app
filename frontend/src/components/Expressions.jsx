@@ -175,7 +175,7 @@ function ExpressionsList({
         deleteDialogOpen={deleteDialogOpen}
         handleDeleteCancel={handleDeleteCancel}
         handleDeleteConfirm={handleDeleteConfirm}
-        word={modalWord}
+        content={modalWord?.Hanzi}
         action="Expression"
       />
     </Stack>

@@ -9,11 +9,23 @@ import DialogContent from "@mui/material/DialogContent";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import toast from "react-simple-toasts";
+import EditSquareIcon from "@mui/icons-material/EditSquare";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import DeleteDialog from "./DeleteDialog";
 
 function FocusedNote({ note, setNotes, open, handleClose }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [example, setExample] = useState("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const handleDeleteClick = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+  };
 
   useEffect(() => {
     if (note) {
@@ -27,6 +39,10 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
 
   const startEditing = () => {
     setIsEditing(true);
+  };
+
+  const stopEditing = () => {
+    setIsEditing(false);
   };
 
   const handleSubmit = async (event) => {
@@ -75,6 +91,27 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
     setIsEditing(false);
   };
 
+  const handleDeleteConfirm = async () => {
+    try {
+      const res = await axios.delete("http://localhost:8081/notes/delete", {
+        params: { noteId: note.NoteId },
+      });
+      if (res.data.deleted) {
+        setNotes((prevNotes) =>
+          prevNotes.filter((n) => n.NoteId !== note.NoteId),
+        );
+        close();
+        setDeleteDialogOpen(false);
+        toast("Note deleted successfully!");
+      } else {
+        toast("Failed to delete note. Please try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast("Failed to delete note. Please try again.");
+    }
+  };
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <form id="editForm" onSubmit={handleSubmit}>
@@ -93,7 +130,6 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
             <Typography
               variant="h4"
               onDoubleClick={() => startEditing("title", note?.NoteTitle)}
-              sx={{ cursor: "pointer" }}
             >
               {note?.NoteTitle}
             </Typography>
@@ -117,7 +153,7 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
             <Typography
               variant="body1"
               onDoubleClick={() => startEditing("content", note?.NoteContent)}
-              sx={{ mt: 2, cursor: "pointer" }}
+              sx={{ mt: 2 }}
             >
               {note?.NoteContent}
             </Typography>
@@ -139,7 +175,7 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
             <Typography
               variant="body1"
               onDoubleClick={() => startEditing()}
-              sx={{ mt: 2, cursor: "pointer" }}
+              sx={{ mt: 2 }}
             >
               {note?.NoteExample}
             </Typography>
@@ -149,7 +185,7 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
       <DialogActions>
         {isEditing ? (
           <>
-            <Button onClick={close}>Cancel</Button>
+            <Button onClick={stopEditing}>Cancel</Button>
             <Button
               type="submit"
               form="editForm"
@@ -160,9 +196,23 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
             </Button>
           </>
         ) : (
-          <Button onClick={startEditing}>Edit</Button>
+          <>
+            <Button onClick={startEditing}>
+              <EditSquareIcon />
+            </Button>
+            <Button onClick={handleDeleteClick}>
+              <DeleteForeverIcon />
+            </Button>
+          </>
         )}
       </DialogActions>
+      <DeleteDialog
+        deleteDialogOpen={deleteDialogOpen}
+        handleDeleteCancel={handleDeleteCancel}
+        handleDeleteConfirm={handleDeleteConfirm}
+        content={note?.NoteTitle}
+        action="Note"
+      />
     </Dialog>
   );
 }

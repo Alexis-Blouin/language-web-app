@@ -26,6 +26,7 @@ function AddNote({ setNotes, open, handleClose }) {
       });
       const noteId = res.data.noteId;
       const added = res.data.added;
+      const message = res.data.message;
 
       if (added) {
         const newNote = {
@@ -35,9 +36,15 @@ function AddNote({ setNotes, open, handleClose }) {
           NoteExample: example,
         };
         setNotes((prevNotes) => [...prevNotes, newNote]);
-        toast("Note added successfully!");
+
+        // Reset form fields
+        setTitle("");
+        setContent("");
+        setExample("");
+
+        toast(message, { theme: "success" });
       } else {
-        toast("Failed to add note. Please try again.");
+        toast(message, { theme: "failure" });
       }
       handleClose();
     } catch (err) {
@@ -47,8 +54,11 @@ function AddNote({ setNotes, open, handleClose }) {
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <form id="editForm" onSubmit={handleSubmit}>
-        <DialogTitle>
+      <DialogTitle>
+        <Typography variant="h4">Add Note</Typography>
+      </DialogTitle>
+      <DialogContent sx={{ p: 4, width: "400px" }}>
+        <form id="editForm" onSubmit={handleSubmit}>
           <TextField
             fullWidth
             id="title"
@@ -58,8 +68,6 @@ function AddNote({ setNotes, open, handleClose }) {
             value={title}
             onChange={(event) => setTitle(event.target.value)}
           />
-        </DialogTitle>
-        <DialogContent sx={{ p: 4, width: "400px" }}>
           <TextField
             fullWidth
             multiline
@@ -84,8 +92,8 @@ function AddNote({ setNotes, open, handleClose }) {
             onChange={(event) => setExample(event.target.value)}
             sx={{ mt: 2 }}
           />
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button

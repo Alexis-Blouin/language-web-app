@@ -204,7 +204,7 @@ function WordList({ words, setWords, chapters, categories }) {
         deleteDialogOpen={deleteDialogOpen}
         handleDeleteCancel={handleDeleteCancel}
         handleDeleteConfirm={handleDeleteConfirm}
-        word={modalWord}
+        content={modalWord?.Hanzi}
         action="Word"
       />
     </Stack>
