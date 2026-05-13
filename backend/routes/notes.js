@@ -23,7 +23,7 @@ router.post("/add", async (req, res) => {
     if (note) {
       res.json({
         noteId: note.NoteId,
-        added: false,
+        success: false,
         message: "Note with the same title already exists",
       });
     } else {
@@ -33,7 +33,7 @@ router.post("/add", async (req, res) => {
       );
       res.json({
         noteId: notesResult.insertId,
-        added: true,
+        success: true,
         message: "Note added successfully",
       });
     }
@@ -53,7 +53,8 @@ router.patch("/update", async (req, res) => {
     const note = await selectOneNote(noteTitle);
     if (note && note.NoteId !== noteId) {
       res.json({
-        updated: false,
+        success: false,
+        message: "Note with the same title already exists",
       });
     } else {
       await db.query(
@@ -61,7 +62,8 @@ router.patch("/update", async (req, res) => {
         [noteTitle, noteContent, noteExample, noteId],
       );
       res.json({
-        updated: true,
+        success: true,
+        message: "Note updated successfully",
       });
     }
   } catch (err) {
@@ -75,7 +77,8 @@ router.delete("/delete", async (req, res) => {
     const noteId = req.query.noteId;
     await db.query(`delete from notes where NoteId = ?`, [noteId]);
     res.json({
-      deleted: true,
+      success: true,
+      message: "Note deleted successfully",
     });
   } catch (err) {
     console.error(err);

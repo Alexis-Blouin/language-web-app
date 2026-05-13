@@ -25,10 +25,10 @@ function AddNote({ setNotes, open, handleClose }) {
         noteExample: example,
       });
       const noteId = res.data.noteId;
-      const added = res.data.added;
+      const success = res.data.success;
       const message = res.data.message;
 
-      if (added) {
+      if (success) {
         const newNote = {
           NoteId: noteId,
           NoteTitle: title,
@@ -42,11 +42,11 @@ function AddNote({ setNotes, open, handleClose }) {
         setContent("");
         setExample("");
 
+        handleClose();
         toast(message, { theme: "success" });
       } else {
         toast(message, { theme: "failure" });
       }
-      handleClose();
     } catch (err) {
       console.error(err);
     }

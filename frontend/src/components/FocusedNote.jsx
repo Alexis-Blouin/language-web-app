@@ -54,9 +54,9 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
         noteContent: content,
         noteExample: example,
       });
-      const updated = res.data.updated;
+      const success = res.data.success;
 
-      if (updated) {
+      if (success) {
         setNotes((prevNotes) =>
           prevNotes.map((n) =>
             n.NoteId === note.NoteId
@@ -70,9 +70,9 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
           ),
         );
         close();
-        toast("Note updated successfully!");
+        toast(res.data.message, { theme: "success" });
       } else {
-        toast("Failed to update note. Please try again.");
+        toast(res.data.message, { theme: "failure" });
       }
     } catch (err) {
       console.error(err);
@@ -96,19 +96,21 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
       const res = await axios.delete("http://localhost:8081/notes/delete", {
         params: { noteId: note.NoteId },
       });
-      if (res.data.deleted) {
+      const success = res.data.success;
+
+      if (success) {
         setNotes((prevNotes) =>
           prevNotes.filter((n) => n.NoteId !== note.NoteId),
         );
         close();
         setDeleteDialogOpen(false);
-        toast("Note deleted successfully!");
+        toast(res.data.message, { theme: "success" });
       } else {
-        toast("Failed to delete note. Please try again.");
+        // TODO not handled since the backend currently always returns success for delete
       }
     } catch (err) {
       console.error(err);
-      toast("Failed to delete note. Please try again.");
+      toast("Failed to delete note. Please try again.", { theme: "failure" });
     }
   };
 
