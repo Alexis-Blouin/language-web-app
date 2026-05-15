@@ -6,8 +6,10 @@ import React, { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import FocusedNote from "./FocusedNote";
-import FocusedAddNote from "./AddNote";
+import FocusedAddNote from "./FocusedAddNote";
 import axios from "axios";
+import Stack from "@mui/material/Stack";
+import AddIcon from "@mui/icons-material/Add";
 
 function Notes() {
   const [notes, setNotes] = React.useState([]);
@@ -53,7 +55,7 @@ function Notes() {
         {notes.map((note, index) => (
           <Item key={index} note={note} index={index} handleOpen={handleOpen} />
         ))}
-        <AddNote handleOpenAddNote={handleOpenAddNote} />
+        <AddCell handleOpenAddNote={handleOpenAddNote} />
       </Grid>
       <FocusedNote
         note={selectedNote}
@@ -97,12 +99,86 @@ function Item({ note, index, handleOpen }) {
   );
 }
 
-function AddNote({ handleOpenAddNote }) {
+function AddCell({ handleOpenAddNote }) {
   return (
     <Grid size={{ md: 4 }}>
-      <Paper sx={{ p: 2, height: "100%" }}>
-        <Typography variant="h4">Add Note</Typography>
-        <Button onClick={handleOpenAddNote}>Add</Button>
+      <Paper
+        onClick={handleOpenAddNote}
+        sx={{
+          p: 2,
+          height: "100%",
+          cursor: "pointer",
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          transition: "border-color 0.15s",
+          "&:hover": {
+            borderColor: "text.secondary",
+          },
+          // Corner decorations
+          "&::before, &::after": {
+            content: '""',
+            position: "absolute",
+            width: 24,
+            height: 24,
+          },
+        }}
+      >
+        {/* Corner borders using Box */}
+        {[
+          {
+            top: 8,
+            left: 8,
+            borderTop: 3,
+            borderLeft: 3,
+            borderRadius: "4px 0 0 0",
+          },
+          {
+            top: 8,
+            right: 8,
+            borderTop: 3,
+            borderRight: 3,
+            borderRadius: "0 4px 0 0",
+          },
+          {
+            bottom: 8,
+            left: 8,
+            borderBottom: 3,
+            borderLeft: 3,
+            borderRadius: "0 0 0 4px",
+          },
+          {
+            bottom: 8,
+            right: 8,
+            borderBottom: 3,
+            borderRight: 3,
+            borderRadius: "0 0 4px 0",
+          },
+        ].map((corner, i) => (
+          <Box
+            key={i}
+            sx={{
+              position: "absolute",
+              width: 24,
+              height: 24,
+              borderColor: "divider",
+              borderStyle: "solid",
+              borderWidth: 0,
+              ...corner,
+            }}
+          />
+        ))}
+
+        <Stack
+          alignItems="center"
+          justifyContent="center"
+          spacing={1}
+          sx={{ height: "100%", py: 2 }}
+        >
+          <AddIcon fontSize="large" style={{ margin: "0 auto" }} />
+          <Typography variant="button">Add Note</Typography>
+        </Stack>
       </Paper>
     </Grid>
   );

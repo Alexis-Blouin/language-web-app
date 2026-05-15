@@ -10,7 +10,7 @@ import Button from "@mui/material/Button";
 import toast from "react-simple-toasts";
 import axios from "axios";
 
-function AddNote({ setNotes, open, handleClose }) {
+function FocusedAddNote({ setNotes, open, handleClose }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [example, setExample] = useState("");
@@ -67,6 +67,8 @@ function AddNote({ setNotes, open, handleClose }) {
             placeholder="My note title"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
+            sx={{ mt: 2 }}
+            required
           />
           <TextField
             fullWidth
@@ -79,6 +81,7 @@ function AddNote({ setNotes, open, handleClose }) {
             value={content}
             onChange={(event) => setContent(event.target.value)}
             sx={{ mt: 2 }}
+            required
           />
           <TextField
             fullWidth
@@ -109,4 +112,4 @@ function AddNote({ setNotes, open, handleClose }) {
   );
 }
 
-export default AddNote;
+export default FocusedAddNote;
