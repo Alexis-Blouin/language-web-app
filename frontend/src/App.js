@@ -7,6 +7,9 @@ import React, { useState, useEffect } from "react";
 import WordGuess from "./components/WordGuess";
 import Expressions from "./components/Expressions";
 import WordAttach from "./components/WordAttach";
+import Notes from "./components/Notes";
+import Login from "./components/account/Login";
+import CreateAccount from "./components/account/CreateAccount";
 import TestComponent from "./components/TestComponent";
 import axios from "axios";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -25,7 +28,6 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Grid from "@mui/material/Grid";
-import Notes from "./components/Notes";
 
 // A soft, easy-on-the-eyes theme with a light neutral background and refined colors
 const theme = createTheme({
@@ -57,15 +59,19 @@ const theme = createTheme({
 
 const pages = [
   { name: "Home", path: "/" },
-  { name: "Add Words", path: "/add_words" },
-  { name: "List Hidden", path: "/list_hidden" },
-  { name: "Word Guess", path: "/word_guess" },
+  { name: "Add Words", path: "/add-words" },
+  { name: "List Hidden", path: "/list-hidden" },
+  { name: "Word Guess", path: "/word-guess" },
   { name: "Expressions", path: "/expressions" },
-  { name: "Word Attach", path: "/word_attach" },
+  { name: "Word Attach", path: "/word-attach" },
   { name: "Notes", path: "/notes" },
   { name: "Test Component", path: "/test" },
 ];
-const settings = ["Profile", "Logout"];
+const settings = [
+  { name: "Profile", path: "/account/profile" },
+  { name: "Login", path: "/account/login" },
+  { name: "Logout", path: "/account/logout" },
+];
 
 function App() {
   const [words, setWords] = useState([]);
@@ -249,9 +255,14 @@ function App() {
                   onClose={handleCloseUserMenu}
                 >
                   {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <MenuItem
+                      key={setting.name}
+                      component={Link}
+                      to={setting.path}
+                      onClick={handleCloseUserMenu}
+                    >
                       <Typography sx={{ textAlign: "center" }}>
-                        {setting}
+                        {setting.name}
                       </Typography>
                     </MenuItem>
                   ))}
@@ -274,7 +285,7 @@ function App() {
             }
           />
           <Route
-            path="/add_words"
+            path="/add-words"
             element={
               <AddForm
                 setWords={setWords}
@@ -288,7 +299,7 @@ function App() {
             }
           />
           <Route
-            path="/list_hidden"
+            path="/list-hidden"
             element={
               <WordListHidden
                 words={words}
@@ -297,7 +308,7 @@ function App() {
               />
             }
           />
-          <Route path="/word_guess" element={<WordGuess words={words} />} />
+          <Route path="/word-guess" element={<WordGuess words={words} />} />
           <Route
             path="/expressions"
             element={
@@ -309,9 +320,11 @@ function App() {
               />
             }
           />
-          <Route path="/word_attach" element={<WordAttach words={words} />} />
+          <Route path="/word-attach" element={<WordAttach words={words} />} />
           <Route path="/notes" element={<Notes />} />
           <Route path="/test" element={<TestComponent />} />
+          <Route path="/account/login" element={<Login />} />
+          <Route path="/account/create-account" element={<CreateAccount />} />
         </Routes>
       </Router>
     </ThemeProvider>

@@ -75,8 +75,7 @@ function Notes() {
 export default Notes;
 
 function Item({ note, index, handleOpen }) {
-  console.log(note);
-
+  // Add Mui Divider to make it prettier and separate the notes
   return (
     <Grid size={{ md: 4 }}>
       <Paper
