@@ -174,7 +174,7 @@ function AddCell({ handleOpenAddNote }) {
           alignItems="center"
           justifyContent="center"
           spacing={1}
-          sx={{ height: "100%", py: 2 }}
+          sx={{ margin: "auto" }}
         >
           <AddIcon fontSize="large" style={{ margin: "0 auto" }} />
           <Typography variant="button">Add Note</Typography>

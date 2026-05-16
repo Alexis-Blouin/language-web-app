@@ -64,6 +64,47 @@ function EditForm({
       (cat) => cat.CategoryId === parseInt(category),
     )[0]?.CategoryName;
     try {
+      if (chapter === "new-chapter") {
+        const res = await axios.post("http://localhost:8081/chapters/add", {
+          ChapterName: newChapter,
+        });
+        chapterId = res.data.chapterId;
+        const added = res.data.added;
+        chapterName = newChapter;
+
+        // If the chapter was added, we add it to the list, else, it means it was already there
+        if (added) {
+          const newChapterEntry = {
+            ChapterId: parseInt(chapterId),
+            ChapterName: newChapter,
+          };
+          setChapters((prevChapters) => [...prevChapters, newChapterEntry]);
+        }
+      } else if (chapter === "no-chapter") {
+        chapterId = null;
+      }
+      if (category === "new-category") {
+        const res = await axios.post("http://localhost:8081/categories/add", {
+          CategoryName: newCategory,
+        });
+        categoryId = res.data.categoryId;
+        const added = res.data.added;
+        categoryName = newCategory;
+
+        if (added) {
+          const newCategoryEntry = {
+            CategoryId: parseInt(categoryId),
+            CategoryName: newCategory,
+          };
+          setCategories((prevCategories) => [
+            ...prevCategories,
+            newCategoryEntry,
+          ]);
+        }
+      } else if (category === "no-category") {
+        categoryId = null;
+      }
+
       const res = await axios.patch("http://localhost:8081/words/modify", {
         wordId: word.WordId,
         translationId: word.TranslationId,

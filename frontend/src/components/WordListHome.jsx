@@ -39,7 +39,7 @@ const style = {
   p: 4,
 };
 
-function WordList({ words, setWords, chapters, categories }) {
+function WordList({ words, setWords, chapters, categories, setCategories }) {
   const [chapter, setChapter] = React.useState("all");
   const [category, setCategory] = React.useState("all");
   const [open, setOpen] = React.useState(false);
@@ -194,6 +194,7 @@ function WordList({ words, setWords, chapters, categories }) {
         word={modalWord}
         chapters={chapters}
         categories={categories}
+        setCategories={setCategories}
         setWords={setWords}
         handleClose={handleClose}
         open={open}
