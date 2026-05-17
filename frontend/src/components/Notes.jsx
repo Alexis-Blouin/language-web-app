@@ -10,6 +10,7 @@ import FocusedAddNote from "./FocusedAddNote";
 import axios from "axios";
 import Stack from "@mui/material/Stack";
 import AddIcon from "@mui/icons-material/Add";
+import Divider from "@mui/material/Divider";
 
 function Notes() {
   const [notes, setNotes] = React.useState([]);
@@ -82,17 +83,20 @@ function Item({ note, index, handleOpen }) {
         sx={{ p: 2, cursor: "pointer" }}
         onClick={() => handleOpen(note, index)}
       >
-        <Typography variant="h4">{note.NoteTitle}</Typography>
-        <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
-          {note.NoteContent.length > 100
-            ? note.NoteContent.substring(0, 100) + "..."
-            : note.NoteContent}
-        </Typography>
-        <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-          {note.NoteExample.length > 100
-            ? note.NoteExample.substring(0, 100) + "..."
-            : note.NoteExample}
-        </Typography>
+        <Stack spacing={1} direction="column">
+          <Typography variant="h4">{note.NoteTitle}</Typography>
+          <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
+            {note.NoteContent.length > 100
+              ? note.NoteContent.substring(0, 100) + "..."
+              : note.NoteContent}
+          </Typography>
+          <Divider textAlign="left">Example</Divider>
+          <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+            {note.NoteExample.length > 100
+              ? note.NoteExample.substring(0, 100) + "..."
+              : note.NoteExample}
+          </Typography>
+        </Stack>
       </Paper>
     </Grid>
   );

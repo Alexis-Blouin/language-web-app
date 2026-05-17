@@ -12,6 +12,7 @@ import toast from "react-simple-toasts";
 import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DeleteDialog from "./DeleteDialog";
+import Divider from "@mui/material/Divider";
 
 function FocusedNote({ note, setNotes, open, handleClose }) {
   const [title, setTitle] = useState("");
@@ -152,13 +153,14 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
               sx={{ mt: 2 }}
             />
           ) : (
-            <Typography
-              variant="body1"
-              onDoubleClick={() => startEditing("content", note?.NoteContent)}
-              sx={{ mt: 2 }}
-            >
-              {note?.NoteContent}
-            </Typography>
+            <>
+              <Typography
+                variant="body1"
+                onDoubleClick={() => startEditing("content", note?.NoteContent)}
+              >
+                {note?.NoteContent}
+              </Typography>
+            </>
           )}
           {isEditing === true ? (
             <TextField
@@ -174,13 +176,14 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
               sx={{ mt: 2 }}
             />
           ) : (
-            <Typography
-              variant="body1"
-              onDoubleClick={() => startEditing()}
-              sx={{ mt: 2 }}
-            >
-              {note?.NoteExample}
-            </Typography>
+            <>
+              <Divider textAlign="left" sx={{ mt: 1, mb: 1 }}>
+                Example
+              </Divider>
+              <Typography variant="body1" onDoubleClick={() => startEditing()}>
+                {note?.NoteExample}
+              </Typography>
+            </>
           )}
         </DialogContent>
       </form>
