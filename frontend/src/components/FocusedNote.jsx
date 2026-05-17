@@ -70,7 +70,7 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
               : n,
           ),
         );
-        close();
+        setIsEditing(false);
         toast(res.data.message, { theme: "success" });
       } else {
         toast(res.data.message, { theme: "failure" });
@@ -117,9 +117,21 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <form id="editForm" onSubmit={handleSubmit}>
-        <DialogTitle>
-          {isEditing ? (
+      <DialogTitle sx={{ width: "400px" }}>
+        {isEditing ? (
+          <Typography variant="h4">Edit Note</Typography>
+        ) : (
+          <Typography
+            variant="h4"
+            onDoubleClick={() => startEditing("title", note?.NoteTitle)}
+          >
+            {note?.NoteTitle}
+          </Typography>
+        )}
+      </DialogTitle>
+      <DialogContent sx={{ p: 4, width: "400px" }}>
+        {isEditing ? (
+          <form id="editForm" onSubmit={handleSubmit}>
             <TextField
               fullWidth
               id="title"
@@ -128,18 +140,8 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
               placeholder="My note title"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
+              sx={{ mt: 2 }}
             />
-          ) : (
-            <Typography
-              variant="h4"
-              onDoubleClick={() => startEditing("title", note?.NoteTitle)}
-            >
-              {note?.NoteTitle}
-            </Typography>
-          )}
-        </DialogTitle>
-        <DialogContent sx={{ p: 4, width: "400px" }}>
-          {isEditing ? (
             <TextField
               fullWidth
               multiline
@@ -152,17 +154,6 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
               onChange={(event) => setContent(event.target.value)}
               sx={{ mt: 2 }}
             />
-          ) : (
-            <>
-              <Typography
-                variant="body1"
-                onDoubleClick={() => startEditing("content", note?.NoteContent)}
-              >
-                {note?.NoteContent}
-              </Typography>
-            </>
-          )}
-          {isEditing === true ? (
             <TextField
               fullWidth
               multiline
@@ -175,18 +166,29 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
               onChange={(event) => setExample(event.target.value)}
               sx={{ mt: 2 }}
             />
-          ) : (
-            <>
-              <Divider textAlign="left" sx={{ mt: 1, mb: 1 }}>
-                Example
-              </Divider>
-              <Typography variant="body1" onDoubleClick={() => startEditing()}>
-                {note?.NoteExample}
-              </Typography>
-            </>
-          )}
-        </DialogContent>
-      </form>
+          </form>
+        ) : (
+          <>
+            <Typography
+              variant="body1"
+              onDoubleClick={() => startEditing("content", note?.NoteContent)}
+              sx={{ whiteSpace: "pre-wrap" }}
+            >
+              {note?.NoteContent}
+            </Typography>
+            <Divider textAlign="left" sx={{ mt: 1, mb: 1 }}>
+              Example
+            </Divider>
+            <Typography
+              variant="body1"
+              onDoubleClick={() => startEditing()}
+              sx={{ whiteSpace: "pre-wrap" }}
+            >
+              {note?.NoteExample}
+            </Typography>
+          </>
+        )}
+      </DialogContent>
       <DialogActions>
         {isEditing ? (
           <>
