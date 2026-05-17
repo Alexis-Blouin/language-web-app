@@ -6,11 +6,31 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
+import toast from "react-simple-toasts";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // TODO
+    const username = event.target.username.value;
+    const password = event.target.password.value;
+
+    const res = await axios.post("http://localhost:8081/accounts/login", {
+      username,
+      password,
+    });
+
+    if (res.data.success) {
+      console.log(res.data.account);
+
+      // TODO store the account info in a context or something
+      toast(res.data.message, { theme: "success" });
+      navigate("/");
+    } else {
+      toast(res.data.message, { theme: "failure" });
+    }
   };
 
   return (
@@ -27,8 +47,8 @@ function Login() {
       <form id="login" onSubmit={handleSubmit}>
         <Stack spacing={2} direction={"column"}>
           <Typography variant="h4">Login</Typography>
-          <TextField label="Username" required />
-          <TextField label="Password" type="password" required />
+          <TextField id="username" label="Username or Email" required />
+          <TextField id="password" label="Password" type="password" required />
           <Button
             form="login"
             variant="contained"

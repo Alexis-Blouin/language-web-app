@@ -6,11 +6,40 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
+import toast from "react-simple-toasts";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function CreateAccount() {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // TODO
+
+    const username = event.target.username.value;
+    const email = event.target.email.value;
+    const password = event.target.password.value;
+    const confirmPassword = event.target.confirmPassword.value;
+
+    if (password !== confirmPassword) {
+      toast("Passwords do not match", { theme: "failure" });
+      return;
+    }
+
+    const res = await axios.post(
+      "http://localhost:8081/accounts/create-account",
+      {
+        username,
+        email,
+        password,
+      },
+    );
+
+    if (res.data.success) {
+      toast(res.data.message, { theme: "success" });
+      navigate("/account/login");
+    } else {
+      toast(res.data.message, { theme: "failure" });
+    }
   };
 
   return (
@@ -27,9 +56,15 @@ function CreateAccount() {
       <form id="createAccount" onSubmit={handleSubmit}>
         <Stack spacing={2} direction={"column"}>
           <Typography variant="h4">Create Account</Typography>
-          <TextField label="Username" required />
-          <TextField label="Password" type="password" required />
-          <TextField label="Confirm Password" type="password" required />
+          <TextField id="username" label="Username" required />
+          <TextField id="email" label="Email" type="email" required />
+          <TextField id="password" label="Password" type="password" required />
+          <TextField
+            id="confirmPassword"
+            label="Confirm Password"
+            type="password"
+            required
+          />
           <Button
             form="createAccount"
             variant="contained"

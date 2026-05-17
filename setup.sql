@@ -64,3 +64,13 @@ CREATE TABLE `notes` (
     PRIMARY KEY (`NoteId`),
     UNIQUE KEY `NoteTitle` (`NoteTitle`)
 )
+
+CREATE TABLE `accounts` (
+    `accountId` int NOT NULL AUTO_INCREMENT,
+    `accountUsername` varchar(255) NOT NULL,
+    `accountEmail` varchar(255) NOT NULL,
+    `accountPassword` varchar(255) NOT NULL,
+    PRIMARY KEY (`accountId`),
+    UNIQUE KEY `accountUsername` (`accountUsername`),
+    UNIQUE KEY `accountEmail` (`accountEmail`)
+)
