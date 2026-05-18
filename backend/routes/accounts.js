@@ -91,4 +91,13 @@ router.post("/create-account", async (req, res) => {
   }
 });
 
+router.post("/logout", async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+  });
+  res.json({ success: true, message: "Logged out" });
+});
+
 module.exports = router;

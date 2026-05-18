@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
+  // TODO After login, reload data, maybe with the useState or useEffect
   const handleSubmit = async (event) => {
     event.preventDefault();
     const username = event.target.username.value;
@@ -23,9 +24,6 @@ function Login() {
     });
 
     if (res.data.success) {
-      console.log(res.data.account);
-
-      // TODO store the account info in a context or something
       toast(res.data.message, { theme: "success" });
       navigate("/");
     } else {

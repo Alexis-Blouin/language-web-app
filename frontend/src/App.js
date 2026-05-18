@@ -28,6 +28,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Grid from "@mui/material/Grid";
+import Logout from "./components/account/Logout";
 
 axios.defaults.withCredentials = true;
 
@@ -326,6 +327,7 @@ function App() {
           <Route path="/notes" element={<Notes />} />
           <Route path="/test" element={<TestComponent />} />
           <Route path="/account/login" element={<Login />} />
+          <Route path="/account/logout" element={<Logout />} />
           <Route path="/account/create-account" element={<CreateAccount />} />
         </Routes>
       </Router>
