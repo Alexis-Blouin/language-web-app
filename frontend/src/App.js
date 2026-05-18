@@ -29,6 +29,8 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Grid from "@mui/material/Grid";
 
+axios.defaults.withCredentials = true;
+
 // A soft, easy-on-the-eyes theme with a light neutral background and refined colors
 const theme = createTheme({
   palette: {

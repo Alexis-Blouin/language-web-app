@@ -3,11 +3,13 @@
 const express = require("express"); // Express framework for handling HTTP requests
 const mysql = require("mysql2"); // MySQL2 client for Node.js
 const cors = require("cors"); // For web security
+const cookieParser = require("cookie-parser"); // For parsing cookies
 
 // Create an instance of express
 const app = express();
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 // Create a connection to the MySQL database
 require("dotenv").config();

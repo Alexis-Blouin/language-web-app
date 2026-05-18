@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 router.post("/login", async (req, res) => {
   try {
@@ -23,9 +24,22 @@ router.post("/login", async (req, res) => {
         return;
       }
 
+      const token = jwt.sign(
+        { accountId: account.accountId },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" },
+      );
+
+      // TODO check to make sure it still work when deploying to production (secure: true)
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
       res.json({
         account: {
-          accountId: account.accountId,
           username: account.accountUsername,
           email: account.accountEmail,
         },

@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
+const authenticate = require("../middleware/authenticate");
 
-router.get("/get", async (req, res) => {
+router.get("/get", authenticate, async (req, res) => {
   try {
     // .query here since it's get and not post
     const WordTypeId = req.query.WordTypeId ?? 1;
@@ -24,9 +25,9 @@ router.get("/get", async (req, res) => {
     join translations t on wt.TranslationId = t.TranslationId
     join chapters ch on ch.ChapterId = w.ChapterId
     join categories ca on ca.CategoryId = w.CategoryId
-    where w.TypeId = ${WordTypeId}
+    where w.TypeId = ? and wt.accountId = ?
     order by ch.ChapterId, w.Hanzi;`;
-    const [rows] = await db.query(sql);
+    const [rows] = await db.query(sql, [WordTypeId, req.accountId]);
     res.json(rows);
   } catch (err) {
     console.error(err);
@@ -34,7 +35,7 @@ router.get("/get", async (req, res) => {
   }
 });
 
-router.post("/add", async (req, res) => {
+router.post("/add", authenticate, async (req, res) => {
   // Trim words before adding to database to avoid issues with duplicates and searching
   try {
     const { Hanzi, Pinyin, ChapterId, CategoryId, Translation, TypeId } =
@@ -85,19 +86,14 @@ router.post("/add", async (req, res) => {
 
     // Inserts the key pair for the word and it's translation
     const [wordTranslationResult] = await db.query(
-      `INSERT INTO wordtranslations (WordId, TranslationId)
-      VALUES (?, ?)`,
-      [wordId, translationId],
+      `INSERT INTO wordtranslations (WordId, TranslationId, accountId)
+      VALUES (?, ?, ?)`,
+      [wordId, translationId, req.accountId],
     );
     wordTranslationId = wordTranslationResult.insertId;
 
     await db.commit();
 
-    console.log({
-      message: "Word added successfully",
-      wordId: wordId,
-      translationId: translationId,
-    });
     res.json({
       message: "Word added successfully",
       wordId: wordId,
@@ -110,7 +106,7 @@ router.post("/add", async (req, res) => {
   }
 });
 
-router.delete("/delete", async (req, res) => {
+router.delete("/delete", authenticate, async (req, res) => {
   try {
     // .query here since it's delete and not post
     const WordId = req.query.WordId;
@@ -121,14 +117,14 @@ router.delete("/delete", async (req, res) => {
     // Delete the pair
     await db.query(
       `DELETE FROM wordtranslations 
-      WHERE WordId = ? AND TranslationId = ?`,
-      [WordId, TranslationId],
+      WHERE WordId = ? AND TranslationId = ? AND accountId = ?`,
+      [WordId, TranslationId, req.accountId],
     );
 
     // Possibly delete the word
-    await maybeDeleteWord(WordId);
+    await maybeDeleteWord(WordId, req.accountId);
     // Possibly delete the translation
-    await maybeDeleteTranslation(TranslationId);
+    await maybeDeleteTranslation(TranslationId, req.accountId);
 
     await db.commit();
 
@@ -140,7 +136,7 @@ router.delete("/delete", async (req, res) => {
 });
 
 // TODO can't add good and Good. Would be nice to make it case sensitive, but need to modify the table settings I think
-router.patch("/modify", async (req, res) => {
+router.patch("/modify", authenticate, async (req, res) => {
   try {
     const {
       wordId,
@@ -198,11 +194,11 @@ router.patch("/modify", async (req, res) => {
       await db.query(
         `update wordtranslations
       set WordId = ?
-      where WordTranslationId = ?`,
-        [newWordId, wordTranslationId],
+      where WordTranslationId = ? and accountId = ?`,
+        [newWordId, wordTranslationId, req.accountId],
       );
       // Check to maybe delete the word
-      await maybeDeleteWord(wordId);
+      await maybeDeleteWord(wordId, req.accountId);
     }
     if (translationId !== newTranslationId) {
       console.log("update translation");
@@ -210,20 +206,15 @@ router.patch("/modify", async (req, res) => {
       await db.query(
         `update wordtranslations
       set TranslationId = ?
-      where WordTranslationId = ?`,
-        [newTranslationId, wordTranslationId],
+      where WordTranslationId = ? and accountId = ?`,
+        [newTranslationId, wordTranslationId, req.accountId],
       );
       // Check to maybe delete the translation
-      await maybeDeleteTranslation(translationId);
+      await maybeDeleteTranslation(translationId, req.accountId);
     }
 
     await db.commit();
 
-    console.log({
-      message: "Word modified successfully",
-      wordId: newWordId,
-      translationId: newTranslationId,
-    });
     res.json({
       message: "Word modified successfully",
       wordId: newWordId,
@@ -265,15 +256,15 @@ async function selectOneTranslation(translation) {
   }
 }
 
-async function maybeDeleteWord(wordId) {
+async function maybeDeleteWord(wordId, accountId) {
   try {
     await db.query(
       `DELETE FROM words 
       WHERE WordId = ?
       AND NOT EXISTS (
-        SELECT 1 FROM wordtranslations WHERE WordId = ?
+        SELECT 1 FROM wordtranslations WHERE WordId = ? and accountId = ?
       );`,
-      [wordId, wordId],
+      [wordId, wordId, accountId],
     );
   } catch (err) {
     console.error(err);
@@ -281,15 +272,15 @@ async function maybeDeleteWord(wordId) {
   }
 }
 
-async function maybeDeleteTranslation(translationId) {
+async function maybeDeleteTranslation(translationId, accountId) {
   try {
     await db.query(
       `DELETE FROM translations 
       WHERE TranslationId = ?
       AND NOT EXISTS (
-        SELECT 1 FROM wordtranslations WHERE TranslationId = ?
+        SELECT 1 FROM wordtranslations WHERE TranslationId = ? and accountId = ?
       );`,
-      [translationId, translationId],
+      [translationId, translationId, accountId],
     );
   } catch (err) {
     console.error(err);

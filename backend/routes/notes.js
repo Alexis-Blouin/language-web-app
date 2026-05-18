@@ -1,11 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
+const authenticate = require("../middleware/authenticate");
 
-router.get("/get", async (req, res) => {
+router.get("/get", authenticate, async (req, res) => {
   try {
     const [rows] = await db.query(
-      `select NoteId, NoteTitle, NoteContent, NoteExample from notes order by NoteTitle`,
+      `select NoteId, NoteTitle, NoteContent, NoteExample
+      from notes where accountId = ?
+      order by NoteTitle`,
+      [req.accountId],
     );
     res.json(rows);
   } catch (err) {
@@ -14,12 +18,12 @@ router.get("/get", async (req, res) => {
   }
 });
 
-router.post("/add", async (req, res) => {
+router.post("/add", authenticate, async (req, res) => {
   try {
     const noteTitle = req.body.noteTitle;
     const noteContent = req.body.noteContent;
     const noteExample = req.body.noteExample;
-    const note = await selectOneNote(noteTitle);
+    const note = await selectOneNote(noteTitle, req.accountId);
     if (note) {
       res.json({
         noteId: note.NoteId,
@@ -28,8 +32,8 @@ router.post("/add", async (req, res) => {
       });
     } else {
       const [notesResult] = await db.query(
-        `insert into notes (NoteTitle, NoteContent, NoteExample) values (?, ?, ?)`,
-        [noteTitle, noteContent, noteExample],
+        `insert into notes (NoteTitle, NoteContent, NoteExample, accountId) values (?, ?, ?, ?)`,
+        [noteTitle, noteContent, noteExample, req.accountId],
       );
       res.json({
         noteId: notesResult.insertId,
@@ -43,14 +47,14 @@ router.post("/add", async (req, res) => {
   }
 });
 
-router.patch("/update", async (req, res) => {
+router.patch("/update", authenticate, async (req, res) => {
   try {
     const noteId = req.body.noteId;
     const noteTitle = req.body.noteTitle;
     const noteContent = req.body.noteContent;
     const noteExample = req.body.noteExample;
 
-    const note = await selectOneNote(noteTitle);
+    const note = await selectOneNote(noteTitle, req.accountId);
     if (note && note.NoteId !== noteId) {
       res.json({
         success: false,
@@ -58,8 +62,8 @@ router.patch("/update", async (req, res) => {
       });
     } else {
       await db.query(
-        `update notes set NoteTitle = ?, NoteContent = ?, NoteExample = ? where NoteId = ?`,
-        [noteTitle, noteContent, noteExample, noteId],
+        `update notes set NoteTitle = ?, NoteContent = ?, NoteExample = ? where NoteId = ? and accountId = ?`,
+        [noteTitle, noteContent, noteExample, noteId, req.accountId],
       );
       res.json({
         success: true,
@@ -72,10 +76,13 @@ router.patch("/update", async (req, res) => {
   }
 });
 
-router.delete("/delete", async (req, res) => {
+router.delete("/delete", authenticate, async (req, res) => {
   try {
     const noteId = req.query.noteId;
-    await db.query(`delete from notes where NoteId = ?`, [noteId]);
+    await db.query(`delete from notes where NoteId = ? and accountId = ?`, [
+      noteId,
+      req.accountId,
+    ]);
     res.json({
       success: true,
       message: "Note deleted successfully",
@@ -88,12 +95,12 @@ router.delete("/delete", async (req, res) => {
 
 module.exports = router;
 
-async function selectOneNote(noteTitle) {
+async function selectOneNote(noteTitle, accountId) {
   try {
     const [result] = await db.query(
       `select NoteId from notes
-      where NoteTitle = ?`,
-      [noteTitle],
+      where NoteTitle = ? and accountId = ?`,
+      [noteTitle, accountId],
     );
     return result.length > 0 ? result[0] : null;
   } catch (err) {

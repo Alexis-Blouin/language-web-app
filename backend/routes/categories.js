@@ -1,11 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
+const authenticate = require("../middleware/authenticate");
 
-router.get("/get", async (req, res) => {
+router.get("/get", authenticate, async (req, res) => {
   try {
     const [rows] = await db.query(
-      `select CategoryId, CategoryName from categories order by CategoryName`,
+      `select CategoryId, CategoryName
+      from categories where accountId = ?
+      order by CategoryName`,
+      [req.accountId],
     );
     res.json(rows);
   } catch (err) {
@@ -14,10 +18,10 @@ router.get("/get", async (req, res) => {
   }
 });
 
-router.post("/add", async (req, res) => {
+router.post("/add", authenticate, async (req, res) => {
   try {
     const categoryName = req.body.CategoryName;
-    const category = await selectOneCategory(categoryName);
+    const category = await selectOneCategory(categoryName, req.accountId);
     if (category) {
       res.json({
         categoryId: category.CategoryId,
@@ -25,8 +29,8 @@ router.post("/add", async (req, res) => {
       });
     } else {
       const [categoriesResult] = await db.query(
-        `insert into categories (CategoryName) values (?)`,
-        [req.body.CategoryName],
+        `insert into categories (CategoryName, accountId) values (?, ?)`,
+        [req.body.CategoryName, req.accountId],
       );
       res.json({
         categoryId: categoriesResult.insertId,
@@ -41,12 +45,12 @@ router.post("/add", async (req, res) => {
 
 module.exports = router;
 
-async function selectOneCategory(category) {
+async function selectOneCategory(categoryName, accountId) {
   try {
     const [result] = await db.query(
       `select CategoryId from categories
-      where CategoryName = ?`,
-      [category],
+      where CategoryName = ? and accountId = ?`,
+      [categoryName, accountId],
     );
     return result.length > 0 ? result[0] : null;
   } catch (err) {

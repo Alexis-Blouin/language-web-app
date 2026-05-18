@@ -3,15 +3,21 @@
 CREATE TABLE `chapters` (
     `ChapterId` int NOT NULL AUTO_INCREMENT,
     `ChapterName` varchar(255) DEFAULT NULL,
+    `accountId` int NOT NULL,
     PRIMARY KEY (`ChapterId`),
     UNIQUE KEY `ChapterName` (`ChapterName`)
+    KEY `fk_chapters_account` (`accountId`),
+    CONSTRAINT `fk_chapters_account` FOREIGN KEY (`accountId`) REFERENCES `accounts` (`accountId`)
 )
 
 CREATE TABLE `categories` (
     `CategoryId` int NOT NULL AUTO_INCREMENT,
     `CategoryName` varchar(255) DEFAULT NULL,
+    `accountId` int NOT NULL,
     PRIMARY KEY (`CategoryId`),
     UNIQUE KEY `CategoryName` (`CategoryName`)
+    KEY `fk_categories_account` (`accountId`),
+    CONSTRAINT `fk_categories_account` FOREIGN KEY (`accountId`) REFERENCES `accounts` (`accountId`)
 )
 
 CREATE TABLE `words` (
@@ -42,10 +48,13 @@ CREATE TABLE `wordtranslations` (
     `WordId` int NOT NULL,
     `TranslationId` int NOT NULL,
     `WordTranslationId` int NOT NULL AUTO_INCREMENT,
+    `accountId` int NOT NULL,
     PRIMARY KEY (`WordTranslationId`),
     UNIQUE KEY `WordId` (`WordId`,`TranslationId`),
     KEY `fk_translation` (`TranslationId`),
+    KEY `fk_wordtranslations_account` (`accountId`),
     CONSTRAINT `fk_translation` FOREIGN KEY (`TranslationId`) REFERENCES `translations` (`TranslationId`),
+    CONSTRAINT `fk_wordtranslations_account` FOREIGN KEY (`accountId`) REFERENCES `accounts` (`accountId`)
     CONSTRAINT `fk_word` FOREIGN KEY (`WordId`) REFERENCES `words` (`WordId`)
 )
 
@@ -61,8 +70,11 @@ CREATE TABLE `notes` (
     `NoteTitle` varchar(255) NOT NULL,
     `NoteContent` text NOT NULL,
     `NoteExample` text,
+    `accountId` int NOT NULL,
     PRIMARY KEY (`NoteId`),
     UNIQUE KEY `NoteTitle` (`NoteTitle`)
+    KEY `fk_notes_account` (`accountId`),
+    CONSTRAINT `fk_notes_account` FOREIGN KEY (`accountId`) REFERENCES `accounts` (`accountId`)
 )
 
 CREATE TABLE `accounts` (
