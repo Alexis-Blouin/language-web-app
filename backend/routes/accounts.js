@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const authenticate = require("../middleware/authenticate");
 
 router.post("/login", async (req, res) => {
   try {
@@ -98,6 +99,12 @@ router.post("/logout", async (req, res) => {
     sameSite: "strict",
   });
   res.json({ success: true, message: "Logged out" });
+});
+
+router.get("/me", authenticate, (req, res) => {
+  console.log("test");
+
+  res.json({ success: true, accountId: req.accountId });
 });
 
 module.exports = router;

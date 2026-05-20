@@ -1,4 +1,8 @@
 import "./App.css";
+import "react-simple-toasts/dist/style.css"; // Will give a warning, but works anyway.
+import "react-simple-toasts/dist/theme/info.css";
+import "react-simple-toasts/dist/theme/success.css";
+import "react-simple-toasts/dist/theme/failure.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import WordListHome from "./components/WordListHome";
 import WordListHidden from "./components/WordListHidden";
@@ -29,6 +33,7 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Grid from "@mui/material/Grid";
 import Logout from "./components/account/Logout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 axios.defaults.withCredentials = true;
 
@@ -278,54 +283,90 @@ function App() {
           <Route
             path="/"
             element={
-              <WordListHome
-                words={words}
-                setWords={setWords}
-                chapters={chapters}
-                categories={categories}
-                setCategories={setCategories}
-              />
+              <ProtectedRoute>
+                <WordListHome
+                  words={words}
+                  setWords={setWords}
+                  chapters={chapters}
+                  categories={categories}
+                  setCategories={setCategories}
+                />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/add-words"
             element={
-              <AddForm
-                setWords={setWords}
-                setExpressions={setExpressions}
-                chapters={chapters}
-                setChapters={setChapters}
-                categories={categories}
-                setCategories={setCategories}
-                types={types}
-              />
+              <ProtectedRoute>
+                <AddForm
+                  setWords={setWords}
+                  setExpressions={setExpressions}
+                  chapters={chapters}
+                  setChapters={setChapters}
+                  categories={categories}
+                  setCategories={setCategories}
+                  types={types}
+                />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/list-hidden"
             element={
-              <WordListHidden
-                words={words}
-                chapters={chapters}
-                categories={categories}
-              />
+              <ProtectedRoute>
+                <WordListHidden
+                  words={words}
+                  chapters={chapters}
+                  categories={categories}
+                />
+              </ProtectedRoute>
             }
           />
-          <Route path="/word-guess" element={<WordGuess words={words} />} />
+          <Route
+            path="/word-guess"
+            element={
+              <ProtectedRoute>
+                <WordGuess words={words} />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/expressions"
             element={
-              <Expressions
-                expressions={expressions}
-                setExpressions={setExpressions}
-                chapters={chapters}
-                categories={categories}
-              />
+              <ProtectedRoute>
+                <Expressions
+                  expressions={expressions}
+                  setExpressions={setExpressions}
+                  chapters={chapters}
+                  categories={categories}
+                />
+              </ProtectedRoute>
             }
           />
-          <Route path="/word-attach" element={<WordAttach words={words} />} />
-          <Route path="/notes" element={<Notes />} />
-          <Route path="/test" element={<TestComponent />} />
+          <Route
+            path="/word-attach"
+            element={
+              <ProtectedRoute>
+                <WordAttach words={words} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notes"
+            element={
+              <ProtectedRoute>
+                <Notes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/test"
+            element={
+              <ProtectedRoute>
+                <TestComponent />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/account/login" element={<Login />} />
           <Route path="/account/logout" element={<Logout />} />
           <Route path="/account/create-account" element={<CreateAccount />} />

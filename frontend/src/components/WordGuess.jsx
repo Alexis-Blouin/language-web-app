@@ -1,8 +1,4 @@
 import toast, { toastConfig } from "react-simple-toasts";
-import "react-simple-toasts/dist/style.css"; // Will give a warning, but works anyway.
-import "react-simple-toasts/dist/theme/dark.css";
-import "react-simple-toasts/dist/theme/success.css";
-import "react-simple-toasts/dist/theme/failure.css";
 import { useState } from "react";
 import { pinyin } from "pinyin-pro";
 import React from "react";
