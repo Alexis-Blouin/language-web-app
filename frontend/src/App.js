@@ -34,6 +34,7 @@ import AdbIcon from "@mui/icons-material/Adb";
 import Grid from "@mui/material/Grid";
 import Logout from "./components/account/Logout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import useAuth, { AuthProvider } from "./hooks/useAuth";
 
 axios.defaults.withCredentials = true;
 
@@ -75,55 +76,64 @@ const pages = [
   { name: "Notes", path: "/notes" },
   { name: "Test Component", path: "/test" },
 ];
-const settings = [
-  { name: "Profile", path: "/account/profile" },
-  { name: "Login", path: "/account/login" },
-  { name: "Logout", path: "/account/logout" },
-];
 
 function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
+  );
+}
+
+function AppContent() {
   const [words, setWords] = useState([]);
   const [chapters, setChapters] = useState([]);
   const [categories, setCategories] = useState([]);
   const [expressions, setExpressions] = useState([]);
   const [types, setTypes] = useState([]);
 
+  const { user } = useAuth();
+
   useEffect(() => {
+    if (!user) return;
+
     axios
       .get("http://localhost:8081/words/get")
       .then((res) => setWords(res.data))
       .catch((err) => console.log(err));
-  }, []);
 
-  useEffect(() => {
     axios
       .get("http://localhost:8081/chapters/get")
       .then((res) => setChapters(res.data))
       .catch((err) => console.log(err));
-  }, []);
 
-  useEffect(() => {
     axios
       .get("http://localhost:8081/categories/get")
       .then((res) => setCategories(res.data))
       .catch((err) => console.log(err));
-  }, []);
 
-  useEffect(() => {
     axios
       .get("http://localhost:8081/words/get", {
         params: { WordTypeId: 2 },
       })
       .then((res) => setExpressions(res.data))
       .catch((err) => console.log(err));
-  }, []);
 
-  useEffect(() => {
     axios
       .get("http://localhost:8081/types/get")
       .then((res) => setTypes(res.data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [user]);
+
+  const settings = [
+    { name: "Profile", path: "/account/profile" },
+    user
+      ? { name: "Logout", path: "/account/logout" }
+      : { name: "Login", path: "/account/login" },
+  ];
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -144,235 +154,229 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <AppBar position="sticky">
-          <Container maxWidth="xl">
-            <Toolbar disableGutters>
-              <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-              <Typography
-                variant="h6"
-                noWrap
-                component="a"
-                href="#app-bar-with-responsive-menu"
-                sx={{
-                  mr: 2,
-                  display: { xs: "none", md: "flex" },
-                  fontFamily: "monospace",
-                  fontWeight: 700,
-                  letterSpacing: ".3rem",
-                  color: "inherit",
-                  textDecoration: "none",
-                }}
-              >
-                Learn Chinese
-              </Typography>
+    <Router>
+      <AppBar position="sticky">
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              href="#app-bar-with-responsive-menu"
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                fontFamily: "monospace",
+                fontWeight: 700,
+                letterSpacing: ".3rem",
+                color: "inherit",
+                textDecoration: "none",
+              }}
+            >
+              Learn Chinese
+            </Typography>
 
-              <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleOpenNavMenu}
-                  color="inherit"
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorElNav}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  open={Boolean(anchorElNav)}
-                  onClose={handleCloseNavMenu}
-                  sx={{ display: { xs: "block", md: "none" } }}
-                >
-                  {pages.map((page) => (
-                    <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                      <Typography sx={{ textAlign: "center" }}>
-                        {page.name}
-                      </Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Box>
-              <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-              <Typography
-                variant="h5"
-                noWrap
-                component="a"
-                href="#app-bar-with-responsive-menu"
-                sx={{
-                  mr: 2,
-                  display: { xs: "flex", md: "none" },
-                  flexGrow: 1,
-                  fontFamily: "monospace",
-                  fontWeight: 700,
-                  letterSpacing: ".3rem",
-                  color: "inherit",
-                  textDecoration: "none",
-                }}
+            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
               >
-                LOGO
-              </Typography>
-              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{ display: { xs: "block", md: "none" } }}
+              >
                 {pages.map((page) => (
-                  <Button
-                    key={page.name}
-                    component={Link}
-                    to={page.path}
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: "white", display: "block" }}
-                  >
-                    {page.name}
-                  </Button>
+                  <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                    <Typography sx={{ textAlign: "center" }}>
+                      {page.name}
+                    </Typography>
+                  </MenuItem>
                 ))}
-              </Box>
-              <Box sx={{ flexGrow: 0 }}>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar
-                      alt="Remy Sharp"
-                      src="/static/images/avatar/2.jpg"
-                    />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: "45px" }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
+              </Menu>
+            </Box>
+            <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+            <Typography
+              variant="h5"
+              noWrap
+              component="a"
+              href="#app-bar-with-responsive-menu"
+              sx={{
+                mr: 2,
+                display: { xs: "flex", md: "none" },
+                flexGrow: 1,
+                fontFamily: "monospace",
+                fontWeight: 700,
+                letterSpacing: ".3rem",
+                color: "inherit",
+                textDecoration: "none",
+              }}
+            >
+              LOGO
+            </Typography>
+            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+              {pages.map((page) => (
+                <Button
+                  key={page.name}
+                  component={Link}
+                  to={page.path}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
                 >
-                  {settings.map((setting) => (
-                    <MenuItem
-                      key={setting.name}
-                      component={Link}
-                      to={setting.path}
-                      onClick={handleCloseUserMenu}
-                    >
-                      <Typography sx={{ textAlign: "center" }}>
-                        {setting.name}
-                      </Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Box>
-            </Toolbar>
-          </Container>
-        </AppBar>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <WordListHome
-                  words={words}
-                  setWords={setWords}
-                  chapters={chapters}
-                  categories={categories}
-                  setCategories={setCategories}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/add-words"
-            element={
-              <ProtectedRoute>
-                <AddForm
-                  setWords={setWords}
-                  setExpressions={setExpressions}
-                  chapters={chapters}
-                  setChapters={setChapters}
-                  categories={categories}
-                  setCategories={setCategories}
-                  types={types}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/list-hidden"
-            element={
-              <ProtectedRoute>
-                <WordListHidden
-                  words={words}
-                  chapters={chapters}
-                  categories={categories}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/word-guess"
-            element={
-              <ProtectedRoute>
-                <WordGuess words={words} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/expressions"
-            element={
-              <ProtectedRoute>
-                <Expressions
-                  expressions={expressions}
-                  setExpressions={setExpressions}
-                  chapters={chapters}
-                  categories={categories}
-                />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/word-attach"
-            element={
-              <ProtectedRoute>
-                <WordAttach words={words} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/notes"
-            element={
-              <ProtectedRoute>
-                <Notes />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/test"
-            element={
-              <ProtectedRoute>
-                <TestComponent />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/account/login" element={<Login />} />
-          <Route path="/account/logout" element={<Logout />} />
-          <Route path="/account/create-account" element={<CreateAccount />} />
-        </Routes>
-      </Router>
-    </ThemeProvider>
+                  {page.name}
+                </Button>
+              ))}
+            </Box>
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem
+                    key={setting.name}
+                    component={Link}
+                    to={setting.path}
+                    onClick={handleCloseUserMenu}
+                  >
+                    <Typography sx={{ textAlign: "center" }}>
+                      {setting.name}
+                    </Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <WordListHome
+                words={words}
+                setWords={setWords}
+                chapters={chapters}
+                categories={categories}
+                setCategories={setCategories}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add-words"
+          element={
+            <ProtectedRoute>
+              <AddForm
+                setWords={setWords}
+                setExpressions={setExpressions}
+                chapters={chapters}
+                setChapters={setChapters}
+                categories={categories}
+                setCategories={setCategories}
+                types={types}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/list-hidden"
+          element={
+            <ProtectedRoute>
+              <WordListHidden
+                words={words}
+                chapters={chapters}
+                categories={categories}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/word-guess"
+          element={
+            <ProtectedRoute>
+              <WordGuess words={words} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/expressions"
+          element={
+            <ProtectedRoute>
+              <Expressions
+                expressions={expressions}
+                setExpressions={setExpressions}
+                chapters={chapters}
+                categories={categories}
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/word-attach"
+          element={
+            <ProtectedRoute>
+              <WordAttach words={words} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notes"
+          element={
+            <ProtectedRoute>
+              <Notes />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/test"
+          element={
+            <ProtectedRoute>
+              <TestComponent />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/account/login" element={<Login />} />
+        <Route path="/account/logout" element={<Logout />} />
+        <Route path="/account/create-account" element={<CreateAccount />} />
+      </Routes>
+    </Router>
   );
 }
 

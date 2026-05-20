@@ -102,8 +102,6 @@ router.post("/logout", async (req, res) => {
 });
 
 router.get("/me", authenticate, (req, res) => {
-  console.log("test");
-
   res.json({ success: true, accountId: req.accountId });
 });
 

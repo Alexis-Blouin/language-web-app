@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-simple-toasts";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
+import useAuth from "../../hooks/useAuth";
 
 function Logout() {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
   const didLogout = React.useRef(false);
 
   useEffect(() => {
@@ -17,6 +19,7 @@ function Logout() {
       try {
         const res = await axios.post("http://localhost:8081/accounts/logout");
         toast(res.data.message, { theme: "success" });
+        setUser(null);
       } catch (error) {
         toast("Logout failed", { theme: "failure" });
       } finally {
@@ -25,7 +28,7 @@ function Logout() {
     };
 
     logout();
-  }, [navigate]);
+  }, [navigate, setUser]);
 
   return (
     <Paper

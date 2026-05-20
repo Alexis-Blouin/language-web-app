@@ -9,10 +9,12 @@ import Box from "@mui/material/Box";
 import toast from "react-simple-toasts";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 function Login() {
   const navigate = useNavigate();
-  // TODO After login, reload data, maybe with the useState or useEffect
+  const { refreshUser } = useAuth();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const username = event.target.username.value;
@@ -25,6 +27,7 @@ function Login() {
 
     if (res.data.success) {
       toast(res.data.message, { theme: "success" });
+      await refreshUser();
       navigate("/");
     } else {
       toast(res.data.message, { theme: "failure" });
