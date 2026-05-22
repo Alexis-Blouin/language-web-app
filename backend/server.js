@@ -37,6 +37,7 @@ const typesRoutes = require("./routes/types");
 const categoriesRoutes = require("./routes/categories");
 const notesRoutes = require("./routes/notes");
 const accountsRoutes = require("./routes/accounts");
+const aiRoutes = require("./routes/ai");
 
 // use routes
 app.use("/words", wordsRoutes);
@@ -45,6 +46,7 @@ app.use("/types", typesRoutes);
 app.use("/categories", categoriesRoutes);
 app.use("/notes", notesRoutes);
 app.use("/accounts", accountsRoutes);
+app.use("/ai", aiRoutes);
 
 // Start the server and listen on port 8081
 app.listen(8081, () => {

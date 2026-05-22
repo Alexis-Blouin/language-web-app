@@ -12,6 +12,7 @@ import WordGuess from "./components/WordGuess";
 import Expressions from "./components/Expressions";
 import WordAttach from "./components/WordAttach";
 import Notes from "./components/Notes";
+import CreateSentence from "./components/CreateSentence";
 import Login from "./components/account/Login";
 import CreateAccount from "./components/account/CreateAccount";
 import TestComponent from "./components/TestComponent";
@@ -74,6 +75,7 @@ const pages = [
   { name: "Expressions", path: "/expressions" },
   { name: "Word Attach", path: "/word-attach" },
   { name: "Notes", path: "/notes" },
+  { name: "Question", path: "/question" },
   { name: "Test Component", path: "/test" },
 ];
 
@@ -364,6 +366,7 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        <Route path="/question" element={<CreateSentence />} />
         <Route
           path="/test"
           element={
