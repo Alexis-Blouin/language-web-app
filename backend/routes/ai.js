@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const openAI = require("openai");
 
-// Using API key from https://github.com/alistaitsacle/free-llm-api-keys
+// Using API key from https://console.groq.com
 const client = new openAI({
-  baseURL: "https://aiapiv2.pekpik.com/v1",
+  baseURL: "https://api.groq.com/openai/v1",
   apiKey: process.env.OPENAI_API_KEY,
 });
 
@@ -13,7 +13,7 @@ router.post("/analyze", async (req, res) => {
     const { sentence, question } = req.body;
 
     const response = await client.chat.completions.create({
-      model: "deepseek-chat",
+      model: "openai/gpt-oss-120b",
       messages: [
         {
           role: "user",
@@ -39,8 +39,6 @@ Return JSON:
         },
       ],
     });
-
-    console.log(response.choices[0].message.content);
 
     res.json(response.choices[0].message.content);
   } catch (err) {

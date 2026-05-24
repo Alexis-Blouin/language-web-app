@@ -8,7 +8,7 @@ import axios from "axios";
 import { useState } from "react";
 
 function CreateSentence() {
-  const [sentence, setSentence] = useState("");
+  const [text, setText] = useState("");
   const [question, setQuestion] = useState("");
 
   const [corrected, setCorrected] = useState("");
@@ -18,8 +18,8 @@ function CreateSentence() {
   const [explanation, setExplanation] = useState([]);
   const [answer, setAnswer] = useState([]);
 
-  const handleSentenceChange = (event) => {
-    setSentence(event.target.value);
+  const handleTextChange = (event) => {
+    setText(event.target.value);
   };
 
   const handleQuestionChange = (event) => {
@@ -30,12 +30,11 @@ function CreateSentence() {
     event.preventDefault();
 
     const res = await axios.post("http://localhost:8081/ai/analyze", {
-      sentence,
+      sentence: text,
       question,
     });
 
     const resObj = JSON.parse(res.data);
-    console.log(resObj);
 
     setCorrected(resObj.corrected);
     setGrammar(resObj.grammar_feedback);
@@ -55,83 +54,101 @@ function CreateSentence() {
   };
 
   return (
-    <Box sx={{ width: "400px", mt: 2, mr: "auto", ml: "auto" }}>
-      <Paper sx={{ p: 2 }}>
-        <form onSubmit={handleSubmit}>
-          <Stack direction="column" spacing={2}>
-            <Typography variant="h4">Test your writing skills</Typography>
-            <Typography variant="body2">
-              Write some text and get feedback on it. You can also ask a
-              question in the same context.
-            </Typography>
-            <TextField
-              required
-              id="sentence"
-              name="sentence"
-              label="Sentence"
-              placeholder="我很好…"
-              value={sentence}
-              onChange={handleSentenceChange}
-            />
-            <TextField
-              id="question"
-              name="question"
-              label="Question"
-              placeholder="Is this sentence correct"
-              value={question}
-              onChange={handleQuestionChange}
-            />
-            <Button variant="contained" color="primary" type="submit">
-              Ask
-            </Button>
-          </Stack>
-        </form>
-      </Paper>
-      {corrected !== "" && (
-        <Paper sx={{ mt: 2, p: 2 }}>
-          <Stack direction="column" spacing={2}>
-            {sentence !== corrected && (
-              <Box>
-                <Typography variant="h5">Corrected Sentence</Typography>
-                <Typography variant="body1">{corrected}</Typography>
-              </Box>
-            )}
-            <Box>
-              <Typography variant="h5">Grammar</Typography>
-              {grammar.map((gram) => (
-                <Typography variant="body1">{gram}</Typography>
-              ))}
-            </Box>
-            <Box>
-              <Typography variant="h5">Vocabulary</Typography>
-              {vocabulary.map((vocab) => (
-                <Typography variant="body1">{vocab}</Typography>
-              ))}
-            </Box>
-            <Box>
-              <Typography variant="h5">Score</Typography>
-              <Typography variant="body1">{score}</Typography>
-            </Box>
-            <Box>
-              <Typography variant="h5">Explanation</Typography>
-              {explanation.map((exp) => (
-                <Typography variant="body1">{exp}</Typography>
-              ))}
-            </Box>
-            {question !== "" && (
-              <>
-                <Typography variant="h5">Answer to your question</Typography>
-                {answer.map((an) => (
-                  <Typography variant="body1">{an}</Typography>
-                ))}
-              </>
-            )}
-            <Button variant="contained" color="primary" onClick={handleClear}>
-              Clear
-            </Button>
-          </Stack>
+    <Box sx={{ maxWidth: "800px", p: 2, mr: "auto", ml: "auto" }}>
+      <Stack direction="column" spacing={2}>
+        <Paper sx={{ p: 2 }}>
+          <form onSubmit={handleSubmit}>
+            <Stack direction="column" spacing={2}>
+              <Typography variant="h4">Test your writing skills</Typography>
+              <Typography variant="body2">
+                Write some text and get feedback on it. You can also ask a
+                question in the same context.
+              </Typography>
+              <TextField
+                required
+                multiline
+                minRows={2}
+                id="text"
+                name="text"
+                label="Text"
+                placeholder="今天我很好…"
+                value={text}
+                onChange={handleTextChange}
+                autoComplete="off"
+              />
+              <TextField
+                multiline
+                minRows={2}
+                id="question"
+                name="question"
+                label="Question"
+                placeholder="What can I change to improve this?"
+                value={question}
+                onChange={handleQuestionChange}
+                autoComplete="off"
+              />
+              <Button
+                sx={{ maxWidth: "100px" }}
+                variant="contained"
+                color="primary"
+                type="submit"
+              >
+                Ask
+              </Button>
+            </Stack>
+          </form>
         </Paper>
-      )}
+        {corrected !== "" && (
+          <Paper sx={{ p: 2 }}>
+            <Stack direction="column" spacing={2}>
+              {text !== corrected && (
+                <Box>
+                  <Typography variant="h5">Corrected Sentence</Typography>
+                  <Typography variant="body1">{corrected}</Typography>
+                </Box>
+              )}
+              <Box>
+                <Typography variant="h5">Grammar</Typography>
+                {grammar.map((gram) => (
+                  <Typography variant="body1">{gram}</Typography>
+                ))}
+              </Box>
+              <Box>
+                <Typography variant="h5">Vocabulary</Typography>
+                {vocabulary.map((vocab) => (
+                  <Typography variant="body1">{vocab}</Typography>
+                ))}
+              </Box>
+              <Box>
+                <Typography variant="h5">Score</Typography>
+                <Typography variant="body1">{score}/10</Typography>
+              </Box>
+              <Box>
+                <Typography variant="h5">Explanation</Typography>
+                {explanation.map((exp) => (
+                  <Typography variant="body1">{exp}</Typography>
+                ))}
+              </Box>
+              {question !== "" && (
+                <>
+                  <Typography variant="h5">Answer to your question</Typography>
+                  {answer.map((an) => (
+                    <Typography variant="body1">{an}</Typography>
+                  ))}
+                </>
+              )}
+              <Button
+                sx={{ maxWidth: "100px" }}
+                variant="contained"
+                color="primary"
+                onClick={handleClear}
+              >
+                Clear
+              </Button>
+            </Stack>
+          </Paper>
+        )}
+      </Stack>
     </Box>
   );
 }
