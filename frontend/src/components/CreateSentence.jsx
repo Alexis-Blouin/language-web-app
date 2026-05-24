@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
@@ -10,6 +11,8 @@ import { useState } from "react";
 function CreateSentence() {
   const [text, setText] = useState("");
   const [question, setQuestion] = useState("");
+
+  const [inProgress, setInProgress] = useState(false);
 
   const [corrected, setCorrected] = useState("");
   const [grammar, setGrammar] = useState([]);
@@ -28,29 +31,37 @@ function CreateSentence() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    handleClear();
+    setInProgress(true);
 
-    const res = await axios.post("http://localhost:8081/ai/analyze", {
-      sentence: text,
-      question,
-    });
+    try {
+      const res = await axios.post("http://localhost:8081/ai/analyze", {
+        sentence: text,
+        question,
+      });
 
-    const resObj = JSON.parse(res.data);
+      console.log(res.data);
 
-    setCorrected(resObj.corrected);
-    setGrammar(resObj.grammar_feedback);
-    setVocabulary(resObj.vocabulary_feedback);
-    setScore(resObj.score);
-    setExplanation(resObj.explanation);
-    setAnswer(resObj.question_answer);
+      const resObj = JSON.parse(res.data);
+
+      setCorrected(resObj.corrected);
+      setGrammar(resObj.grammar_feedback);
+      setVocabulary(resObj.vocabulary_feedback);
+      setScore(resObj.score);
+      setExplanation(resObj.explanation);
+      setAnswer(resObj.question_answer);
+    } finally {
+      setInProgress(false);
+    }
   };
 
   const handleClear = () => {
     setCorrected("");
-    setGrammar("");
-    setVocabulary("");
-    setScore("");
-    setExplanation("");
-    setAnswer("");
+    setGrammar([]);
+    setVocabulary([]);
+    setScore(0);
+    setExplanation([]);
+    setAnswer([]);
   };
 
   return (
@@ -92,12 +103,14 @@ function CreateSentence() {
                 variant="contained"
                 color="primary"
                 type="submit"
+                disabled={inProgress}
               >
                 Ask
               </Button>
             </Stack>
           </form>
         </Paper>
+        {inProgress && <CircularProgress sx={{ alignSelf: "center" }} />}
         {corrected !== "" && (
           <Paper sx={{ p: 2 }}>
             <Stack direction="column" spacing={2}>
