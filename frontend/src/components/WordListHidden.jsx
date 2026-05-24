@@ -24,7 +24,7 @@ const style = {
   p: 4,
 };
 
-function WordListHidden({ words, chapters, categories }) {
+function WordListHidden({ words, chapters, categories, isDark }) {
   const [chapter, setChapter] = React.useState("all");
   const [category, setCategory] = React.useState("all");
   const [hiddenColumns, setHiddenColumns] = React.useState({
@@ -33,7 +33,7 @@ function WordListHidden({ words, chapters, categories }) {
     translation: true,
   });
   const [showingColumns, setShowingColumns] = React.useState({});
-  const [hiddingColumns, setHiddingColumns] = React.useState({});
+  const [hidingColumns, setHidingColumns] = React.useState({});
 
   const handleHiddenColumnChange = (e) => {
     const column = e.target.name;
@@ -41,9 +41,9 @@ function WordListHidden({ words, chapters, categories }) {
 
     if (willHide) {
       setHiddenColumns((values) => ({ ...values, [column]: true }));
-      setHiddingColumns((prev) => ({ ...prev, [column]: true }));
+      setHidingColumns((prev) => ({ ...prev, [column]: true }));
       setTimeout(() => {
-        setHiddingColumns((prev) => ({ ...prev, [column]: false }));
+        setHidingColumns((prev) => ({ ...prev, [column]: false }));
       }, 500);
     } else {
       setShowingColumns((prev) => ({ ...prev, [column]: true }));
@@ -57,9 +57,9 @@ function WordListHidden({ words, chapters, categories }) {
   const resetHidden = () => {
     for (const [key, value] of Object.entries(hiddenColumns)) {
       if (value) {
-        setHiddingColumns((prev) => ({ ...prev, [key]: true }));
+        setHidingColumns((prev) => ({ ...prev, [key]: true }));
         setTimeout(() => {
-          setHiddingColumns((prev) => ({ ...prev, [key]: false }));
+          setHidingColumns((prev) => ({ ...prev, [key]: false }));
         }, 500);
       }
     }
@@ -148,7 +148,8 @@ function WordListHidden({ words, chapters, categories }) {
               word={word}
               hiddenColumns={hiddenColumns}
               transitioningColumns={showingColumns}
-              test={hiddingColumns}
+              hidingColumns={hidingColumns}
+              isDark={isDark}
             />
           )}
           noDataComponent={() => (
@@ -169,19 +170,27 @@ function WordListHidden({ words, chapters, categories }) {
 
 export default WordListHidden;
 
-function Item({ word, hiddenColumns, transitioningColumns, test }) {
+function Item({
+  word,
+  hiddenColumns,
+  transitioningColumns,
+  hidingColumns,
+  isDark,
+}) {
+  const hiddenClassName = "hidden-word-" + (isDark ? "dark" : "light");
+
   const unhideWord = (target) => {
     const cell = target.target;
     cell.classList.add("fade-out");
     setTimeout(() => {
-      cell.classList.remove("hidden-word", "fade-out");
+      cell.classList.remove(hiddenClassName, "fade-out");
     }, 500);
   };
 
   const getClassName = (columnKey) => {
-    if (test[columnKey]) return "hidden-word fade-in";
-    if (transitioningColumns[columnKey]) return "hidden-word fade-out";
-    return hiddenColumns[columnKey] ? "hidden-word" : "";
+    if (hidingColumns[columnKey]) return hiddenClassName + " fade-in";
+    if (transitioningColumns[columnKey]) return hiddenClassName + " fade-out";
+    return hiddenColumns[columnKey] ? hiddenClassName : "";
   };
 
   return (

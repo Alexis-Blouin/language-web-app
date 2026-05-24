@@ -30,18 +30,35 @@ nav.header ul li a:hover {
 
 /* Hidden Word */
 
-.hidden-word {
-  background-color: #254146;
+.hidden-word-light {
+  background-color: #2c3e50;
+  color: #2c3e50;
   cursor: pointer;
   transition: background-color 0.5s ease;
 }
-
-.hidden-word.fade-out {
+.hidden-word-light.fade-out {
   cursor: default;
   background-color: transparent;
 }
-
-.hidden-word.fade-in {
+.hidden-word-light.fade-in {
   cursor: default;
-  background-color: #254146;
+  background-color: #2c3e50;
+}
+
+.hidden-word-dark {
+  background-color: #363e4c;
+  color: #363e4c;
+  cursor: pointer;
+  transition-property: background-color color;
+  transition-duration: 0.5s;
+  transition-timing-function: ease;
+}
+.hidden-word-dark.fade-out {
+  cursor: default;
+  color: #ecf0f1; /* Need to add the color here since the text color isn't the same as the hiding color */
+  background-color: transparent;
+}
+.hidden-word-dark.fade-in {
+  cursor: default;
+  background-color: #363e4c;
 }

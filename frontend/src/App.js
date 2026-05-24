@@ -26,6 +26,8 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -40,7 +42,7 @@ import useAuth, { AuthProvider } from "./hooks/useAuth";
 axios.defaults.withCredentials = true;
 
 // A soft, easy-on-the-eyes theme with a light neutral background and refined colors
-const theme = createTheme({
+const lightTheme = createTheme({
   palette: {
     mode: "light",
     background: {
@@ -67,6 +69,33 @@ const theme = createTheme({
   },
 });
 
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    background: {
+      default: "#1a1f2e", // deep navy, matches your primary dark
+      paper: "#222b3a", // slightly lighter for cards/surfaces
+    },
+    primary: {
+      main: "#5dade2", // your secondary light — pops on dark bg
+      light: "#85c1e9",
+      dark: "#3498db",
+    },
+    secondary: {
+      main: "#3498db",
+      light: "#5dade2",
+      dark: "#2980b9",
+    },
+    text: {
+      primary: "#ecf0f1", // soft white, easy on the eyes
+      secondary: "#95a5a6", // muted gray for secondary text
+    },
+  },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+  },
+});
+
 const pages = [
   { name: "Home", path: "/" },
   { name: "Add Words", path: "/add-words" },
@@ -80,17 +109,33 @@ const pages = [
 ];
 
 function App() {
+  const [isDark, setIsDark] = useState(
+    () => localStorage.getItem("theme") === "dark",
+  );
+
+  useEffect(() => {
+    if (!localStorage.getItem("theme")) {
+      localStorage.setItem("theme", "light");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newValue = !isDark;
+    localStorage.setItem("theme", newValue ? "dark" : "light");
+    setIsDark(newValue);
+  };
+
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
       <CssBaseline />
       <AuthProvider>
-        <AppContent />
+        <AppContent isDark={isDark} toggleTheme={toggleTheme} />
       </AuthProvider>
     </ThemeProvider>
   );
 }
 
-function AppContent() {
+function AppContent({ isDark, toggleTheme }) {
   const [words, setWords] = useState([]);
   const [chapters, setChapters] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -247,6 +292,13 @@ function AppContent() {
                 </Button>
               ))}
             </Box>
+
+            <Box sx={{ flexGrow: 0, mr: 1 }}>
+              <IconButton onClick={toggleTheme}>
+                {isDark ? <LightModeIcon /> : <DarkModeIcon />}
+              </IconButton>
+            </Box>
+
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -325,6 +377,7 @@ function AppContent() {
                 words={words}
                 chapters={chapters}
                 categories={categories}
+                isDark={isDark}
               />
             </ProtectedRoute>
           }
