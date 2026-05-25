@@ -115,16 +115,12 @@ function AddCell({ handleOpenAddNote }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          transition: "border-color 0.15s",
+          transition: "color 0.25s",
+          transition: "padding 0.25s",
+          color: "primary.main",
           "&:hover": {
-            borderColor: "text.secondary",
-          },
-          // Corner decorations
-          "&::before, &::after": {
-            content: '""',
-            position: "absolute",
-            width: 24,
-            height: 24,
+            color: "primary.dark",
+            p: 3,
           },
         }}
       >
@@ -165,9 +161,6 @@ function AddCell({ handleOpenAddNote }) {
               position: "absolute",
               width: 24,
               height: 24,
-              borderColor: "divider",
-              borderStyle: "solid",
-              borderWidth: 0,
               ...corner,
             }}
           />

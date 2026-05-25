@@ -111,7 +111,7 @@ function WordAttach({ words }) {
       }, 2000);
       toast("Correct!", { theme: "success" });
     } else {
-      toast(`There are ${errorCount} errors...`);
+      toast(`There are ${errorCount} errors...`, { theme: "failure" });
     }
   };
 
@@ -146,7 +146,7 @@ function WordAttach({ words }) {
                   y1={coords.y1}
                   x2={coords.x2}
                   y2={coords.y2}
-                  stroke={theme.palette.primary.main}
+                  stroke={theme.palette.secondary.main}
                   strokeWidth={2}
                 />
               );
@@ -166,7 +166,7 @@ function WordAttach({ words }) {
                     border: "1px solid",
                     borderColor:
                       selected?.side === "left" && selected?.index === index
-                        ? "primary.main" // references palette.primary.main
+                        ? "secondary.main" // references palette.secondary.main
                         : "text.primary", // references palette.text.primary
                     borderRadius: 1,
                     minWidth: 120,
@@ -190,7 +190,7 @@ function WordAttach({ words }) {
                     border: "1px solid",
                     borderColor:
                       selected?.side === "right" && selected?.index === index
-                        ? "primary.main" // references palette.primary.main
+                        ? "secondary.main" // references palette.secondary.main
                         : "text.primary", // references palette.text.primary
                     borderRadius: 1,
                     minWidth: 120,

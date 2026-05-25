@@ -23,18 +23,6 @@ import TextField from "@mui/material/TextField";
 import CategorySelect from "../inputs/CategorySelect";
 import toast from "react-simple-toasts";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
-
 function WordList({ words, setWords, chapters, categories, setCategories }) {
   const [chapter, setChapter] = React.useState("all");
   const [category, setCategory] = React.useState("all");
