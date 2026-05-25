@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useState } from "react";
 
-function CreateSentence() {
+function Writing() {
   const [text, setText] = useState("");
   const [question, setQuestion] = useState("");
 
@@ -166,4 +166,4 @@ function CreateSentence() {
   );
 }
 
-export default CreateSentence;
+export default Writing;

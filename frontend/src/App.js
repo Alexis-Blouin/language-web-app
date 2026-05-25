@@ -4,15 +4,15 @@ import "react-simple-toasts/dist/theme/info.css";
 import "react-simple-toasts/dist/theme/success.css";
 import "react-simple-toasts/dist/theme/failure.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import WordListHome from "./components/WordListHome";
-import WordListHidden from "./components/WordListHidden";
-import AddForm from "./components/AddForm";
+import WordListHome from "./components/lists/WordListHome";
+import WordListHidden from "./components/lists/WordListHidden";
+import AddForm from "./components/words/AddForm";
 import React, { useState, useEffect } from "react";
-import WordGuess from "./components/WordGuess";
-import Expressions from "./components/Expressions";
-import WordAttach from "./components/WordAttach";
-import Notes from "./components/Notes";
-import CreateSentence from "./components/CreateSentence";
+import WordGuess from "./components/activities/WordGuess";
+import Expressions from "./components/lists/Expressions";
+import WordAttach from "./components/activities/WordAttach";
+import Notes from "./components/notes/Notes";
+import Writing from "./components/activities/Writing";
 import Login from "./components/account/Login";
 import CreateAccount from "./components/account/CreateAccount";
 import TestComponent from "./components/TestComponent";
@@ -104,7 +104,7 @@ const pages = [
   { name: "Expressions", path: "/expressions" },
   { name: "Word Attach", path: "/word-attach" },
   { name: "Notes", path: "/notes" },
-  { name: "Question", path: "/question" },
+  { name: "Writing", path: "/writing" },
   { name: "Test Component", path: "/test" },
 ];
 
@@ -419,7 +419,7 @@ function AppContent({ isDark, toggleTheme }) {
             </ProtectedRoute>
           }
         />
-        <Route path="/question" element={<CreateSentence />} />
+        <Route path="/question" element={<Writing />} />
         <Route
           path="/test"
           element={

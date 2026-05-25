@@ -1,7 +1,7 @@
 import { pinyin } from "pinyin-pro";
 import React from "react";
 import toast from "react-simple-toasts";
-import ChapterSelect from "./ChapterSelect";
+import ChapterSelect from "../inputs/ChapterSelect";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -11,7 +11,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Grid from "@mui/material/Grid";
-import CategorySelect from "./CategorySelect";
+import CategorySelect from "../inputs/CategorySelect";
 
 function EditForm({
   setWords,

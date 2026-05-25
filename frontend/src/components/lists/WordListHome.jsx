@@ -1,12 +1,8 @@
 import React from "react";
 import { pinyin } from "pinyin-pro";
 import { TableVirtuoso } from "react-virtuoso";
-import delete_icon from "../assets/images/delete.png";
-import edit_icon from "../assets/images/edit.png";
-import cancel_icon from "../assets/images/cancel.png";
-import confirmation_icon from "../assets/images/confirmation.png";
-import ChapterSelect from "./ChapterSelect";
-import EditForm from "./EditForm";
+import ChapterSelect from "../inputs/ChapterSelect";
+import EditForm from "../words/EditForm";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -22,9 +18,9 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import DeleteDialog from "./DeleteDialog";
+import DeleteDialog from "../words/DeleteDialog";
 import TextField from "@mui/material/TextField";
-import CategorySelect from "./CategorySelect";
+import CategorySelect from "../inputs/CategorySelect";
 import toast from "react-simple-toasts";
 
 const style = {
@@ -118,7 +114,7 @@ function WordList({ words, setWords, chapters, categories, setCategories }) {
   return (
     <Stack
       direction="column"
-      sx={{ width: "50%", margin: "20px auto", justifyContent: "center" }}
+      sx={{ width: "50%", margin: "16px auto", justifyContent: "center" }}
       spacing={2}
     >
       <Stack
@@ -147,12 +143,18 @@ function WordList({ words, setWords, chapters, categories, setCategories }) {
       </Stack>
 
       <Paper
-        style={{ height: "100%", marginLeft: "auto", marginRight: "auto" }}
+        style={{
+          width: "900px",
+          height:
+            "calc(100vh - 176px)" /* Full monitor size - header and filters */,
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
       >
         <TableVirtuoso
           data={searchFilteredWords}
           // overscan={8}
-          style={{ width: "950px", height: "600px" }}
+          style={{ width: "100%", height: "100%", borderRadius: "4px" }}
           fixedHeaderContent={() => (
             <TableRow style={{ backgroundColor: "#f5f5f5" }}>
               {columns.map((col) => (

@@ -1,10 +1,6 @@
 import React from "react";
 import { pinyin } from "pinyin-pro";
-import delete_icon from "../assets/images/delete.png";
-import edit_icon from "../assets/images/edit.png";
-import cancel_icon from "../assets/images/cancel.png";
-import confirmation_icon from "../assets/images/confirmation.png";
-import ChapterSelect from "./ChapterSelect";
+import ChapterSelect from "../inputs/ChapterSelect";
 import axios from "axios";
 import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
@@ -14,8 +10,8 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import DeleteDialog from "./DeleteDialog";
-import EditForm from "./EditForm";
+import DeleteDialog from "../words/DeleteDialog";
+import EditForm from "../words/EditForm";
 import Button from "@mui/material/Button";
 
 function ExpressionsList({
@@ -95,7 +91,7 @@ function ExpressionsList({
   return (
     <Stack
       direction="column"
-      sx={{ width: "50%", margin: "20px auto", justifyContent: "center" }}
+      sx={{ width: "50%", margin: "16px auto", justifyContent: "center" }}
       spacing={2}
     >
       <Stack
@@ -118,12 +114,18 @@ function ExpressionsList({
         />
       </Stack>
       <Paper
-        style={{ height: "100%", marginLeft: "auto", marginRight: "auto" }}
+        style={{
+          width: "850px",
+          height:
+            "calc(100vh - 176px)" /* Full monitor size - header and filters */,
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
       >
         <TableVirtuoso
           data={searchFilteredExpressions}
           // overscan={8}
-          style={{ width: "850px", height: "600px" }}
+          style={{ width: "100%", height: "100%", borderRadius: "4px" }}
           fixedHeaderContent={() => (
             <TableRow style={{ backgroundColor: "#f5f5f5" }}>
               {columns.map((col) => (

@@ -1,6 +1,6 @@
 import React from "react";
 import { TableVirtuoso } from "react-virtuoso";
-import ChapterSelect from "./ChapterSelect";
+import ChapterSelect from "../inputs/ChapterSelect";
 import Paper from "@mui/material/Paper";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
@@ -10,7 +10,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Stack from "@mui/material/Stack";
 import ReplayIcon from "@mui/icons-material/Replay";
 import Button from "@mui/material/Button";
-import CategorySelect from "./CategorySelect";
+import CategorySelect from "../inputs/CategorySelect";
 
 const style = {
   position: "absolute",
@@ -86,7 +86,7 @@ function WordListHidden({ words, chapters, categories, isDark }) {
   return (
     <Stack
       direction="column"
-      sx={{ width: "50%", margin: "20px auto", justifyContent: "center" }}
+      sx={{ width: "50%", margin: "16px auto", justifyContent: "center" }}
       spacing={2}
     >
       <Stack
@@ -117,12 +117,18 @@ function WordListHidden({ words, chapters, categories, isDark }) {
         </Button>
       </Stack>
       <Paper
-        style={{ height: "100%", marginLeft: "auto", marginRight: "auto" }}
+        style={{
+          width: "550px",
+          height:
+            "calc(100vh - 176px)" /* Full monitor size - header and filters */,
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
       >
         <TableVirtuoso
           data={filteredWords}
           // overscan={8}
-          style={{ width: "550px", height: "600px" }}
+          style={{ width: "100%", height: "100%", borderRadius: "4px" }}
           fixedHeaderContent={() => (
             <TableRow style={{ backgroundColor: "#f5f5f5" }}>
               {columns.map((col) => (

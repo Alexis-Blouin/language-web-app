@@ -1,8 +1,8 @@
 import { pinyin } from "pinyin-pro";
 import React from "react";
 import toast from "react-simple-toasts";
-import ChapterSelect from "./ChapterSelect";
-import CategorySelect from "./CategorySelect";
+import ChapterSelect from "../inputs/ChapterSelect";
+import CategorySelect from "../inputs/CategorySelect";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
