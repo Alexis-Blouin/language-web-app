@@ -40,9 +40,9 @@ function Writing() {
         question,
       });
 
-      console.log(res.data);
-
-      const resObj = JSON.parse(res.data);
+      // Sometimes the response comes with ```json around it, so we need to clean it before parsing
+      const clean = res.data.replace(/```json|```/g, "").trim();
+      const resObj = JSON.parse(clean);
 
       setCorrected(resObj.corrected);
       setGrammar(resObj.grammar_feedback);
@@ -70,7 +70,7 @@ function Writing() {
         <Paper sx={{ p: 2 }}>
           <form onSubmit={handleSubmit}>
             <Stack direction="column" spacing={2}>
-              <Typography variant="h4">Test your writing skills</Typography>
+              <Typography variant="h4">Test Your Writing Skills</Typography>
               <Typography variant="body2">
                 Write some text and get feedback on it. You can also ask a
                 question in the same context.
@@ -111,7 +111,7 @@ function Writing() {
           </form>
         </Paper>
         {inProgress && <CircularProgress sx={{ alignSelf: "center" }} />}
-        {corrected !== "" && (
+        {grammar.length > 0 && (
           <Paper sx={{ p: 2 }}>
             <Stack direction="column" spacing={2}>
               {text !== corrected && (

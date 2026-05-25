@@ -123,7 +123,7 @@ function WordAttach({ words }) {
     <Paper sx={{ width: "500px", mt: 2, mr: "auto", ml: "auto", p: 2 }}>
       <Stack direction="column" spacing={2}>
         <Typography variant="h4" sx={{ textAlign: "center" }}>
-          Attach the words
+          Attach The Words
         </Typography>
         <Box ref={containerRef} sx={{ position: "relative" }}>
           <svg

@@ -13,6 +13,7 @@ import Expressions from "./components/lists/Expressions";
 import WordAttach from "./components/activities/WordAttach";
 import Notes from "./components/notes/Notes";
 import Writing from "./components/activities/Writing";
+import LivePinyin from "./components/activities/LivePinyin";
 import Login from "./components/account/Login";
 import CreateAccount from "./components/account/CreateAccount";
 import axios from "axios";
@@ -104,6 +105,7 @@ const pages = [
   { name: "Word Attach", path: "/word-attach" },
   { name: "Notes", path: "/notes" },
   { name: "Writing", path: "/writing" },
+  { name: "Live Pinyin", path: "/live-pinyin" },
 ];
 
 function App() {
@@ -418,6 +420,7 @@ function AppContent({ isDark, toggleTheme }) {
           }
         />
         <Route path="/writing" element={<Writing />} />
+        <Route path="/live-pinyin" element={<LivePinyin />} />
         <Route path="/account/login" element={<Login />} />
         <Route path="/account/logout" element={<Logout />} />
         <Route path="/account/create-account" element={<CreateAccount />} />
