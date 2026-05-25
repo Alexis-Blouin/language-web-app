@@ -15,7 +15,6 @@ import Notes from "./components/notes/Notes";
 import Writing from "./components/activities/Writing";
 import Login from "./components/account/Login";
 import CreateAccount from "./components/account/CreateAccount";
-import TestComponent from "./components/TestComponent";
 import axios from "axios";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -105,7 +104,6 @@ const pages = [
   { name: "Word Attach", path: "/word-attach" },
   { name: "Notes", path: "/notes" },
   { name: "Writing", path: "/writing" },
-  { name: "Test Component", path: "/test" },
 ];
 
 function App() {
@@ -419,15 +417,7 @@ function AppContent({ isDark, toggleTheme }) {
             </ProtectedRoute>
           }
         />
-        <Route path="/question" element={<Writing />} />
-        <Route
-          path="/test"
-          element={
-            <ProtectedRoute>
-              <TestComponent />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/writing" element={<Writing />} />
         <Route path="/account/login" element={<Login />} />
         <Route path="/account/logout" element={<Logout />} />
         <Route path="/account/create-account" element={<CreateAccount />} />

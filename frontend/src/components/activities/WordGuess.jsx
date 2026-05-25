@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Paper from "@mui/material/Paper";
 
 // specify the theme in toastConfig
 toastConfig({
@@ -60,37 +61,38 @@ function WordGuess({ words }) {
   };
 
   return (
-    <Stack
-      direction="column"
-      sx={{ width: "400px", mt: 2, mr: "auto", ml: "auto" }}
-      spacing={2}
-    >
-      <Typography variant="h4" sx={{ textAlign: "center" }}>
-        Guess the {title}
-      </Typography>
-      <Typography variant="h5">
-        {word.question}
-        {!word.hideHanzi && (
-          // TODO use the pinyin from the DB instead since the function does not always return the same
-          <Typography variant="caption"> ({pinyin(word.question)})</Typography>
-        )}
-      </Typography>
+    <Paper sx={{ width: "400px", mt: 2, mr: "auto", ml: "auto", p: 2 }}>
+      <Stack direction="column" spacing={2}>
+        <Typography variant="h4" sx={{ textAlign: "center" }}>
+          Guess the {title}
+        </Typography>
+        <Typography variant="h5">
+          {word.question}
+          {!word.hideHanzi && (
+            // TODO use the pinyin from the DB instead since the function does not always return the same
+            <Typography variant="caption">
+              {" "}
+              ({pinyin(word.question)})
+            </Typography>
+          )}
+        </Typography>
 
-      {/* <button
+        {/* <button
             id="changeGuessButton"
             onClick={changeWord}
             disabled={buttonDisabled}
           >
             <img src={reload} alt="Reload" />
           </button> */}
-      <Guess
-        answer={word.answer}
-        hideHanzi={!word.hideHanzi}
-        changeWord={changeWord}
-        buttonDisabled={isButtonDisabled}
-        setButtonDisabled={setButtonDisabled}
-      />
-    </Stack>
+        <Guess
+          answer={word.answer}
+          hideHanzi={!word.hideHanzi}
+          changeWord={changeWord}
+          buttonDisabled={isButtonDisabled}
+          setButtonDisabled={setButtonDisabled}
+        />
+      </Stack>
+    </Paper>
   );
 }
 

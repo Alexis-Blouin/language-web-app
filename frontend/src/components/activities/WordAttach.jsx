@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import { pinyin } from "pinyin-pro";
 import React, { useState, useRef, useEffect } from "react";
 import toast from "react-simple-toasts";
+import Paper from "@mui/material/Paper";
 
 function WordAttach({ words }) {
   const [listLeft, setListLeft] = React.useState([]);
@@ -116,103 +117,95 @@ function WordAttach({ words }) {
   }, [generateRandomWords]);
 
   return (
-    <Stack
-      direction="column"
-      spacing={2}
-      sx={{
-        width: "500px",
-        mt: 2,
-        mr: "auto",
-        ml: "auto",
-        justifyContent: "center",
-      }}
-    >
-      <Typography variant="h4" sx={{ textAlign: "center" }}>
-        Attach the words
-      </Typography>
-      <Box ref={containerRef} sx={{ position: "relative" }}>
-        <svg
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            pointerEvents: "none",
-          }}
-        >
-          {connections.map((conn, i) => {
-            const coords = getLineCoords(conn.left, conn.right);
-            if (!coords) return null;
-            return (
-              <line
-                key={i}
-                x1={coords.x1}
-                y1={coords.y1}
-                x2={coords.x2}
-                y2={coords.y2}
-                stroke="blue"
-                strokeWidth={2}
-              />
-            );
-          })}
-        </svg>
+    <Paper sx={{ width: "500px", mt: 2, mr: "auto", ml: "auto", p: 2 }}>
+      <Stack direction="column" spacing={2}>
+        <Typography variant="h4" sx={{ textAlign: "center" }}>
+          Attach the words
+        </Typography>
+        <Box ref={containerRef} sx={{ position: "relative" }}>
+          <svg
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
+            }}
+          >
+            {connections.map((conn, i) => {
+              const coords = getLineCoords(conn.left, conn.right);
+              if (!coords) return null;
+              return (
+                <line
+                  key={i}
+                  x1={coords.x1}
+                  y1={coords.y1}
+                  x2={coords.x2}
+                  y2={coords.y2}
+                  stroke="blue"
+                  strokeWidth={2}
+                />
+              );
+            })}
+          </svg>
 
-        <Stack direction="row" sx={{ justifyContent: "space-between" }}>
-          {/* Left column - Translations */}
-          <Stack direction="column" spacing={1}>
-            {listLeft.map((item, index) => (
-              <Box
-                key={index}
-                ref={(el) => (leftRefs.current[index] = el)}
-                onClick={() => handleBoxClick("left", index)}
-                sx={{
-                  p: 1,
-                  border:
-                    selected?.side === "left" && selected?.index === index
-                      ? "2px solid blue" // ✅ highlight selected
-                      : "1px solid #ccc",
-                  borderRadius: 1,
-                  minWidth: 120,
-                  cursor: "pointer",
-                }}
-              >
-                <Typography>{item.translation}</Typography>
-              </Box>
-            ))}
-          </Stack>
+          <Stack direction="row" sx={{ justifyContent: "space-between" }}>
+            {/* Left column - Translations */}
+            <Stack direction="column" spacing={1}>
+              {listLeft.map((item, index) => (
+                <Box
+                  key={index}
+                  ref={(el) => (leftRefs.current[index] = el)}
+                  onClick={() => handleBoxClick("left", index)}
+                  sx={{
+                    p: 1,
+                    border:
+                      selected?.side === "left" && selected?.index === index
+                        ? "2px solid blue" // ✅ highlight selected
+                        : "1px solid #ccc",
+                    borderRadius: 1,
+                    minWidth: 120,
+                    cursor: "pointer",
+                  }}
+                >
+                  <Typography>{item.translation}</Typography>
+                </Box>
+              ))}
+            </Stack>
 
-          {/* Right column - Hanzi & Pinyin */}
-          <Stack direction="column" spacing={1}>
-            {listRight.map((item, index) => (
-              <Box
-                key={index}
-                ref={(el) => (rightRefs.current[index] = el)}
-                onClick={() => handleBoxClick("right", index)}
-                sx={{
-                  p: 1,
-                  border:
-                    selected?.side === "right" && selected?.index === index
-                      ? "2px solid blue"
-                      : "1px solid #ccc",
-                  borderRadius: 1,
-                  minWidth: 120,
-                  cursor: "pointer",
-                }}
-              >
-                <Typography>{item.hanzi}</Typography>
-                {/* <Typography variant="body2" color="text.secondary">
+            {/* Right column - Hanzi & Pinyin */}
+            <Stack direction="column" spacing={1}>
+              {listRight.map((item, index) => (
+                <Box
+                  key={index}
+                  ref={(el) => (rightRefs.current[index] = el)}
+                  onClick={() => handleBoxClick("right", index)}
+                  sx={{
+                    p: 1,
+                    border:
+                      selected?.side === "right" && selected?.index === index
+                        ? "2px solid blue"
+                        : "1px solid #ccc",
+                    borderRadius: 1,
+                    minWidth: 120,
+                    cursor: "pointer",
+                  }}
+                >
+                  <Typography>{item.hanzi}</Typography>
+                  {/* <Typography variant="body2" color="text.secondary">
                   {item.pinyin}
                 </Typography> */}
-              </Box>
-            ))}
+                </Box>
+              ))}
+            </Stack>
           </Stack>
-        </Stack>
-      </Box>
-      <Button variant="contained" onClick={verify} disabled={confirmDisabled}>
-        Verify
-      </Button>
-    </Stack>
+        </Box>
+        <Button variant="contained" onClick={verify} disabled={confirmDisabled}>
+          Verify
+        </Button>
+      </Stack>
+    </Paper>
   );
 }
 

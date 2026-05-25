@@ -11,8 +11,9 @@ import FormLabel from "@mui/material/FormLabel";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 import Radio from "@mui/material/Radio";
+import Typography from "@mui/material/Typography";
 
 function AddForm({
   setWords,
@@ -176,9 +177,12 @@ function AddForm({
   };
 
   return (
-    <Box sx={{ width: "400px", mt: 2, mr: "auto", ml: "auto" }}>
+    <Paper sx={{ width: "400px", mt: 2, mr: "auto", ml: "auto", p: 2 }}>
       <form id="addForm" onSubmit={handleSubmit}>
         <Stack direction="column" spacing={2} alignItems="center">
+          <Typography variant="h4" sx={{ textAlign: "center" }}>
+            Add a new word
+          </Typography>
           <TextField
             required
             id="hanzi"
@@ -272,7 +276,7 @@ function AddForm({
           </Button>
         </Stack>
       </form>
-    </Box>
+    </Paper>
   );
 }
 
