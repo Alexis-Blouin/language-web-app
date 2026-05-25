@@ -64,7 +64,7 @@ function WordGuess({ words }) {
     <Paper sx={{ width: "400px", mt: 2, mr: "auto", ml: "auto", p: 2 }}>
       <Stack direction="column" spacing={2}>
         <Typography variant="h4" sx={{ textAlign: "center" }}>
-          Guess the {title}
+          Guess The {title}
         </Typography>
         <Typography variant="h5">
           {word.question}

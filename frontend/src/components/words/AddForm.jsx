@@ -181,7 +181,7 @@ function AddForm({
       <form id="addForm" onSubmit={handleSubmit}>
         <Stack direction="column" spacing={2} alignItems="center">
           <Typography variant="h4" sx={{ textAlign: "center" }}>
-            Add a new word
+            Add a New Word
           </Typography>
           <TextField
             required
