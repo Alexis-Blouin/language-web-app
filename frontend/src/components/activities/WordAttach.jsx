@@ -6,6 +6,7 @@ import { pinyin } from "pinyin-pro";
 import React, { useState, useRef, useEffect } from "react";
 import toast from "react-simple-toasts";
 import Paper from "@mui/material/Paper";
+import { useTheme } from "@mui/material/styles";
 
 function WordAttach({ words }) {
   const [listLeft, setListLeft] = React.useState([]);
@@ -18,6 +19,8 @@ function WordAttach({ words }) {
   const leftRefs = useRef([]);
   const rightRefs = useRef([]);
   const containerRef = useRef(null);
+
+  const theme = useTheme();
 
   const generateRandomWords = React.useCallback(() => {
     if (!words || words.length === 0) return;
@@ -143,7 +146,7 @@ function WordAttach({ words }) {
                   y1={coords.y1}
                   x2={coords.x2}
                   y2={coords.y2}
-                  stroke="blue"
+                  stroke={theme.palette.primary.main}
                   strokeWidth={2}
                 />
               );
@@ -160,10 +163,11 @@ function WordAttach({ words }) {
                   onClick={() => handleBoxClick("left", index)}
                   sx={{
                     p: 1,
-                    border:
+                    border: "1px solid",
+                    borderColor:
                       selected?.side === "left" && selected?.index === index
-                        ? "2px solid blue" // ✅ highlight selected
-                        : "1px solid #ccc",
+                        ? "primary.main" // references palette.primary.main
+                        : "text.primary", // references palette.text.primary
                     borderRadius: 1,
                     minWidth: 120,
                     cursor: "pointer",
@@ -183,10 +187,11 @@ function WordAttach({ words }) {
                   onClick={() => handleBoxClick("right", index)}
                   sx={{
                     p: 1,
-                    border:
+                    border: "1px solid",
+                    borderColor:
                       selected?.side === "right" && selected?.index === index
-                        ? "2px solid blue"
-                        : "1px solid #ccc",
+                        ? "primary.main" // references palette.primary.main
+                        : "text.primary", // references palette.text.primary
                     borderRadius: 1,
                     minWidth: 120,
                     cursor: "pointer",
