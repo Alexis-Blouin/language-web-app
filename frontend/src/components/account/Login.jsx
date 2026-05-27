@@ -4,7 +4,8 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import { Link } from "react-router-dom";
+import Link from "@mui/material/Link";
+import { Link as RouterLink } from "react-router-dom";
 import Box from "@mui/material/Box";
 import toast from "react-simple-toasts";
 import axios from "axios";
@@ -60,7 +61,13 @@ function Login() {
           </Button>
           <Box>
             <Typography variant="body2">Don't have an account? </Typography>
-            <Link to="/account/create-account">Create an account</Link>
+            <Link
+              component={RouterLink}
+              to="/account/create-account"
+              underline="hover"
+            >
+              Create an account
+            </Link>
           </Box>
         </Stack>
       </form>

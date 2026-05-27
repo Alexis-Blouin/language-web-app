@@ -38,6 +38,7 @@ import Grid from "@mui/material/Grid";
 import Logout from "./components/account/Logout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import useAuth, { AuthProvider } from "./hooks/useAuth";
+import Queries from "./components/activities/Queries";
 
 axios.defaults.withCredentials = true;
 
@@ -338,6 +339,7 @@ function AppContent({ isDark, toggleTheme }) {
           </Toolbar>
         </Container>
       </AppBar>
+      {/* Change paths to fit new directories structure */}
       <Routes>
         <Route
           path="/"
@@ -420,6 +422,14 @@ function AppContent({ isDark, toggleTheme }) {
           }
         />
         <Route path="/writing" element={<Writing />} />
+        <Route
+          path="/queries"
+          element={
+            <ProtectedRoute>
+              <Queries />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/live-pinyin" element={<LivePinyin />} />
         <Route path="/account/login" element={<Login />} />
         <Route path="/account/logout" element={<Logout />} />

@@ -1,12 +1,15 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
+import Link from "@mui/material/Link";
+import { Link as RouterLink } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useState } from "react";
+import toast from "react-simple-toasts";
 
 function Writing() {
   const [text, setText] = useState("");
@@ -20,6 +23,8 @@ function Writing() {
   const [score, setScore] = useState(0);
   const [explanation, setExplanation] = useState([]);
   const [answer, setAnswer] = useState([]);
+
+  const [canSave, setCanSave] = useState(true);
 
   const handleTextChange = (event) => {
     setText(event.target.value);
@@ -42,8 +47,6 @@ function Writing() {
 
       // Sometimes the response comes with ```json around it, so we need to clean it before parsing
       const clean = res.data.replace(/```json|```/g, "").trim();
-      console.log(clean);
-
       const resObj = JSON.parse(clean);
 
       setCorrected(resObj.corrected);
@@ -69,6 +72,7 @@ function Writing() {
   };
 
   const saveQuery = async () => {
+    setCanSave(false);
     try {
       const res = await axios.post("http://localhost:8081/ai/add", {
         originalText: text,
@@ -80,9 +84,16 @@ function Writing() {
         answer,
         score,
       });
-      console.log(res);
+
+      if (res.data.success) {
+        toast(res.data.message, { theme: "success" });
+      } else {
+        toast(res.data.message, { theme: "failure" });
+        setCanSave(true);
+      }
     } catch (err) {
       console.error(err);
+      setCanSave(true);
     }
   };
 
@@ -120,15 +131,26 @@ function Writing() {
                 onChange={handleQuestionChange}
                 autoComplete="off"
               />
-              <Button
-                sx={{ maxWidth: "100px" }}
-                variant="contained"
-                color="primary"
-                type="submit"
-                disabled={inProgress}
-              >
-                Ask
-              </Button>
+              <Box>
+                <Button
+                  sx={{ maxWidth: "100px" }}
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={inProgress}
+                >
+                  Ask
+                </Button>
+                <Link
+                  component={RouterLink}
+                  to="/queries"
+                  variant="button"
+                  underline="hover"
+                  sx={{ ml: 2 }}
+                >
+                  See Previous Queries
+                </Link>
+              </Box>
             </Stack>
           </form>
         </Paper>
@@ -186,6 +208,7 @@ function Writing() {
                   variant="contained"
                   color="primary"
                   onClick={saveQuery}
+                  disabled={canSave}
                 >
                   Save
                 </Button>

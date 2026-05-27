@@ -58,7 +58,6 @@ router.get("/get", authenticate, async (req, res) => {
       from aiqueries where accountId = ?`,
       [req.accountId],
     );
-    // TODO parse grammarFeedback, vocabularyFeedback, explanation and answer
     res.json(rows);
   } catch (err) {
     console.error(err);
