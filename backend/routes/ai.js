@@ -103,4 +103,21 @@ router.post("/add", authenticate, async (req, res) => {
   }
 });
 
+router.delete("/delete", authenticate, async (req, res) => {
+  try {
+    const queryId = req.query.queryId;
+    await db.query(
+      `delete from aiqueries where queryId = ? and accountId = ?`,
+      [queryId, req.accountId],
+    );
+    res.json({
+      success: true,
+      message: "Query deleted successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;

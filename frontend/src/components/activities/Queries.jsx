@@ -13,6 +13,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import DeleteDialog from "../words/DeleteDialog";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import toast from "react-simple-toasts";
 
 function Queries() {
   const [queries, setQueries] = useState([]);
@@ -39,6 +40,7 @@ function Queries() {
       </Grid>
       <FocusedQuery
         query={selectedQuery}
+        setQueries={setQueries}
         open={openQuery}
         handleClose={handleClose}
       />
@@ -71,7 +73,7 @@ function Item({ query, handleOpen }) {
   );
 }
 
-function FocusedQuery({ query, open, handleClose }) {
+function FocusedQuery({ query, setQueries, open, handleClose }) {
   const [text, setText] = useState("");
   const [question, setQuestion] = useState("");
   const [corrected, setCorrected] = useState("");
@@ -92,28 +94,25 @@ function FocusedQuery({ query, open, handleClose }) {
   };
 
   const handleDeleteConfirm = async () => {
-    console.log("TODO");
+    try {
+      const res = await axios.delete("http://localhost:8081/ai/delete", {
+        params: { queryId: query.queryId },
+      });
 
-    // try {
-    //   const res = await axios.delete("http://localhost:8081/notes/delete", {
-    //     params: { noteId: note.NoteId },
-    //   });
-    //   const success = res.data.success;
-
-    //   if (success) {
-    //     setNotes((prevNotes) =>
-    //       prevNotes.filter((n) => n.NoteId !== note.NoteId),
-    //     );
-    //     close();
-    //     setDeleteDialogOpen(false);
-    //     toast(res.data.message, { theme: "success" });
-    //   } else {
-    //     // TODO not handled since the backend currently always returns success for delete
-    //   }
-    // } catch (err) {
-    //   console.error(err);
-    //   toast("Failed to delete note. Please try again.", { theme: "failure" });
-    // }
+      if (res.data.success) {
+        setQueries((prevQueries) =>
+          prevQueries.filter((q) => q.queryId !== query.queryId),
+        );
+        handleClose();
+        setDeleteDialogOpen(false);
+        toast(res.data.message, { theme: "success" });
+      } else {
+        // TODO not handled since the backend currently always returns success for delete
+      }
+    } catch (err) {
+      console.error(err);
+      toast("Failed to delete note. Please try again.", { theme: "failure" });
+    }
   };
 
   useEffect(() => {
