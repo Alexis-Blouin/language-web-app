@@ -36,12 +36,14 @@ function Writing() {
 
     try {
       const res = await axios.post("http://localhost:8081/ai/analyze", {
-        sentence: text,
+        text,
         question,
       });
 
       // Sometimes the response comes with ```json around it, so we need to clean it before parsing
       const clean = res.data.replace(/```json|```/g, "").trim();
+      console.log(clean);
+
       const resObj = JSON.parse(clean);
 
       setCorrected(resObj.corrected);
@@ -56,12 +58,32 @@ function Writing() {
   };
 
   const handleClear = () => {
+    // setText("");
+    // setQuestion("");
     setCorrected("");
     setGrammar([]);
     setVocabulary([]);
     setScore(0);
     setExplanation([]);
     setAnswer([]);
+  };
+
+  const saveQuery = async () => {
+    try {
+      const res = await axios.post("http://localhost:8081/ai/add", {
+        originalText: text,
+        question,
+        correctedText: corrected,
+        grammarFeedback: grammar,
+        vocabularyFeedback: vocabulary,
+        explanation,
+        answer,
+        score,
+      });
+      console.log(res);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -150,14 +172,24 @@ function Writing() {
                   ))}
                 </>
               )}
-              <Button
-                sx={{ maxWidth: "100px" }}
-                variant="contained"
-                color="primary"
-                onClick={handleClear}
-              >
-                Clear
-              </Button>
+              <Box>
+                <Button
+                  sx={{ maxWidth: "100px" }}
+                  variant="contained"
+                  color="primary"
+                  onClick={handleClear}
+                >
+                  Clear
+                </Button>
+                <Button
+                  sx={{ maxWidth: "100px", ml: 2 }}
+                  variant="contained"
+                  color="primary"
+                  onClick={saveQuery}
+                >
+                  Save
+                </Button>
+              </Box>
             </Stack>
           </Paper>
         )}

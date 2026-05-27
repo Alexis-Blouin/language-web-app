@@ -86,3 +86,19 @@ CREATE TABLE `accounts` (
     UNIQUE KEY `accountUsername` (`accountUsername`),
     UNIQUE KEY `accountEmail` (`accountEmail`)
 )
+
+CREATE TABLE `aiqueries` (
+    `queryId` int NOT NULL AUTO_INCREMENT,
+    `accountId` int NOT NULL,
+    `originalText` text NOT NULL,
+    `question` text NOT NULL,
+    `correctedText` text,
+    `grammarFeedback` json DEFAULT NULL,
+    `vocabularyFeedback` json DEFAULT NULL,
+    `explanation` json DEFAULT NULL,
+    `answer` json DEFAULT NULL,
+    `score` int DEFAULT NULL,
+    PRIMARY KEY (`queryId`),
+    KEY `accountId` (`accountId`),
+    CONSTRAINT `aiqueries_ibfk_1` FOREIGN KEY (`accountId`) REFERENCES `accounts` (`accountId`)
+)
