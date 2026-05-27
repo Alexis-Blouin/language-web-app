@@ -16,7 +16,11 @@ function DeleteDialog({
     <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
       <DialogTitle>Delete {action}</DialogTitle>
       <DialogContent>
-        <Typography>Are you sure you want to delete "{content}"?</Typography>
+        {action === "Query" ? (
+          <Typography>Are you sure you want to delete this query?</Typography>
+        ) : (
+          <Typography>Are you sure you want to delete "{content}"?</Typography>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleDeleteCancel}>Cancel</Button>

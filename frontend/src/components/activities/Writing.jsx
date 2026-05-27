@@ -160,7 +160,7 @@ function Writing() {
             <Stack direction="column" spacing={2}>
               {text !== corrected && (
                 <Box>
-                  <Typography variant="h5">Corrected Sentence</Typography>
+                  <Typography variant="h5">Corrected Text</Typography>
                   <Typography variant="body1">{corrected}</Typography>
                 </Box>
               )}
