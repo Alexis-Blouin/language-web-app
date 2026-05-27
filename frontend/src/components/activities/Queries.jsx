@@ -51,21 +51,44 @@ function Queries() {
 export default Queries;
 
 function Item({ query, handleOpen }) {
+  const originalText =
+    query.originalText.length > 100
+      ? query.originalText.substring(0, 100) + "..."
+      : query.originalText;
+  const correctedText =
+    query.correctedText.length > 100
+      ? query.correctedText.substring(0, 100) + "..."
+      : query.correctedText;
+  const explanations = query.explanation.map((exp) =>
+    exp.length > 100 ? exp.substring(0, 100) + "..." : exp,
+  );
+  const score = query.score;
+
   return (
     <Grid size={{ md: 4 }}>
       <Paper sx={{ p: 2, cursor: "pointer" }} onClick={() => handleOpen(query)}>
         <Stack spacing={1} direction="column">
-          <Typography variant="h4">{query.originalText}</Typography>
-          <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
-            {query.question.length > 100
-              ? query.question.substring(0, 100) + "..."
-              : query.question}
-          </Typography>
-          <Divider textAlign="left">Example</Divider>
+          <Typography variant="h6">{originalText}</Typography>
+
+          {correctedText !== originalText && (
+            <>
+              <Divider textAlign="left">Corrected Text</Divider>
+              <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+                {correctedText}
+              </Typography>
+            </>
+          )}
+          <Divider textAlign="left">Explanation</Divider>
+          <Box>
+            {explanations.map((exp) => (
+              <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+                {exp}
+              </Typography>
+            ))}
+          </Box>
+          <Divider textAlign="left">Score</Divider>
           <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-            {query.correctedText.length > 100
-              ? query.correctedText.substring(0, 100) + "..."
-              : query.correctedText}
+            {score}/10
           </Typography>
         </Stack>
       </Paper>
@@ -135,14 +158,8 @@ function FocusedQuery({ query, setQueries, open, handleClose }) {
           <Typography variant="h5">Original Text</Typography>
           <Typography variant="body1">{corrected}</Typography>
         </Box>
-        {question !== "" && (
-          <Box>
-            <Typography variant="h5">Question</Typography>
-            <Typography variant="body1">{question}</Typography>
-          </Box>
-        )}
       </DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ p: 4 }}>
         <Stack direction="column" spacing={2}>
           {text !== corrected && (
             <Box>
@@ -174,6 +191,8 @@ function FocusedQuery({ query, setQueries, open, handleClose }) {
           </Box>
           {question !== "" && (
             <>
+              <Typography variant="h5">Question</Typography>
+              <Typography variant="body1">{question}</Typography>
               <Typography variant="h5">Answer to your question</Typography>
               {answer.map((an) => (
                 <Typography variant="body1">{an}</Typography>
