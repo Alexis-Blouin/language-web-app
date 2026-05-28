@@ -13,6 +13,7 @@ import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DeleteDialog from "../words/DeleteDialog";
 import Divider from "@mui/material/Divider";
+import Stack from "@mui/material/Stack";
 
 function FocusedNote({ note, setNotes, open, handleClose }) {
   const [title, setTitle] = useState("");
@@ -168,7 +169,7 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
             />
           </form>
         ) : (
-          <>
+          <Stack direction="column" spacing={2}>
             <Typography
               variant="body1"
               onDoubleClick={() => startEditing("content", note?.NoteContent)}
@@ -176,17 +177,19 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
             >
               {note?.NoteContent}
             </Typography>
-            <Divider textAlign="left" sx={{ mt: 1, mb: 1 }}>
-              Example
-            </Divider>
-            <Typography
-              variant="body1"
-              onDoubleClick={() => startEditing()}
-              sx={{ whiteSpace: "pre-wrap" }}
-            >
-              {note?.NoteExample}
-            </Typography>
-          </>
+            <Box>
+              <Divider textAlign="left" sx={{ mb: 1 }}>
+                Example
+              </Divider>
+              <Typography
+                variant="body1"
+                onDoubleClick={() => startEditing()}
+                sx={{ whiteSpace: "pre-wrap" }}
+              >
+                {note?.NoteExample}
+              </Typography>
+            </Box>
+          </Stack>
         )}
       </DialogContent>
       <DialogActions>

@@ -54,7 +54,7 @@ function Notes() {
     <Box sx={{ margin: "16px auto", width: "75%" }}>
       <Grid container spacing={2}>
         {notes.map((note, index) => (
-          <Item key={index} note={note} index={index} handleOpen={handleOpen} />
+          <Note key={index} note={note} index={index} handleOpen={handleOpen} />
         ))}
         <AddCell handleOpenAddNote={handleOpenAddNote} />
       </Grid>
@@ -75,7 +75,7 @@ function Notes() {
 
 export default Notes;
 
-function Item({ note, index, handleOpen }) {
+function Note({ note, index, handleOpen }) {
   // Add Mui Divider to make it prettier and separate the notes
   return (
     <Grid size={{ md: 4 }}>

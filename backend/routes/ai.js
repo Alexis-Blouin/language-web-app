@@ -65,7 +65,7 @@ router.get("/get", authenticate, async (req, res) => {
   }
 });
 
-router.post("/add", authenticate, async (req, res) => {
+router.post("/save", authenticate, async (req, res) => {
   try {
     const originalText = req.body.originalText;
     const question = req.body.question;
@@ -95,7 +95,7 @@ router.post("/add", authenticate, async (req, res) => {
     res.json({
       noteId: queriesResult.insertId,
       success: true,
-      message: "Query added successfully",
+      message: "Query saved successfully",
     });
   } catch (err) {
     console.error(err);

@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import DeleteDialog from "../words/DeleteDialog";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import toast from "react-simple-toasts";
+import ScoreProgressBar from "./ScoreProgressBar";
 
 function Queries() {
   const [queries, setQueries] = useState([]);
@@ -35,7 +36,7 @@ function Queries() {
     <Box sx={{ margin: "16px auto", width: "75%" }}>
       <Grid container spacing={2}>
         {queries.map((query) => (
-          <Item query={query} handleOpen={handleOpen} />
+          <Query query={query} handleOpen={handleOpen} />
         ))}
       </Grid>
       <FocusedQuery
@@ -50,26 +51,27 @@ function Queries() {
 
 export default Queries;
 
-function Item({ query, handleOpen }) {
+function Query({ query, handleOpen }) {
   const originalText =
-    query.originalText.length > 100
-      ? query.originalText.substring(0, 100) + "..."
+    query.originalText.length > 20
+      ? query.originalText.substring(0, 20) + "..."
       : query.originalText;
   const correctedText =
-    query.correctedText.length > 100
-      ? query.correctedText.substring(0, 100) + "..."
+    query.correctedText.length > 20
+      ? query.correctedText.substring(0, 20) + "..."
       : query.correctedText;
-  const explanations = query.explanation.map((exp) =>
-    exp.length > 100 ? exp.substring(0, 100) + "..." : exp,
-  );
+  const explanations = query.explanation
+    .slice(0, 3)
+    .map((exp) => (exp.length > 100 ? exp.substring(0, 100) + "..." : exp));
+  const displayExplanations =
+    query.explanation.length > 3 ? [...explanations, "..."] : explanations;
   const score = query.score;
 
   return (
     <Grid size={{ md: 4 }}>
       <Paper sx={{ p: 2, cursor: "pointer" }} onClick={() => handleOpen(query)}>
         <Stack spacing={1} direction="column">
-          <Typography variant="h6">{originalText}</Typography>
-
+          <Typography variant="h4">{originalText}</Typography>
           {correctedText !== originalText && (
             <>
               <Divider textAlign="left">Corrected Text</Divider>
@@ -79,17 +81,13 @@ function Item({ query, handleOpen }) {
             </>
           )}
           <Divider textAlign="left">Explanation</Divider>
-          <Box>
-            {explanations.map((exp) => (
-              <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-                {exp}
-              </Typography>
-            ))}
-          </Box>
+          {displayExplanations.map((exp) => (
+            <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+              {exp}
+            </Typography>
+          ))}
           <Divider textAlign="left">Score</Divider>
-          <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-            {score}/10
-          </Typography>
+          <ScoreProgressBar score={score} />
         </Stack>
       </Paper>
     </Grid>
@@ -154,49 +152,68 @@ function FocusedQuery({ query, setQueries, open, handleClose }) {
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>
-        <Box>
-          <Typography variant="h5">Original Text</Typography>
-          <Typography variant="body1">{corrected}</Typography>
-        </Box>
+        <Typography variant="h4">{corrected}</Typography>
       </DialogTitle>
       <DialogContent sx={{ p: 4 }}>
         <Stack direction="column" spacing={2}>
           {text !== corrected && (
             <Box>
-              <Typography variant="h5">Corrected Text</Typography>
+              <Divider textAlign="left" sx={{ mb: 1 }}>
+                Corrected Version
+              </Divider>
               <Typography variant="body1">{corrected}</Typography>
             </Box>
           )}
+          {grammar.length > 0 && (
+            <Box>
+              <Divider textAlign="left" sx={{ mb: 1 }}>
+                Grammar
+              </Divider>
+              {grammar.map((gram) => (
+                <Typography variant="body1">{gram}</Typography>
+              ))}
+            </Box>
+          )}
+          {vocabulary.length > 0 && (
+            <Box>
+              <Divider textAlign="left" sx={{ mb: 1 }}>
+                Vocabulary
+              </Divider>
+              {vocabulary.map((vocab) => (
+                <Typography variant="body1">{vocab}</Typography>
+              ))}
+            </Box>
+          )}
           <Box>
-            <Typography variant="h5">Grammar</Typography>
-            {grammar.map((gram) => (
-              <Typography variant="body1">{gram}</Typography>
-            ))}
-          </Box>
-          <Box>
-            <Typography variant="h5">Vocabulary</Typography>
-            {vocabulary.map((vocab) => (
-              <Typography variant="body1">{vocab}</Typography>
-            ))}
-          </Box>
-          <Box>
-            <Typography variant="h5">Score</Typography>
-            <Typography variant="body1">{score}/10</Typography>
-          </Box>
-          <Box>
-            <Typography variant="h5">Explanation</Typography>
+            <Divider textAlign="left" sx={{ mb: 1 }}>
+              Explanation
+            </Divider>
             {explanation.map((exp) => (
               <Typography variant="body1">{exp}</Typography>
             ))}
           </Box>
+          <Box>
+            <Divider textAlign="left" sx={{ mb: 1 }}>
+              Score
+            </Divider>
+            <ScoreProgressBar score={score} />
+          </Box>
           {question !== "" && (
             <>
-              <Typography variant="h5">Question</Typography>
-              <Typography variant="body1">{question}</Typography>
-              <Typography variant="h5">Answer to your question</Typography>
-              {answer.map((an) => (
-                <Typography variant="body1">{an}</Typography>
-              ))}
+              <Box>
+                <Divider textAlign="left" sx={{ mb: 1 }}>
+                  Question
+                </Divider>
+                <Typography variant="body1">{question}</Typography>
+              </Box>
+              <Box>
+                <Divider textAlign="left" sx={{ mb: 1 }}>
+                  Answer to your question
+                </Divider>
+                {answer.map((an) => (
+                  <Typography variant="body1">{an}</Typography>
+                ))}
+              </Box>
             </>
           )}
         </Stack>

@@ -10,6 +10,8 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-simple-toasts";
+import LinearProgress from "@mui/material/LinearProgress";
+import ScoreProgressBar from "./ScoreProgressBar";
 
 function Writing() {
   const [text, setText] = useState("");
@@ -24,6 +26,7 @@ function Writing() {
   const [explanation, setExplanation] = useState([]);
   const [answer, setAnswer] = useState([]);
 
+  const [displayQuery, setDisplayQuery] = useState(false);
   const [canSave, setCanSave] = useState(true);
 
   const handleTextChange = (event) => {
@@ -55,6 +58,9 @@ function Writing() {
       setScore(resObj.score);
       setExplanation(resObj.explanation);
       setAnswer(resObj.question_answer);
+
+      setCanSave(true);
+      setDisplayQuery(true);
     } finally {
       setInProgress(false);
     }
@@ -69,12 +75,14 @@ function Writing() {
     setScore(0);
     setExplanation([]);
     setAnswer([]);
+    setCanSave(false);
+    setDisplayQuery(false);
   };
 
   const saveQuery = async () => {
     setCanSave(false);
     try {
-      const res = await axios.post("http://localhost:8081/ai/add", {
+      const res = await axios.post("http://localhost:8081/ai/save", {
         originalText: text,
         question,
         correctedText: corrected,
@@ -148,14 +156,14 @@ function Writing() {
                   underline="hover"
                   sx={{ ml: 2 }}
                 >
-                  See Previous Queries
+                  See Saved Queries
                 </Link>
               </Box>
             </Stack>
           </form>
         </Paper>
         {inProgress && <CircularProgress sx={{ alignSelf: "center" }} />}
-        {grammar.length > 0 && (
+        {displayQuery && (
           <Paper sx={{ p: 2 }}>
             <Stack direction="column" spacing={2}>
               {text !== corrected && (
@@ -164,33 +172,37 @@ function Writing() {
                   <Typography variant="body1">{corrected}</Typography>
                 </Box>
               )}
-              <Box>
-                <Typography variant="h5">Grammar</Typography>
-                {grammar.map((gram) => (
-                  <Typography variant="body1">{gram}</Typography>
-                ))}
-              </Box>
-              <Box>
-                <Typography variant="h5">Vocabulary</Typography>
-                {vocabulary.map((vocab) => (
-                  <Typography variant="body1">{vocab}</Typography>
-                ))}
-              </Box>
-              <Box>
-                <Typography variant="h5">Score</Typography>
-                <Typography variant="body1">{score}/10</Typography>
-              </Box>
+              {grammar.length > 0 && (
+                <Box>
+                  <Typography variant="h5">Grammar</Typography>
+                  {grammar.map((gram) => (
+                    <Typography variant="body1">{gram}</Typography>
+                  ))}
+                </Box>
+              )}
+              {vocabulary.length > 0 && (
+                <Box>
+                  <Typography variant="h5">Vocabulary</Typography>
+                  {vocabulary.map((vocab) => (
+                    <Typography variant="body1">{vocab}</Typography>
+                  ))}
+                </Box>
+              )}
               <Box>
                 <Typography variant="h5">Explanation</Typography>
                 {explanation.map((exp) => (
                   <Typography variant="body1">{exp}</Typography>
                 ))}
               </Box>
+              <Box>
+                <Typography variant="h5">Score</Typography>
+                <ScoreProgressBar score={score} />
+              </Box>
               {question !== "" && (
                 <>
                   <Typography variant="h5">Answer to your question</Typography>
-                  {answer.map((an) => (
-                    <Typography variant="body1">{an}</Typography>
+                  {answer.map((a) => (
+                    <Typography variant="body1">{a}</Typography>
                   ))}
                 </>
               )}
@@ -208,7 +220,7 @@ function Writing() {
                   variant="contained"
                   color="primary"
                   onClick={saveQuery}
-                  disabled={canSave}
+                  disabled={!canSave}
                 >
                   Save
                 </Button>
