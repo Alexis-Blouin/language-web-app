@@ -15,6 +15,8 @@ import DeleteDialog from "../words/DeleteDialog";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import toast from "react-simple-toasts";
 import ScoreProgressBar from "./ScoreProgressBar";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import { Link } from "react-router-dom";
 
 function Queries() {
   const [queries, setQueries] = useState([]);
@@ -35,6 +37,7 @@ function Queries() {
   return (
     <Box sx={{ margin: "16px auto", width: "75%" }}>
       <Grid container spacing={2}>
+        <ReturnCell />
         {queries.map((query) => (
           <Query query={query} handleOpen={handleOpen} />
         ))}
@@ -50,6 +53,89 @@ function Queries() {
 }
 
 export default Queries;
+
+function ReturnCell() {
+  return (
+    <Grid size={{ md: 4 }}>
+      <Paper
+        component={Link}
+        to="/writing"
+        sx={{
+          p: 2,
+          height: "100%",
+          maxHeight: "100px",
+          cursor: "pointer",
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          transition: "color 0.25s",
+          // transition: "padding 0.25s",
+          transition: "max-height 0.25s",
+          color: "primary.main",
+          textDecoration: "none",
+          "&:hover": {
+            color: "primary.dark",
+            // p: 3,
+            maxHeight: "116px",
+          },
+        }}
+      >
+        {/* Corner borders using Box */}
+        {[
+          {
+            top: 8,
+            left: 8,
+            borderTop: 3,
+            borderLeft: 3,
+            borderRadius: "4px 0 0 0",
+          },
+          {
+            top: 8,
+            right: 8,
+            borderTop: 3,
+            borderRight: 3,
+            borderRadius: "0 4px 0 0",
+          },
+          {
+            bottom: 8,
+            left: 8,
+            borderBottom: 3,
+            borderLeft: 3,
+            borderRadius: "0 0 0 4px",
+          },
+          {
+            bottom: 8,
+            right: 8,
+            borderBottom: 3,
+            borderRight: 3,
+            borderRadius: "0 0 4px 0",
+          },
+        ].map((corner, i) => (
+          <Box
+            key={i}
+            sx={{
+              position: "absolute",
+              width: 24,
+              height: 24,
+              ...corner,
+            }}
+          />
+        ))}
+
+        <Stack
+          alignItems="center"
+          justifyContent="center"
+          spacing={1}
+          sx={{ margin: "auto" }}
+        >
+          <KeyboardReturnIcon fontSize="large" style={{ margin: "0 auto" }} />
+          <Typography variant="button">Go Back</Typography>
+        </Stack>
+      </Paper>
+    </Grid>
+  );
+}
 
 function Query({ query, handleOpen }) {
   const originalText =
