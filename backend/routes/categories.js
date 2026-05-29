@@ -6,9 +6,9 @@ const authenticate = require("../middleware/authenticate");
 router.get("/get", authenticate, async (req, res) => {
   try {
     const [rows] = await db.query(
-      `select CategoryId, CategoryName
+      `select categoryId, categoryName
       from categories where accountId = ?
-      order by CategoryName`,
+      order by categoryName`,
       [req.accountId],
     );
     res.json(rows);
@@ -20,17 +20,18 @@ router.get("/get", authenticate, async (req, res) => {
 
 router.post("/add", authenticate, async (req, res) => {
   try {
-    const categoryName = req.body.CategoryName;
-    const category = await selectOneCategory(categoryName, req.accountId);
+    const accountId = req.accountId;
+    const categoryName = req.body.categoryName;
+    const category = await selectOneCategory(categoryName, accountId);
     if (category) {
       res.json({
-        categoryId: category.CategoryId,
+        categoryId: category.categoryId,
         added: false,
       });
     } else {
       const [categoriesResult] = await db.query(
-        `insert into categories (CategoryName, accountId) values (?, ?)`,
-        [req.body.CategoryName, req.accountId],
+        `insert into categories (categoryName, accountId) values (?, ?)`,
+        [categoryName, accountId],
       );
       res.json({
         categoryId: categoriesResult.insertId,
@@ -48,8 +49,8 @@ module.exports = router;
 async function selectOneCategory(categoryName, accountId) {
   try {
     const [result] = await db.query(
-      `select CategoryId from categories
-      where CategoryName = ? and accountId = ?`,
+      `select categoryId from categories
+      where categoryName = ? and accountId = ?`,
       [categoryName, accountId],
     );
     return result.length > 0 ? result[0] : null;

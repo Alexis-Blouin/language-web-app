@@ -36,11 +36,11 @@ function EditForm({
   // Update form fields when the word changes
   React.useEffect(() => {
     if (word) {
-      setHanzi(word.Hanzi);
-      setPinyinVal(word.Pinyin);
-      setTranslation(word.Translation);
-      setChapter(word.ChapterId);
-      setCategory(word.CategoryId);
+      setHanzi(word.hanzi);
+      setPinyinVal(word.pinyin);
+      setTranslation(word.translation);
+      setChapter(word.chapterId);
+      setCategory(word.categoryId);
     }
   }, [word]);
 
@@ -49,7 +49,7 @@ function EditForm({
     const pinyinInput = event.target.pinyin.value;
     // If the pinyin value was edited, we take this one, else, we get the pinyin with pinyin-pro
     const pinyinVal =
-      (pinyinInput === word.Pinyin && hanzi !== word.Hanzi) ||
+      (pinyinInput === word.pinyin && hanzi !== word.hanzi) ||
       pinyinInput === ""
         ? pinyin(hanzi)
         : pinyinInput;
@@ -57,16 +57,16 @@ function EditForm({
     let chapterId = chapter;
     // TODO this is a bit hacky, maybe change the chapter select to return the chapter name instead of id, or both and use the name for the toast and the id for the db query
     let chapterName = chapters.filter(
-      (chap) => chap.ChapterId === parseInt(chapter),
-    )[0]?.ChapterName;
+      (chap) => chap.chapterId === parseInt(chapter),
+    )[0]?.chapterName;
     let categoryId = category;
     let categoryName = categories.filter(
-      (cat) => cat.CategoryId === parseInt(category),
-    )[0]?.CategoryName;
+      (cat) => cat.categoryId === parseInt(category),
+    )[0]?.categoryName;
     try {
       if (chapter === "new-chapter") {
         const res = await axios.post("http://localhost:8081/chapters/add", {
-          ChapterName: newChapter,
+          chapterName: newChapter,
         });
         chapterId = res.data.chapterId;
         const added = res.data.added;
@@ -75,8 +75,8 @@ function EditForm({
         // If the chapter was added, we add it to the list, else, it means it was already there
         if (added) {
           const newChapterEntry = {
-            ChapterId: parseInt(chapterId),
-            ChapterName: newChapter,
+            chapterId: parseInt(chapterId),
+            chapterName: newChapter,
           };
           setChapters((prevChapters) => [...prevChapters, newChapterEntry]);
         }
@@ -85,7 +85,7 @@ function EditForm({
       }
       if (category === "new-category") {
         const res = await axios.post("http://localhost:8081/categories/add", {
-          CategoryName: newCategory,
+          categoryName: newCategory,
         });
         categoryId = res.data.categoryId;
         const added = res.data.added;
@@ -93,8 +93,8 @@ function EditForm({
 
         if (added) {
           const newCategoryEntry = {
-            CategoryId: parseInt(categoryId),
-            CategoryName: newCategory,
+            categoryId: parseInt(categoryId),
+            categoryName: newCategory,
           };
           setCategories((prevCategories) => [
             ...prevCategories,
@@ -107,7 +107,7 @@ function EditForm({
 
       const res = await axios.patch("http://localhost:8081/words/modify", {
         wordId: word.WordId,
-        translationId: word.TranslationId,
+        translationId: word.translationId,
         newHanzi: hanzi,
         newPinyin: pinyinVal,
         newChapterId: chapterId,
@@ -121,18 +121,18 @@ function EditForm({
         setWords((prevWords) =>
           prevWords.map((aWord) =>
             aWord.WordId === word.WordId &&
-            aWord.TranslationId === word.TranslationId
+            aWord.translationId === word.translationId
               ? {
                   ...aWord,
                   WordId: res.data.wordId,
-                  Hanzi: hanzi,
-                  Pinyin: pinyinVal,
-                  TranslationId: res.data.translationId,
-                  Translation: translation,
-                  ChapterId: chapterId,
-                  ChapterName: chapterName,
-                  CategoryId: categoryId,
-                  CategoryName: categoryName,
+                  hanzi: hanzi,
+                  pinyin: pinyinVal,
+                  translationId: res.data.translationId,
+                  translation: translation,
+                  chapterId: chapterId,
+                  chapterName: chapterName,
+                  categoryId: categoryId,
+                  categoryName: categoryName,
                 }
               : aWord,
           ),
@@ -141,18 +141,18 @@ function EditForm({
         setExpressions((prevExpressions) =>
           prevExpressions.map((aExpression) =>
             aExpression.WordId === word.WordId &&
-            aExpression.TranslationId === word.TranslationId
+            aExpression.translationId === word.translationId
               ? {
                   ...aExpression,
                   WordId: res.data.wordId,
-                  Hanzi: hanzi,
-                  Pinyin: pinyinVal,
-                  TranslationId: res.data.translationId,
-                  Translation: translation,
-                  ChapterId: chapterId,
-                  ChapterName: chapterName,
-                  CategoryId: categoryId,
-                  CategoryName: categoryName,
+                  hanzi: hanzi,
+                  pinyin: pinyinVal,
+                  translationId: res.data.translationId,
+                  translation: translation,
+                  chapterId: chapterId,
+                  chapterName: chapterName,
+                  categoryId: categoryId,
+                  categoryName: categoryName,
                 }
               : aExpression,
           ),
@@ -190,7 +190,7 @@ function EditForm({
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>
-        Edit {action} "{word?.Hanzi}"
+        Edit {action} "{word?.hanzi}"
       </DialogTitle>
       <DialogContent style={{ paddingTop: "5px" }}>
         <form id="editForm" onSubmit={handleSubmit}>

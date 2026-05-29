@@ -6,9 +6,9 @@ const authenticate = require("../middleware/authenticate");
 router.get("/get", authenticate, async (req, res) => {
   try {
     const [rows] = await db.query(
-      `select NoteId, NoteTitle, NoteContent, NoteExample
+      `select noteId, noteTitle, noteContent, noteExample
       from notes where accountId = ?
-      order by NoteTitle`,
+      order by noteTitle`,
       [req.accountId],
     );
     res.json(rows);
@@ -26,13 +26,13 @@ router.post("/add", authenticate, async (req, res) => {
     const note = await selectOneNote(noteTitle, req.accountId);
     if (note) {
       res.json({
-        noteId: note.NoteId,
+        noteId: note.noteId,
         success: false,
         message: "Note with the same title already exists",
       });
     } else {
       const [notesResult] = await db.query(
-        `insert into notes (NoteTitle, NoteContent, NoteExample, accountId) values (?, ?, ?, ?)`,
+        `insert into notes (noteTitle, noteContent, noteExample, accountId) values (?, ?, ?, ?)`,
         [noteTitle, noteContent, noteExample, req.accountId],
       );
       res.json({
@@ -55,14 +55,14 @@ router.patch("/update", authenticate, async (req, res) => {
     const noteExample = req.body.noteExample;
 
     const note = await selectOneNote(noteTitle, req.accountId);
-    if (note && note.NoteId !== noteId) {
+    if (note && note.noteId !== noteId) {
       res.json({
         success: false,
         message: "Note with the same title already exists",
       });
     } else {
       await db.query(
-        `update notes set NoteTitle = ?, NoteContent = ?, NoteExample = ? where NoteId = ? and accountId = ?`,
+        `update notes set noteTitle = ?, noteContent = ?, noteExample = ? where noteId = ? and accountId = ?`,
         [noteTitle, noteContent, noteExample, noteId, req.accountId],
       );
       res.json({
@@ -79,7 +79,7 @@ router.patch("/update", authenticate, async (req, res) => {
 router.delete("/delete", authenticate, async (req, res) => {
   try {
     const noteId = req.query.noteId;
-    await db.query(`delete from notes where NoteId = ? and accountId = ?`, [
+    await db.query(`delete from notes where noteId = ? and accountId = ?`, [
       noteId,
       req.accountId,
     ]);
@@ -98,8 +98,8 @@ module.exports = router;
 async function selectOneNote(noteTitle, accountId) {
   try {
     const [result] = await db.query(
-      `select NoteId from notes
-      where NoteTitle = ? and accountId = ?`,
+      `select noteId from notes
+      where noteTitle = ? and accountId = ?`,
       [noteTitle, accountId],
     );
     return result.length > 0 ? result[0] : null;

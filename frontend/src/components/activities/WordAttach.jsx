@@ -32,13 +32,13 @@ function WordAttach({ words }) {
     for (let i = 0; i < wordCount; i++) {
       const randomWord = words[Math.floor(Math.random() * words.length)];
       newLeft.push({
-        translation: randomWord.Translation,
-        wordTranslationId: randomWord.WordTranslationId,
+        translation: randomWord.translation,
+        wordTranslationId: randomWord.wordTranslationId,
       });
       newRight.push({
-        hanzi: randomWord.Hanzi,
-        pinyin: randomWord.Pinyin,
-        wordTranslationId: randomWord.WordTranslationId,
+        hanzi: randomWord.hanzi,
+        pinyin: randomWord.pinyin,
+        wordTranslationId: randomWord.wordTranslationId,
       });
     }
 

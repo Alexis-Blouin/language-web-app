@@ -69,11 +69,11 @@ function WordListHidden({ words, chapters, categories, isDark }) {
     ? words.filter(
         (word) =>
           (chapter === "all" ||
-            (chapter === "no-chapter" && "" === word.Chapter) ||
-            parseInt(chapter) === word.ChapterId) &&
+            (chapter === "no-chapter" && "" === word.chapter) ||
+            parseInt(chapter) === word.chapterId) &&
           (category === "all" ||
-            (category === "no-category" && !word.CategoryId) ||
-            parseInt(category) === word.CategoryId),
+            (category === "no-category" && !word.categoryId) ||
+            parseInt(category) === word.categoryId),
       )
     : [];
 
@@ -206,21 +206,21 @@ function Item({
         onClick={unhideWord}
         style={{ padding: "8px", alignContent: "center", fontSize: "24px" }}
       >
-        {word.Hanzi}
+        {word.hanzi}
       </TableCell>
       <TableCell
         className={getClassName("pinyin")}
         onClick={unhideWord}
         style={{ padding: "8px", alignContent: "center" }}
       >
-        {word.Pinyin}
+        {word.pinyin}
       </TableCell>
       <TableCell
         className={getClassName("translation")}
         onClick={unhideWord}
         style={{ padding: "8px", alignContent: "left" }}
       >
-        {word.Translation}
+        {word.translation}
       </TableCell>
     </React.Fragment>
   );

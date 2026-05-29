@@ -31,8 +31,8 @@ function CategorySelect({
         >
           {allCategories && <MenuItem value="all">All Categories</MenuItem>}
           {categories.map((category) => (
-            <MenuItem key={category.CategoryId} value={category.CategoryId}>
-              {category.CategoryName}
+            <MenuItem key={category.categoryId} value={category.categoryId}>
+              {category.categoryName}
             </MenuItem>
           ))}
           {newCategory && (

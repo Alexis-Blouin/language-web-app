@@ -31,8 +31,8 @@ function ChapterSelect({
         >
           {allChapters && <MenuItem value="all">All Chapters</MenuItem>}
           {chapters.map((chapter) => (
-            <MenuItem key={chapter.ChapterId} value={chapter.ChapterId}>
-              {chapter.ChapterName}
+            <MenuItem key={chapter.chapterId} value={chapter.chapterId}>
+              {chapter.chapterName}
             </MenuItem>
           ))}
           {newChapter && <MenuItem value="new-chapter">New Chapter</MenuItem>}

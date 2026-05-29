@@ -43,16 +43,16 @@ function AddForm({
     let chapterId = chapter;
     // TODO this is a bit hacky, maybe change the chapter select to return the chapter name instead of id, or both and use the name for the toast and the id for the db query
     let chapterName = chapters.filter(
-      (chap) => chap.ChapterId === parseInt(chapter),
-    )[0]?.ChapterName;
+      (chap) => chap.chapterId === parseInt(chapter),
+    )[0]?.chapterName;
     let categoryId = category;
     let categoryName = categories.filter(
-      (cat) => cat.CategoryId === parseInt(category),
-    )[0]?.CategoryName;
+      (cat) => cat.categoryId === parseInt(category),
+    )[0]?.categoryName;
     try {
       if (chapter === "new-chapter") {
         const res = await axios.post("http://localhost:8081/chapters/add", {
-          ChapterName: newChapter,
+          chapterName: newChapter,
         });
         chapterId = res.data.chapterId;
         const added = res.data.added;
@@ -61,8 +61,8 @@ function AddForm({
         // If the chapter was added, we add it to the list, else, it means it was already there
         if (added) {
           const newChapterEntry = {
-            ChapterId: parseInt(chapterId),
-            ChapterName: newChapter,
+            chapterId: parseInt(chapterId),
+            chapterName: newChapter,
           };
           setChapters((prevChapters) => [...prevChapters, newChapterEntry]);
         }
@@ -71,7 +71,7 @@ function AddForm({
       }
       if (category === "new-category") {
         const res = await axios.post("http://localhost:8081/categories/add", {
-          CategoryName: newCategory,
+          categoryName: newCategory,
         });
         categoryId = res.data.categoryId;
         const added = res.data.added;
@@ -79,8 +79,8 @@ function AddForm({
 
         if (added) {
           const newCategoryEntry = {
-            CategoryId: parseInt(categoryId),
-            CategoryName: newCategory,
+            categoryId: parseInt(categoryId),
+            categoryName: newCategory,
           };
           setCategories((prevCategories) => [
             ...prevCategories,
@@ -98,15 +98,15 @@ function AddForm({
       // Loops for each possible translation
       for (const tr of translations) {
         const res = await axios.post("http://localhost:8081/words/add", {
-          Hanzi: hanzi,
-          Pinyin:
+          hanzi: hanzi,
+          pinyin:
             pinyinVal === "" || pinyinVal === undefined
               ? pinyin(hanzi)
               : pinyinVal,
-          ChapterId: chapterId,
-          CategoryId: categoryId,
-          Translation: tr,
-          TypeId: typeVal,
+          chapterId: chapterId,
+          categoryId: categoryId,
+          translation: tr,
+          typeId: typeVal,
         });
         const wordTranslationId = res.data.wordTranslationId;
         const wordId = res.data.wordId;
@@ -114,18 +114,18 @@ function AddForm({
         const newWordEntry = {
           WordTranslationId: wordTranslationId,
           WordId: wordId,
-          Hanzi: hanzi,
-          Pinyin:
+          hanzi: hanzi,
+          pinyin:
             pinyinVal === "" || pinyinVal === undefined
               ? pinyin(hanzi)
               : pinyinVal,
-          TranslationId: translationId,
-          Translation: tr,
-          ChapterId: parseInt(chapterId),
-          ChapterName: chapterName,
-          CategoryId: parseInt(categoryId),
-          CategoryName: categoryName,
-          TypeId: typeVal,
+          translationId: translationId,
+          translation: tr,
+          chapterId: parseInt(chapterId),
+          chapterName: chapterName,
+          categoryId: parseInt(categoryId),
+          categoryName: categoryName,
+          typeId: typeVal,
         };
         // Adds the new word/expression to the proper list depending on the type
         if (typeVal === 1) {
@@ -257,16 +257,16 @@ function AddForm({
               {types.map((type, index) => (
                 <FormControlLabel
                   key={index}
-                  value={type.TypeId}
+                  value={type.typeId}
                   control={
                     <Radio
                       name="type"
-                      id={type.TypeId}
-                      checked={typeVal === type.TypeId}
-                      onClick={() => setTypeVal(type.TypeId)}
+                      id={type.typeId}
+                      checked={typeVal === type.typeId}
+                      onClick={() => setTypeVal(type.typeId)}
                     />
                   }
-                  label={type.TypeName}
+                  label={type.typeName}
                 />
               ))}
             </RadioGroup>

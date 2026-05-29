@@ -42,8 +42,8 @@ function ExpressionsList({
     await axios.delete("http://localhost:8081/words/delete", {
       // params here since it's delete and not post
       params: {
-        WordId: modalWord.WordId,
-        TranslationId: modalWord.TranslationId,
+        wordId: modalWord.WordId,
+        translationId: modalWord.translationId,
       },
     });
     // Updates the visible data
@@ -52,7 +52,7 @@ function ExpressionsList({
         (aWord) =>
           !(
             aWord.WordId === modalWord.WordId &&
-            aWord.TranslationId === modalWord.TranslationId
+            aWord.translationId === modalWord.translationId
           ),
       ),
     );
@@ -63,21 +63,22 @@ function ExpressionsList({
     ? expressions.filter(
         (word) =>
           chapter === "all" ||
-          (chapter === "no-chapter" && "" === word.Chapter) ||
-          parseInt(chapter) === word.ChapterId,
+          (chapter === "no-chapter" && "" === word.chapter) ||
+          parseInt(chapter) === word.chapterId,
       )
     : [];
 
   const searchFilteredExpressions = search
     ? filteredExpressions.filter(
         (word) =>
-          word.Hanzi.toLowerCase().includes(search.toLowerCase()) ||
-          word.Pinyin.toLowerCase()
+          word.hanzi.toLowerCase().includes(search.toLowerCase()) ||
+          word.pinyin
+            .toLowerCase()
             .toLowerCase()
             .normalize("NFD")
             .replace(/\p{Diacritic}/gu, "")
             .includes(search) ||
-          word.Translation.toLowerCase().includes(search.toLowerCase()),
+          word.translation.toLowerCase().includes(search.toLowerCase()),
       )
     : filteredExpressions;
 
@@ -177,7 +178,7 @@ function ExpressionsList({
         deleteDialogOpen={deleteDialogOpen}
         handleDeleteCancel={handleDeleteCancel}
         handleDeleteConfirm={handleDeleteConfirm}
-        content={modalWord?.Hanzi}
+        content={modalWord?.hanzi}
         action="Expression"
       />
     </Stack>
@@ -196,23 +197,23 @@ function Item({
   handleDeleteClick,
 }) {
   const [editing, setEditing] = React.useState(false);
-  // const [editChapter, setEditChapter] = React.useState(expression.ChapterName);
+  // const [editChapter, setEditChapter] = React.useState(expression.chapterName);
 
   const deleteEntry = async () => {
     // TODO receive success or fail to update or not the data and show a toast
     await axios.delete("http://localhost:8081/words/delete", {
       // params here since it's delete and not post
       params: {
-        ExpressionId: expression.ExpressionId,
-        TranslationId: expression.TranslationId,
+        expressionId: expression.expressionId,
+        translationId: expression.translationId,
       },
     });
     // Updates the visible data
     setExpressions((prevExpressions) =>
       prevExpressions.filter(
         (anExpression) =>
-          anExpression.ExpressionId !== expression.ExpressionId &&
-          anExpression.TranslationId !== expression.TranslationId,
+          anExpression.expressionId !== expression.expressionId &&
+          anExpression.translationId !== expression.translationId,
       ),
     );
   };
@@ -237,13 +238,13 @@ function Item({
     const translation = event.target.translation.value;
     // console.log(chapters);
     // const chapterName = chapters.filter(
-    //   (chapter) => chapter.ChapterId === parseInt(editChapter),
-    // )[0].ChapterName;
+    //   (chapter) => chapter.chapterId === parseInt(editChapter),
+    // )[0].chapterName;
     // console.log(chapterName);
 
     const res = await axios.patch("http://localhost:8081/words/modify", {
-      expressionId: expression.ExpressionId,
-      translationId: expression.TranslationId,
+      expressionId: expression.expressionId,
+      translationId: expression.translationId,
       newHanzi: hanzi,
       newPinyin: pinyinVal,
       // newChapterId: editChapter,
@@ -256,13 +257,13 @@ function Item({
         anExpression.ExpressionId === expression.ExpressionId
           ? {
               ...anExpression,
-              ExpressionId: res.data.expressionId,
-              Hanzi: hanzi,
-              Pinyin: pinyinVal,
-              TranslationId: res.data.translationId,
-              Translation: translation,
-              // ChapterId: editChapter,
-              // ChapterName: chapterName,
+              expressionId: res.data.expressionId,
+              hanzi: hanzi,
+              pinyin: pinyinVal,
+              translationId: res.data.translationId,
+              translation: translation,
+              // chapterId: editChapter,
+              // chapterName: chapterName,
             }
           : anExpression,
       ),
@@ -281,13 +282,13 @@ function Item({
       <TableCell
         style={{ padding: "8px", alignContent: "center", fontSize: "24px" }}
       >
-        {expression.Hanzi}
+        {expression.hanzi}
       </TableCell>
       <TableCell style={{ padding: "8px", alignContent: "center" }}>
-        {expression.Pinyin}
+        {expression.pinyin}
       </TableCell>
       <TableCell style={{ padding: "8px", alignContent: "left" }}>
-        {expression.Translation}
+        {expression.translation}
       </TableCell>
       {/* <TableCell style={{ padding: "8px", alignContent: "center" }}>
         {expression.ChapterName}

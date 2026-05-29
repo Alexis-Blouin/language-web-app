@@ -84,17 +84,17 @@ function Note({ note, index, handleOpen }) {
         onClick={() => handleOpen(note, index)}
       >
         <Stack spacing={1} direction="column">
-          <Typography variant="h4">{note.NoteTitle}</Typography>
+          <Typography variant="h4">{note.noteTitle}</Typography>
           <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
-            {note.NoteContent.length > 100
-              ? note.NoteContent.substring(0, 100) + "..."
-              : note.NoteContent}
+            {note.noteContent.length > 100
+              ? note.noteContent.substring(0, 100) + "..."
+              : note.noteContent}
           </Typography>
           <Divider textAlign="left">Example</Divider>
           <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-            {note.NoteExample.length > 100
-              ? note.NoteExample.substring(0, 100) + "..."
-              : note.NoteExample}
+            {note.noteExample.length > 100
+              ? note.noteExample.substring(0, 100) + "..."
+              : note.noteExample}
           </Typography>
         </Stack>
       </Paper>

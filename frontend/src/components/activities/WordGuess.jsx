@@ -24,8 +24,8 @@ function WordGuess({ words }) {
     const result = {};
 
     words.forEach((word) => {
-      const hanzi = word.Hanzi;
-      const translation = word.Translation.toLowerCase();
+      const hanzi = word.hanzi;
+      const translation = word.translation.toLowerCase();
 
       if (result[hanzi]) {
         result[hanzi].push(translation);

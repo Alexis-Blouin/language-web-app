@@ -1,78 +1,78 @@
 /*Initial setup of the db, probly will change and I forget to update it, sry*/
 /* TODO rename columns with first letter not capitalized */
 CREATE TABLE `chapters` (
-    `ChapterId` int NOT NULL AUTO_INCREMENT,
-    `ChapterName` varchar(255) DEFAULT NULL,
-    `accountId` int NOT NULL,
-    PRIMARY KEY (`ChapterId`),
-    UNIQUE KEY `ChapterName` (`ChapterName`)
+    `chapterId` int NOT NULL AUTO_INCREMENT,
+    `chapterName` varchar(255) DEFAULT NULL,
+    `accountId` int NOT NULL DEFAULT '1',
+    PRIMARY KEY (`chapterId`),
+    UNIQUE KEY `uq_chapterName` (`chapterName`),
     KEY `fk_chapters_account` (`accountId`),
     CONSTRAINT `fk_chapters_account` FOREIGN KEY (`accountId`) REFERENCES `accounts` (`accountId`)
 )
 
 CREATE TABLE `categories` (
-    `CategoryId` int NOT NULL AUTO_INCREMENT,
-    `CategoryName` varchar(255) DEFAULT NULL,
+    `categoryId` int NOT NULL AUTO_INCREMENT,
+    `categoryName` varchar(255) DEFAULT NULL,
     `accountId` int NOT NULL,
-    PRIMARY KEY (`CategoryId`),
-    UNIQUE KEY `CategoryName` (`CategoryName`)
+    PRIMARY KEY (`categoryId`),
+    UNIQUE KEY `uq_categoryName` (`categoryName`),
     KEY `fk_categories_account` (`accountId`),
     CONSTRAINT `fk_categories_account` FOREIGN KEY (`accountId`) REFERENCES `accounts` (`accountId`)
 )
 
 CREATE TABLE `words` (
-    `WordId` int NOT NULL AUTO_INCREMENT,
-    `Hanzi` varchar(50) DEFAULT NULL,
-    `Pinyin` varchar(255) DEFAULT NULL,
-    `ChapterId` int DEFAULT NULL,
-    `TypeId` int NOT NULL,
-    `CategoryId` int DEFAULT NULL,
-    PRIMARY KEY (`WordId`),
-    UNIQUE KEY `Hanzi` (`Hanzi`,`Pinyin`,`ChapterId`,`CategoryId`),
-    KEY `fk_type` (`TypeId`),
-    KEY `words_ibfk_1` (`ChapterId`),
-    KEY `CategoryId` (`CategoryId`),
-    CONSTRAINT `fk_type` FOREIGN KEY (`TypeId`) REFERENCES `wordtypes` (`TypeId`),
-    CONSTRAINT `words_ibfk_1` FOREIGN KEY (`ChapterId`) REFERENCES `chapters` (`ChapterId`),
-    CONSTRAINT `words_ibfk_2` FOREIGN KEY (`CategoryId`) REFERENCES `categories` (`CategoryId`)
+    `wordId` int NOT NULL AUTO_INCREMENT,
+    `hanzi` varchar(50) DEFAULT NULL,
+    `pinyin` varchar(255) DEFAULT NULL,
+    `chapterId` int DEFAULT NULL,
+    `typeId` int NOT NULL,
+    `categoryId` int DEFAULT NULL,
+    PRIMARY KEY (`wordId`),
+    UNIQUE KEY `uq_hanzi_pinyin_chapterId_categoryId` (`hanzi`,`pinyin`,`chapterId`,`categoryId`),
+    KEY `fk_type` (`typeId`),
+    KEY `words_ibfk_1` (`chapterId`),
+    KEY `words_ibfk_2` (`categoryId`),
+    CONSTRAINT `fk_type` FOREIGN KEY (`typeId`) REFERENCES `wordtypes` (`TypeId`),
+    CONSTRAINT `words_ibfk_1` FOREIGN KEY (`chapterId`) REFERENCES `chapters` (`chapterId`),
+    CONSTRAINT `words_ibfk_2` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`categoryId`)
 )
 
 CREATE TABLE `translations` (
-    `TranslationId` int NOT NULL AUTO_INCREMENT,
-    `Translation` varchar(255) DEFAULT NULL,
-    PRIMARY KEY (`TranslationId`),
-    UNIQUE KEY `Meaning` (`Translation`)
+    `translationId` int NOT NULL AUTO_INCREMENT,
+    `translation` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`translationId`),
+    UNIQUE KEY `uq_translation` (`translation`)
 )
 
 CREATE TABLE `wordtranslations` (
-    `WordId` int NOT NULL,
-    `TranslationId` int NOT NULL,
-    `WordTranslationId` int NOT NULL AUTO_INCREMENT,
+    `wordId` int NOT NULL,
+    `translationId` int NOT NULL,
+    `wordTranslationId` int NOT NULL AUTO_INCREMENT,
     `accountId` int NOT NULL,
-    PRIMARY KEY (`WordTranslationId`),
-    UNIQUE KEY `WordId` (`WordId`,`TranslationId`),
-    KEY `fk_translation` (`TranslationId`),
+    PRIMARY KEY (`wordTranslationId`),
+    UNIQUE KEY `uq_wordId_translationId` (`wordId`,`translationId`),
     KEY `fk_wordtranslations_account` (`accountId`),
-    CONSTRAINT `fk_translation` FOREIGN KEY (`TranslationId`) REFERENCES `translations` (`TranslationId`),
+    KEY `fk_translation` (`translationId`),
+    CONSTRAINT `fk_translation` FOREIGN KEY (`translationId`) REFERENCES `translations` (`translationId`),
+    CONSTRAINT `fk_word` FOREIGN KEY (`wordId`) REFERENCES `words` (`wordId`),
     CONSTRAINT `fk_wordtranslations_account` FOREIGN KEY (`accountId`) REFERENCES `accounts` (`accountId`)
-    CONSTRAINT `fk_word` FOREIGN KEY (`WordId`) REFERENCES `words` (`WordId`)
 )
 
 CREATE TABLE `wordtypes` (
-    `TypeId` int NOT NULL AUTO_INCREMENT,
-    `TypeName` varchar(255) DEFAULT NULL,
-    PRIMARY KEY (`TypeId`),
-    UNIQUE KEY `TypeName` (`TypeName`)
+    `typeId` int NOT NULL AUTO_INCREMENT,
+    `typeName` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`typeId`),
+    UNIQUE KEY `uq_typeName` (`typeName`)
 )
 
 CREATE TABLE `notes` (
-    `NoteId` int NOT NULL AUTO_INCREMENT,
-    `NoteTitle` varchar(255) NOT NULL,
-    `NoteContent` text NOT NULL,
-    `NoteExample` text,
+    `noteId` int NOT NULL AUTO_INCREMENT,
+    `noteTitle` varchar(255) NOT NULL,
+    `noteContent` text NOT NULL,
+    `noteExample` text,
     `accountId` int NOT NULL,
-    PRIMARY KEY (`NoteId`),
-    UNIQUE KEY `NoteTitle` (`NoteTitle`)
+    PRIMARY KEY (`noteId`),
+    UNIQUE KEY `uq_noteTitle` (`noteTitle`),
     KEY `fk_notes_account` (`accountId`),
     CONSTRAINT `fk_notes_account` FOREIGN KEY (`accountId`) REFERENCES `accounts` (`accountId`)
 )

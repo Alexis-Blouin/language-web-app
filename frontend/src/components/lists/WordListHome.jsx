@@ -48,7 +48,7 @@ function WordList({ words, setWords, chapters, categories, setCategories }) {
       // params here since it's delete and not post
       params: {
         WordId: modalWord.WordId,
-        TranslationId: modalWord.TranslationId,
+        translationId: modalWord.translationId,
       },
     });
     // Updates the visible data
@@ -57,7 +57,7 @@ function WordList({ words, setWords, chapters, categories, setCategories }) {
         (aWord) =>
           !(
             aWord.WordId === modalWord.WordId &&
-            aWord.TranslationId === modalWord.TranslationId
+            aWord.translationId === modalWord.translationId
           ),
       ),
     );
@@ -69,24 +69,25 @@ function WordList({ words, setWords, chapters, categories, setCategories }) {
     ? words.filter(
         (word) =>
           (chapter === "all" ||
-            (chapter === "no-chapter" && "" === word.Chapter) ||
-            parseInt(chapter) === word.ChapterId) &&
+            (chapter === "no-chapter" && "" === word.chapter) ||
+            parseInt(chapter) === word.chapterId) &&
           (category === "all" ||
-            (category === "no-category" && !word.CategoryId) ||
-            parseInt(category) === word.CategoryId),
+            (category === "no-category" && !word.categoryId) ||
+            parseInt(category) === word.categoryId),
       )
     : [];
 
   const searchFilteredWords = search
     ? filteredWords.filter(
         (word) =>
-          word.Hanzi.toLowerCase().includes(search.toLowerCase()) ||
-          word.Pinyin.toLowerCase()
+          word.hanzi.toLowerCase().includes(search.toLowerCase()) ||
+          word.pinyin
+            .toLowerCase()
             .toLowerCase()
             .normalize("NFD")
             .replace(/\p{Diacritic}/gu, "")
             .includes(search) ||
-          word.Translation.toLowerCase().includes(search.toLowerCase()),
+          word.translation.toLowerCase().includes(search.toLowerCase()),
       )
     : filteredWords;
 
@@ -195,7 +196,7 @@ function WordList({ words, setWords, chapters, categories, setCategories }) {
         deleteDialogOpen={deleteDialogOpen}
         handleDeleteCancel={handleDeleteCancel}
         handleDeleteConfirm={handleDeleteConfirm}
-        content={modalWord?.Hanzi}
+        content={modalWord?.hanzi}
         action="Word"
       />
     </Stack>
@@ -218,19 +219,19 @@ function Item({
       <TableCell
         style={{ padding: "8px", alignContent: "center", fontSize: "24px" }}
       >
-        {word.Hanzi}
+        {word.hanzi}
       </TableCell>
       <TableCell style={{ padding: "8px", alignContent: "center" }}>
-        {word.Pinyin}
+        {word.pinyin}
       </TableCell>
       <TableCell style={{ padding: "8px", alignContent: "left" }}>
-        {word.Translation}
+        {word.translation}
       </TableCell>
       <TableCell style={{ padding: "8px", alignContent: "center" }}>
-        {word.ChapterName}
+        {word.chapterName}
       </TableCell>
       <TableCell style={{ padding: "8px", alignContent: "center" }}>
-        {word.CategoryName}
+        {word.categoryName}
       </TableCell>
       <TableCell
         className="options"

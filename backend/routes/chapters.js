@@ -6,9 +6,9 @@ const authenticate = require("../middleware/authenticate");
 router.get("/get", authenticate, async (req, res) => {
   try {
     const [rows] = await db.query(
-      `select ChapterId, ChapterName
+      `select chapterId, chapterName
       from chapters where accountId = ?
-      order by ChapterName`,
+      order by chapterName`,
       [req.accountId],
     );
     res.json(rows);
@@ -20,17 +20,18 @@ router.get("/get", authenticate, async (req, res) => {
 
 router.post("/add", authenticate, async (req, res) => {
   try {
-    const chapterName = req.body.ChapterName;
-    const chapter = await selectOneChapter(chapterName, req.accountId);
+    const accountId = req.accountId;
+    const chapterName = req.body.chapterName;
+    const chapter = await selectOneChapter(chapterName, accountId);
     if (chapter) {
       res.json({
-        chapterId: chapter.ChapterId,
+        chapterId: chapter.chapterId,
         added: false,
       });
     } else {
       const [chaptersResult] = await db.query(
-        `insert into chapters (ChapterName, accountId) values (?, ?)`,
-        [chapterName, req.accountId],
+        `insert into chapters (chapterName, accountId) values (?, ?)`,
+        [chapterName, accountId],
       );
       res.json({
         chapterId: chaptersResult.insertId,
@@ -48,8 +49,8 @@ module.exports = router;
 async function selectOneChapter(chapterName, accountId) {
   try {
     const [result] = await db.query(
-      `select ChapterId from chapters
-      where ChapterName = ? and accountId = ?`,
+      `select chapterId from chapters
+      where chapterName = ? and accountId = ?`,
       [chapterName, accountId],
     );
     return result.length > 0 ? result[0] : null;

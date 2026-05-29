@@ -31,9 +31,9 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
 
   useEffect(() => {
     if (note) {
-      setTitle(note.NoteTitle);
-      setContent(note.NoteContent);
-      setExample(note.NoteExample);
+      setTitle(note.noteTitle);
+      setContent(note.noteContent);
+      setExample(note.noteExample);
     }
   }, [note]);
 
@@ -51,7 +51,7 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
     event.preventDefault();
     try {
       const res = await axios.patch("http://localhost:8081/notes/update", {
-        noteId: note.NoteId,
+        noteId: note.noteId,
         noteTitle: title,
         noteContent: content,
         noteExample: example,
@@ -61,12 +61,12 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
       if (success) {
         setNotes((prevNotes) =>
           prevNotes.map((n) =>
-            n.NoteId === note.NoteId
+            n.noteId === note.noteId
               ? {
                   ...n,
-                  NoteTitle: title,
-                  NoteContent: content,
-                  NoteExample: example,
+                  noteTitle: title,
+                  noteContent: content,
+                  noteExample: example,
                 }
               : n,
           ),
@@ -85,9 +85,9 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
     handleClose();
 
     if (isEditing) {
-      setTitle(note.NoteTitle);
-      setContent(note.NoteContent);
-      setExample(note.NoteExample);
+      setTitle(note.noteTitle);
+      setContent(note.noteContent);
+      setExample(note.noteExample);
     }
 
     setIsEditing(false);
@@ -96,13 +96,13 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
   const handleDeleteConfirm = async () => {
     try {
       const res = await axios.delete("http://localhost:8081/notes/delete", {
-        params: { noteId: note.NoteId },
+        params: { noteId: note.noteId },
       });
       const success = res.data.success;
 
       if (success) {
         setNotes((prevNotes) =>
-          prevNotes.filter((n) => n.NoteId !== note.NoteId),
+          prevNotes.filter((n) => n.noteId !== note.noteId),
         );
         close();
         setDeleteDialogOpen(false);
@@ -124,9 +124,9 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
         ) : (
           <Typography
             variant="h4"
-            onDoubleClick={() => startEditing("title", note?.NoteTitle)}
+            onDoubleClick={() => startEditing("title", note?.noteTitle)}
           >
-            {note?.NoteTitle}
+            {note?.noteTitle}
           </Typography>
         )}
       </DialogTitle>
@@ -172,10 +172,10 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
           <Stack direction="column" spacing={2}>
             <Typography
               variant="body1"
-              onDoubleClick={() => startEditing("content", note?.NoteContent)}
+              onDoubleClick={() => startEditing("content", note?.noteContent)}
               sx={{ whiteSpace: "pre-wrap" }}
             >
-              {note?.NoteContent}
+              {note?.noteContent}
             </Typography>
             <Box>
               <Divider textAlign="left" sx={{ mb: 1 }}>
@@ -186,7 +186,7 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
                 onDoubleClick={() => startEditing()}
                 sx={{ whiteSpace: "pre-wrap" }}
               >
-                {note?.NoteExample}
+                {note?.noteExample}
               </Typography>
             </Box>
           </Stack>
@@ -220,7 +220,7 @@ function FocusedNote({ note, setNotes, open, handleClose }) {
         deleteDialogOpen={deleteDialogOpen}
         handleDeleteCancel={handleDeleteCancel}
         handleDeleteConfirm={handleDeleteConfirm}
-        content={note?.NoteTitle}
+        content={note?.noteTitle}
         action="Note"
       />
     </Dialog>

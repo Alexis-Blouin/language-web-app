@@ -30,10 +30,10 @@ function FocusedAddNote({ setNotes, open, handleClose }) {
 
       if (success) {
         const newNote = {
-          NoteId: noteId,
-          NoteTitle: title,
-          NoteContent: content,
-          NoteExample: example,
+          noteId: noteId,
+          noteTitle: title,
+          noteContent: content,
+          noteExample: example,
         };
         setNotes((prevNotes) => [...prevNotes, newNote]);
 
