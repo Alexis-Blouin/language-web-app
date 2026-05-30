@@ -26,7 +26,11 @@ router.post("/login", async (req, res) => {
       }
 
       const token = jwt.sign(
-        { accountId: account.accountId },
+        {
+          accountId: account.accountId,
+          accountUsername: account.accountUsername,
+          accountEmail: account.accountEmail,
+        },
         process.env.JWT_SECRET,
         { expiresIn: "7d" },
       );
@@ -40,10 +44,6 @@ router.post("/login", async (req, res) => {
       });
 
       res.json({
-        account: {
-          username: account.accountUsername,
-          email: account.accountEmail,
-        },
         success: true,
         message: "Login successful",
       });
@@ -102,7 +102,12 @@ router.post("/logout", async (req, res) => {
 });
 
 router.get("/me", authenticate, (req, res) => {
-  res.json({ success: true, accountId: req.accountId });
+  res.json({
+    success: true,
+    accountId: req.accountId,
+    accountUsername: req.accountUsername,
+    accountEmail: req.accountEmail,
+  });
 });
 
 module.exports = router;

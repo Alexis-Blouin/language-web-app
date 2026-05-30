@@ -12,8 +12,7 @@ import Stack from "@mui/material/Stack";
 import AddIcon from "@mui/icons-material/Add";
 import Divider from "@mui/material/Divider";
 
-function Notes() {
-  const [notes, setNotes] = React.useState([]);
+function Notes({ notes, setNotes }) {
   const [openNote, setOpenNote] = React.useState(false);
   const [openAddNote, setOpenAddNote] = React.useState(false);
   const [selectedNoteIndex, setSelectedNoteIndex] = React.useState(null);

@@ -6,7 +6,7 @@ const authenticate = require("../middleware/authenticate");
 router.get("/get", authenticate, async (req, res) => {
   try {
     // .query here since it's get and not post
-    const wordTypeId = req.query.wordTypeId ?? 1;
+    const wordTypeId = req.query.wordTypeId;
 
     const sql = `select 
       w.wordId,

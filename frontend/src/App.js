@@ -39,6 +39,7 @@ import Logout from "./components/account/Logout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import useAuth, { AuthProvider } from "./hooks/useAuth";
 import Queries from "./components/activities/Queries";
+import Profile from "./components/account/profile";
 
 axios.defaults.withCredentials = true;
 
@@ -141,6 +142,7 @@ function AppContent({ isDark, toggleTheme }) {
   const [chapters, setChapters] = useState([]);
   const [categories, setCategories] = useState([]);
   const [expressions, setExpressions] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [types, setTypes] = useState([]);
 
   const { user } = useAuth();
@@ -149,7 +151,9 @@ function AppContent({ isDark, toggleTheme }) {
     if (!user) return;
 
     axios
-      .get("http://localhost:8081/words/get")
+      .get("http://localhost:8081/words/get", {
+        params: { wordTypeId: 1 },
+      })
       .then((res) => setWords(res.data))
       .catch((err) => console.log(err));
 
@@ -165,9 +169,14 @@ function AppContent({ isDark, toggleTheme }) {
 
     axios
       .get("http://localhost:8081/words/get", {
-        params: { WordTypeId: 2 },
+        params: { wordTypeId: 2 },
       })
       .then((res) => setExpressions(res.data))
+      .catch((err) => console.log(err));
+
+    axios
+      .get("http://localhost:8081/notes/get")
+      .then((res) => setNotes(res.data))
       .catch((err) => console.log(err));
 
     axios
@@ -417,7 +426,7 @@ function AppContent({ isDark, toggleTheme }) {
           path="/notes"
           element={
             <ProtectedRoute>
-              <Notes />
+              <Notes notes={notes} setNotes={setNotes} />
             </ProtectedRoute>
           }
         />
@@ -431,6 +440,16 @@ function AppContent({ isDark, toggleTheme }) {
           }
         />
         <Route path="/live-pinyin" element={<LivePinyin />} />
+        <Route
+          path="/account/profile"
+          element={
+            <Profile
+              wordsCount={words.length}
+              expressionsCount={expressions.length}
+              notesCount={notes.length}
+            />
+          }
+        />
         <Route path="/account/login" element={<Login />} />
         <Route path="/account/logout" element={<Logout />} />
         <Route path="/account/create-account" element={<CreateAccount />} />
