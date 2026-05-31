@@ -112,8 +112,8 @@ function AddForm({
         const wordId = res.data.wordId;
         const translationId = res.data.translationId;
         const newWordEntry = {
-          WordTranslationId: wordTranslationId,
-          WordId: wordId,
+          wordTranslationId: wordTranslationId,
+          wordId: wordId,
           hanzi: hanzi,
           pinyin:
             pinyinVal === "" || pinyinVal === undefined

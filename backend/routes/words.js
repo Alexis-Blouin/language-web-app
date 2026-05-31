@@ -149,10 +149,7 @@ router.patch("/modify", authenticate, async (req, res) => {
       wordTranslationId,
       typeId,
     } = req.body;
-    console.log({
-      message: "Word to modify",
-      newTranslation: newTranslation,
-    });
+
     // Check if new word/translation exists
     const wordSelect = await selectOneWord(
       newHanzi,
@@ -165,6 +162,7 @@ router.patch("/modify", authenticate, async (req, res) => {
     const translationSelect = await selectOneTranslation(newTranslation);
     let newTranslationId;
     await db.beginTransaction();
+
     // Creates a new word and/or translation if they don't exist
     if (wordSelect === null) {
       const [result] = await db.query(
@@ -177,8 +175,6 @@ router.patch("/modify", authenticate, async (req, res) => {
       newWordId = wordSelect.wordId;
     }
     if (translationSelect === null) {
-      console.log("insert translation");
-
       [result] = await db.query(
         `insert into translations (translation)
       values (?)`,
@@ -186,7 +182,6 @@ router.patch("/modify", authenticate, async (req, res) => {
       );
       newTranslationId = result.insertId;
     } else {
-      console.log("not insert translation");
       newTranslationId = translationSelect.translationId;
     }
     // Update the link table with new Ids
@@ -201,8 +196,6 @@ router.patch("/modify", authenticate, async (req, res) => {
       await maybeDeleteWord(wordId, req.accountId);
     }
     if (translationId !== newTranslationId) {
-      console.log("update translation");
-
       await db.query(
         `update wordtranslations
       set translationId = ?

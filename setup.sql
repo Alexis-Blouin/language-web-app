@@ -32,7 +32,7 @@ CREATE TABLE `words` (
     KEY `fk_type` (`typeId`),
     KEY `words_ibfk_1` (`chapterId`),
     KEY `words_ibfk_2` (`categoryId`),
-    CONSTRAINT `fk_type` FOREIGN KEY (`typeId`) REFERENCES `wordtypes` (`TypeId`),
+    CONSTRAINT `fk_type` FOREIGN KEY (`typeId`) REFERENCES `wordtypes` (`typeId`),
     CONSTRAINT `words_ibfk_1` FOREIGN KEY (`chapterId`) REFERENCES `chapters` (`chapterId`),
     CONSTRAINT `words_ibfk_2` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`categoryId`)
 )

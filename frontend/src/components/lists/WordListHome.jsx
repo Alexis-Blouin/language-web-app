@@ -47,7 +47,7 @@ function WordList({ words, setWords, chapters, categories, setCategories }) {
     await axios.delete("http://localhost:8081/words/delete", {
       // params here since it's delete and not post
       params: {
-        WordId: modalWord.WordId,
+        wordId: modalWord.wordId,
         translationId: modalWord.translationId,
       },
     });
@@ -56,7 +56,7 @@ function WordList({ words, setWords, chapters, categories, setCategories }) {
       prevWords.filter(
         (aWord) =>
           !(
-            aWord.WordId === modalWord.WordId &&
+            aWord.wordId === modalWord.wordId &&
             aWord.translationId === modalWord.translationId
           ),
       ),

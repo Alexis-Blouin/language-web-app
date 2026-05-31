@@ -106,25 +106,25 @@ function EditForm({
       }
 
       const res = await axios.patch("http://localhost:8081/words/modify", {
-        wordId: word.WordId,
+        wordId: word.wordId,
         translationId: word.translationId,
         newHanzi: hanzi,
         newPinyin: pinyinVal,
         newChapterId: chapterId,
         newCategoryId: categoryId,
         newTranslation: translation,
-        wordTranslationId: word.WordTranslationId,
-        typeId: word.TypeId,
+        wordTranslationId: word.wordTranslationId,
+        typeId: word.typeId,
       });
 
       if (action === "Word") {
         setWords((prevWords) =>
           prevWords.map((aWord) =>
-            aWord.WordId === word.WordId &&
+            aWord.wordId === word.wordId &&
             aWord.translationId === word.translationId
               ? {
                   ...aWord,
-                  WordId: res.data.wordId,
+                  wordId: res.data.wordId,
                   hanzi: hanzi,
                   pinyin: pinyinVal,
                   translationId: res.data.translationId,
@@ -140,11 +140,11 @@ function EditForm({
       } else {
         setExpressions((prevExpressions) =>
           prevExpressions.map((aExpression) =>
-            aExpression.WordId === word.WordId &&
+            aExpression.wordId === word.wordId &&
             aExpression.translationId === word.translationId
               ? {
                   ...aExpression,
-                  WordId: res.data.wordId,
+                  wordId: res.data.wordId,
                   hanzi: hanzi,
                   pinyin: pinyinVal,
                   translationId: res.data.translationId,

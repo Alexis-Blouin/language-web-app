@@ -42,7 +42,7 @@ function ExpressionsList({
     await axios.delete("http://localhost:8081/words/delete", {
       // params here since it's delete and not post
       params: {
-        wordId: modalWord.WordId,
+        wordId: modalWord.wordId,
         translationId: modalWord.translationId,
       },
     });
@@ -51,7 +51,7 @@ function ExpressionsList({
       prevWords.filter(
         (aWord) =>
           !(
-            aWord.WordId === modalWord.WordId &&
+            aWord.wordId === modalWord.wordId &&
             aWord.translationId === modalWord.translationId
           ),
       ),
@@ -249,7 +249,7 @@ function Item({
       newPinyin: pinyinVal,
       // newChapterId: editChapter,
       newTranslation: translation,
-      expressionTranslationId: expression.ExpressionTranslationId,
+      wordTranslationId: expression.wordTranslationId,
     });
 
     setExpressions((prevExpressions) =>
