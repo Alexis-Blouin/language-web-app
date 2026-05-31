@@ -312,7 +312,9 @@ function AppContent({ isDark, toggleTheme }) {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar sx={{ bgcolor: "primary.dark" }}>
+                    {user.accountUsername[0]}
+                  </Avatar>
                 </IconButton>
               </Tooltip>
               <Menu
