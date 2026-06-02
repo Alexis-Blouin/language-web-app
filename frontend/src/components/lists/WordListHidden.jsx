@@ -34,12 +34,18 @@ function WordListHidden({ words, chapters, categories, isDark }) {
   });
   const [showingColumns, setShowingColumns] = React.useState({});
   const [hidingColumns, setHidingColumns] = React.useState({});
+  const [shownCells, setShownCells] = React.useState({
+    hanzi: [],
+    pinyin: [],
+    translation: [],
+  });
 
   const handleHiddenColumnChange = (e) => {
     const column = e.target.name;
     const willHide = e.target.checked;
 
     if (willHide) {
+      setShownCells((prev) => ({ ...prev, [column]: [] }));
       setHiddenColumns((values) => ({ ...values, [column]: true }));
       setHidingColumns((prev) => ({ ...prev, [column]: true }));
       setTimeout(() => {
@@ -57,6 +63,7 @@ function WordListHidden({ words, chapters, categories, isDark }) {
   const resetHidden = () => {
     for (const [key, value] of Object.entries(hiddenColumns)) {
       if (value) {
+        setShownCells((prev) => ({ ...prev, [key]: [] }));
         setHidingColumns((prev) => ({ ...prev, [key]: true }));
         setTimeout(() => {
           setHidingColumns((prev) => ({ ...prev, [key]: false }));
@@ -152,10 +159,12 @@ function WordListHidden({ words, chapters, categories, isDark }) {
           itemContent={(index, word) => (
             <Item
               word={word}
+              index={index}
               hiddenColumns={hiddenColumns}
               transitioningColumns={showingColumns}
               hidingColumns={hidingColumns}
               isDark={isDark}
+              shownCells={shownCells}
             />
           )}
           noDataComponent={() => (
@@ -178,15 +187,19 @@ export default WordListHidden;
 
 function Item({
   word,
+  index,
   hiddenColumns,
   transitioningColumns,
   hidingColumns,
   isDark,
+  shownCells,
 }) {
   const hiddenClassName = "hidden-word-" + (isDark ? "dark" : "light");
 
-  const unhideWord = (target) => {
-    const cell = target.target;
+  const unhideWord = (column, event) => {
+    shownCells[column].push(index);
+
+    const cell = event.target;
     cell.classList.add("fade-out");
     setTimeout(() => {
       cell.classList.remove(hiddenClassName, "fade-out");
@@ -196,28 +209,30 @@ function Item({
   const getClassName = (columnKey) => {
     if (hidingColumns[columnKey]) return hiddenClassName + " fade-in";
     if (transitioningColumns[columnKey]) return hiddenClassName + " fade-out";
-    return hiddenColumns[columnKey] ? hiddenClassName : "";
+    return hiddenColumns[columnKey] && !shownCells[columnKey].includes(index)
+      ? hiddenClassName
+      : "";
   };
 
   return (
     <React.Fragment>
       <TableCell
         className={getClassName("hanzi")}
-        onClick={unhideWord}
+        onClick={(e) => unhideWord("hanzi", e)}
         style={{ padding: "8px", alignContent: "center", fontSize: "24px" }}
       >
         {word.hanzi}
       </TableCell>
       <TableCell
         className={getClassName("pinyin")}
-        onClick={unhideWord}
+        onClick={(e) => unhideWord("pinyin", e)}
         style={{ padding: "8px", alignContent: "center" }}
       >
         {word.pinyin}
       </TableCell>
       <TableCell
         className={getClassName("translation")}
-        onClick={unhideWord}
+        onClick={(e) => unhideWord("translation", e)}
         style={{ padding: "8px", alignContent: "left" }}
       >
         {word.translation}
