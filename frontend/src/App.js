@@ -313,7 +313,7 @@ function AppContent({ isDark, toggleTheme }) {
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar sx={{ bgcolor: "primary.dark" }}>
-                    {user.accountUsername[0]}
+                    {user ? user.accountUsername[0].toUpperCase() : "?"}
                   </Avatar>
                 </IconButton>
               </Tooltip>
