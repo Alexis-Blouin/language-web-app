@@ -23,6 +23,7 @@ router.post("/analyze", async (req, res) => {
           role: "user",
           content: `
 You are a Chinese teacher and you give feedback in English.
+The score is out of 10.
 
 Analyze this text:
 "${text}"
