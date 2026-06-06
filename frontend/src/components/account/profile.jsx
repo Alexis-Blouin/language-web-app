@@ -31,12 +31,22 @@ function Profile({
   const [newChapters, setNewChapters] = useState(chapters);
   const [newCategories, setNewCategories] = useState(categories);
   const [open, setOpen] = useState(false);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
   const handleOpen = (type) => {
-    setOpen(true);
+    if (type === "chapter") {
+      setOpen(true);
+    } else if (type === "category") {
+      setCategoriesOpen(true);
+    }
   };
   const handleClose = () => {
     resetChanges();
     setOpen(false);
+  };
+
+  const handleCategoriesClose = () => {
+    resetChanges();
+    setCategoriesOpen(false);
   };
 
   const handleChapterChange = (event) => {
@@ -46,6 +56,17 @@ function Profile({
         chapter.chapterId === parseInt(name)
           ? { ...chapter, chapterName: value }
           : chapter,
+      ),
+    );
+  };
+
+  const handleCategoryChange = (event) => {
+    const { name, value } = event.target;
+    setNewCategories((prevCategories) =>
+      prevCategories.map((category) =>
+        category.categoryId === parseInt(name)
+          ? { ...category, categoryName: value }
+          : category,
       ),
     );
   };
@@ -63,14 +84,21 @@ function Profile({
 
   const saveChanges = async () => {
     try {
-      const res = await axios.post("http://localhost:8081/chapters/update", {
-        chapters: newChapters,
-      });
+      const res = newChapters.some(
+        (chapter, index) => chapter.chapterName !== chapters[index].chapterName,
+      )
+        ? await axios.post("http://localhost:8081/chapters/update", {
+            chapters: newChapters,
+          })
+        : await axios.post("http://localhost:8081/categories/update", {
+            categories: newCategories,
+          });
 
       if (res.data.success) {
         setChapters([...newChapters]);
+        setCategories([...newCategories]);
         setOpen(false);
-        toast("Chapters Saved!", { theme: "success" });
+        toast("Changes Saved!", { theme: "success" });
       }
     } catch (err) {
       console.error(err);
@@ -132,6 +160,53 @@ function Profile({
                     </Typography>
                     <Typography variant="body1">
                       {chapters[index].chapterName}
+                    </Typography>
+                  </Stack>
+                ) : (
+                  <Typography variant="body1" sx={{ opacity: 0.5 }}>
+                    No change
+                  </Typography>
+                )}
+              </Stack>
+            ))}
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button
+            form="editForm"
+            color="primary"
+            variant="contained"
+            onClick={() => saveChanges()}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={categoriesOpen} onClose={handleCategoriesClose}>
+        <DialogTitle>Edit Thing</DialogTitle>
+        <DialogContent style={{ paddingTop: "5px" }}>
+          <Stack direction="column" spacing={2}>
+            {newCategories.map((category, index) => (
+              <Stack direction="row" spacing={2}>
+                <TextField
+                  required
+                  id={category.categoryId}
+                  name={category.categoryId}
+                  placeholder="Name"
+                  variant="standard"
+                  value={category.categoryName}
+                  onChange={handleCategoryChange}
+                />
+                {categories[index].categoryName !==
+                newCategories[index].categoryName ? (
+                  <Stack direction="row" spacing={1}>
+                    <Typography variant="body1" sx={{ opacity: 0.5 }}>
+                      was
+                    </Typography>
+                    <Typography variant="body1">
+                      {categories[index].categoryName}
                     </Typography>
                   </Stack>
                 ) : (

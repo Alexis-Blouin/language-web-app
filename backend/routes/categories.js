@@ -44,6 +44,36 @@ router.post("/add", authenticate, async (req, res) => {
   }
 });
 
+router.post("/update", authenticate, async (req, res) => {
+  try {
+    const accountId = req.accountId;
+    const { categories } = req.body;
+
+    if (!categories.length) return res.json({ success: true });
+
+    const ids = categories.map((c) => c.categoryId);
+
+    const caseStatement = categories
+      .map((c) => `WHEN ${c.categoryId} THEN ?`)
+      .join(" ");
+
+    const values = categories.map((c) => c.categoryName);
+
+    await db.query(
+      `UPDATE categories
+      SET categoryName = CASE categoryId ${caseStatement} END
+      WHERE categoryId IN (${ids.join(",")})
+      AND accountId = ?`,
+      [...values, req.accountId],
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
 
 async function selectOneCategory(categoryName, accountId) {
