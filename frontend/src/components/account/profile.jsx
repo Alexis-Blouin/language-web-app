@@ -98,6 +98,7 @@ function Profile({
         setChapters([...newChapters]);
         setCategories([...newCategories]);
         setOpen(false);
+        setCategoriesOpen(false);
         toast("Changes Saved!", { theme: "success" });
       }
     } catch (err) {
@@ -126,19 +127,23 @@ function Profile({
             <Typography variant="h5">{expressionsCount} Expressions</Typography>
             <Typography variant="h5">{notesCount} Notes</Typography>
             <Typography variant="h5">{chaptersCount} Chapters</Typography>
-            <Button onClick={() => handleOpen("chapter")}>
-              <EditSquareIcon />
-            </Button>
             <Typography variant="h5">{categoriesCount} Categories</Typography>
-            <Button onClick={() => handleOpen("category")}>
-              <EditSquareIcon />
-            </Button>
           </Paper>
         </Grid>
       </Grid>
+      <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+        <Button variant="contained" onClick={() => handleOpen("chapter")}>
+          Chapters
+          <EditSquareIcon sx={{ ml: 1 }} />
+        </Button>
+        <Button variant="contained" onClick={() => handleOpen("category")}>
+          Categories
+          <EditSquareIcon sx={{ ml: 1 }} />
+        </Button>
+      </Stack>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Edit Thing</DialogTitle>
+        <DialogTitle>Edit Chapters</DialogTitle>
         <DialogContent style={{ paddingTop: "5px" }}>
           <Stack direction="column" spacing={2}>
             {newChapters.map((chapter, index) => (
@@ -185,7 +190,7 @@ function Profile({
       </Dialog>
 
       <Dialog open={categoriesOpen} onClose={handleCategoriesClose}>
-        <DialogTitle>Edit Thing</DialogTitle>
+        <DialogTitle>Edit Categories</DialogTitle>
         <DialogContent style={{ paddingTop: "5px" }}>
           <Stack direction="column" spacing={2}>
             {newCategories.map((category, index) => (
