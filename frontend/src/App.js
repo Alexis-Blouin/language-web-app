@@ -449,6 +449,12 @@ function AppContent({ isDark, toggleTheme }) {
               wordsCount={words.length}
               expressionsCount={expressions.length}
               notesCount={notes.length}
+              chaptersCount={chapters.length}
+              categoriesCount={categories.length}
+              chapters={chapters}
+              setChapters={setChapters}
+              categories={categories}
+              setCategories={setCategories}
             />
           }
         />

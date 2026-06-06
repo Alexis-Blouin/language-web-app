@@ -1,12 +1,81 @@
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
+import Button from "@mui/material/Button";
+import { useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
 import Grid from "@mui/material/Grid";
+import EditSquareIcon from "@mui/icons-material/EditSquare";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import Input from "@mui/material/Input";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import TextField from "@mui/material/TextField";
+import toast from "react-simple-toasts";
+import axios from "axios";
 
-function Profile({ wordsCount, expressionsCount, notesCount }) {
+function Profile({
+  wordsCount,
+  expressionsCount,
+  notesCount,
+  chaptersCount,
+  categoriesCount,
+  chapters,
+  setChapters,
+  categories,
+  setCategories,
+}) {
+  const [newChapters, setNewChapters] = useState(chapters);
+  const [newCategories, setNewCategories] = useState(categories);
+  const [open, setOpen] = useState(false);
+  const handleOpen = (type) => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    resetChanges();
+    setOpen(false);
+  };
+
+  const handleChapterChange = (event) => {
+    const { name, value } = event.target;
+    setNewChapters((prevChapters) =>
+      prevChapters.map((chapter) =>
+        chapter.chapterId === parseInt(name)
+          ? { ...chapter, chapterName: value }
+          : chapter,
+      ),
+    );
+  };
+
   const { user } = useAuth();
+
+  useEffect(() => {
+    resetChanges();
+  }, [chapters, categories]);
+
+  const resetChanges = () => {
+    if (chapters) setNewChapters([...chapters]);
+    if (categories) setNewCategories([...categories]);
+  };
+
+  const saveChanges = async () => {
+    try {
+      const res = await axios.post("http://localhost:8081/chapters/update", {
+        chapters: newChapters,
+      });
+
+      if (res.data.success) {
+        setChapters([...newChapters]);
+        setOpen(false);
+        toast("Chapters Saved!", { theme: "success" });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <Box sx={{ width: "50%", margin: "16px auto", justifyContent: "center" }}>
@@ -28,9 +97,64 @@ function Profile({ wordsCount, expressionsCount, notesCount }) {
             <Typography variant="h5">{wordsCount} Words</Typography>
             <Typography variant="h5">{expressionsCount} Expressions</Typography>
             <Typography variant="h5">{notesCount} Notes</Typography>
+            <Typography variant="h5">{chaptersCount} Chapters</Typography>
+            <Button onClick={() => handleOpen("chapter")}>
+              <EditSquareIcon />
+            </Button>
+            <Typography variant="h5">{categoriesCount} Categories</Typography>
+            <Button onClick={() => handleOpen("category")}>
+              <EditSquareIcon />
+            </Button>
           </Paper>
         </Grid>
       </Grid>
+
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Edit Thing</DialogTitle>
+        <DialogContent style={{ paddingTop: "5px" }}>
+          <Stack direction="column" spacing={2}>
+            {newChapters.map((chapter, index) => (
+              <Stack direction="row" spacing={2}>
+                <TextField
+                  required
+                  id={chapter.chapterId}
+                  name={chapter.chapterId}
+                  placeholder="Name"
+                  variant="standard"
+                  value={chapter.chapterName}
+                  onChange={handleChapterChange}
+                />
+                {chapters[index].chapterName !==
+                newChapters[index].chapterName ? (
+                  <Stack direction="row" spacing={1}>
+                    <Typography variant="body1" sx={{ opacity: 0.5 }}>
+                      was
+                    </Typography>
+                    <Typography variant="body1">
+                      {chapters[index].chapterName}
+                    </Typography>
+                  </Stack>
+                ) : (
+                  <Typography variant="body1" sx={{ opacity: 0.5 }}>
+                    No change
+                  </Typography>
+                )}
+              </Stack>
+            ))}
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button
+            form="editForm"
+            color="primary"
+            variant="contained"
+            onClick={() => saveChanges()}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
