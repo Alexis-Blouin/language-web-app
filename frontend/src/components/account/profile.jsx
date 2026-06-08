@@ -16,6 +16,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import toast from "react-simple-toasts";
 import axios from "axios";
+import DeleteDialog from "../dialogs/DeleteDialog";
 
 function Profile({
   wordsCount,
@@ -32,10 +33,14 @@ function Profile({
   const [newCategories, setNewCategories] = useState(categories);
   const [open, setOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteItem, setDeleteItem] = useState(null);
+  const [currentItemType, setCurrentItemType] = useState(null);
   const handleOpen = (type) => {
-    if (type === "chapter") {
+    setCurrentItemType(type);
+    if (type === "Chapter") {
       setOpen(true);
-    } else if (type === "category") {
+    } else {
       setCategoriesOpen(true);
     }
   };
@@ -84,15 +89,14 @@ function Profile({
 
   const saveChanges = async () => {
     try {
-      const res = newChapters.some(
-        (chapter, index) => chapter.chapterName !== chapters[index].chapterName,
-      )
-        ? await axios.post("http://localhost:8081/chapters/update", {
-            chapters: newChapters,
-          })
-        : await axios.post("http://localhost:8081/categories/update", {
-            categories: newCategories,
-          });
+      const res =
+        currentItemType === "Chapter"
+          ? await axios.post("http://localhost:8081/chapters/update", {
+              chapters: newChapters,
+            })
+          : await axios.post("http://localhost:8081/categories/update", {
+              categories: newCategories,
+            });
 
       if (res.data.success) {
         setChapters([...newChapters]);
@@ -101,6 +105,62 @@ function Profile({
         setCategoriesOpen(false);
         toast("Changes Saved!", { theme: "success" });
       }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteClick = (item) => {
+    setDeleteItem(item);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      if (currentItemType === "Chapter") {
+        const res = await axios.delete(
+          "http://localhost:8081/chapters/delete",
+          {
+            params: { chapterId: deleteItem.chapterId },
+          },
+        );
+
+        if (res.data.success) {
+          setChapters((prevChapters) =>
+            prevChapters.filter((c) => c.chapterId !== deleteItem.chapterId),
+          );
+          setNewChapters((prevChapters) =>
+            prevChapters.filter((c) => c.chapterId !== deleteItem.chapterId),
+          );
+          toast("Chapter Deleted!", { theme: "success" });
+        }
+      } else {
+        const res = await axios.delete(
+          "http://localhost:8081/categories/delete",
+          {
+            params: { categoryId: deleteItem.categoryId },
+          },
+        );
+
+        if (res.data.success) {
+          setCategories((prevCategories) =>
+            prevCategories.filter(
+              (c) => c.categoryId !== deleteItem.categoryId,
+            ),
+          );
+          setNewCategories((prevCategories) =>
+            prevCategories.filter(
+              (c) => c.categoryId !== deleteItem.categoryId,
+            ),
+          );
+          toast("Category Deleted!", { theme: "success" });
+        }
+      }
+      setDeleteDialogOpen(false);
     } catch (err) {
       console.error(err);
     }
@@ -132,11 +192,11 @@ function Profile({
         </Grid>
       </Grid>
       <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-        <Button variant="contained" onClick={() => handleOpen("chapter")}>
+        <Button variant="contained" onClick={() => handleOpen("Chapter")}>
           Chapters
           <EditSquareIcon sx={{ ml: 1 }} />
         </Button>
-        <Button variant="contained" onClick={() => handleOpen("category")}>
+        <Button variant="contained" onClick={() => handleOpen("Category")}>
           Categories
           <EditSquareIcon sx={{ ml: 1 }} />
         </Button>
@@ -172,6 +232,9 @@ function Profile({
                     No change
                   </Typography>
                 )}
+                <Button onClick={() => handleDeleteClick(chapter)}>
+                  <DeleteForeverIcon />
+                </Button>
               </Stack>
             ))}
           </Stack>
@@ -219,12 +282,15 @@ function Profile({
                     No change
                   </Typography>
                 )}
+                <Button onClick={() => handleDeleteClick(category)}>
+                  <DeleteForeverIcon />
+                </Button>
               </Stack>
             ))}
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleCategoriesClose}>Cancel</Button>
           <Button
             form="editForm"
             color="primary"
@@ -235,6 +301,14 @@ function Profile({
           </Button>
         </DialogActions>
       </Dialog>
+
+      <DeleteDialog
+        deleteDialogOpen={deleteDialogOpen}
+        handleDeleteCancel={handleDeleteCancel}
+        handleDeleteConfirm={handleDeleteConfirm}
+        content={deleteItem?.chapterName || deleteItem?.categoryName}
+        action={currentItemType}
+      />
     </Box>
   );
 }

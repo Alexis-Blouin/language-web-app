@@ -74,6 +74,11 @@ router.post("/update", authenticate, async (req, res) => {
   }
 });
 
+router.delete("/delete", authenticate, async (req, res) => {
+  // TODO
+  res.json({ success: true });
+});
+
 module.exports = router;
 
 async function selectOneCategory(categoryName, accountId) {

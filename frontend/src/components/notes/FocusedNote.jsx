@@ -11,7 +11,7 @@ import axios from "axios";
 import toast from "react-simple-toasts";
 import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import DeleteDialog from "../words/DeleteDialog";
+import DeleteDialog from "../dialogs/DeleteDialog";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 

@@ -18,7 +18,7 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import DeleteDialog from "../words/DeleteDialog";
+import DeleteDialog from "../dialogs/DeleteDialog";
 import TextField from "@mui/material/TextField";
 import CategorySelect from "../inputs/CategorySelect";
 import toast from "react-simple-toasts";

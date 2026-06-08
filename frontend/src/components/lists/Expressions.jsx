@@ -10,7 +10,7 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import DeleteDialog from "../words/DeleteDialog";
+import DeleteDialog from "../dialogs/DeleteDialog";
 import EditForm from "../words/EditForm";
 import Button from "@mui/material/Button";
 

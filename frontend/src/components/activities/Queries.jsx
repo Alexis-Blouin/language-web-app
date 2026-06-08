@@ -11,7 +11,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import DeleteDialog from "../words/DeleteDialog";
+import DeleteDialog from "../dialogs/DeleteDialog";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import toast from "react-simple-toasts";
 import ScoreProgressBar from "./ScoreProgressBar";

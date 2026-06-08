@@ -39,7 +39,7 @@ import Logout from "./components/account/Logout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import useAuth, { AuthProvider } from "./hooks/useAuth";
 import Queries from "./components/activities/Queries";
-import Profile from "./components/account/profile";
+import Profile from "./components/account/Profile";
 
 axios.defaults.withCredentials = true;
 
