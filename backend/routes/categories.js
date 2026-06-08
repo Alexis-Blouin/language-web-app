@@ -75,8 +75,33 @@ router.post("/update", authenticate, async (req, res) => {
 });
 
 router.delete("/delete", authenticate, async (req, res) => {
-  // TODO
-  res.json({ success: true });
+  try {
+    const categoryId = req.query.categoryId;
+    const defaultCategory = await selectOneCategory(
+      "No Category",
+      req.accountId,
+    );
+    // Updates the words associated with the category to be deleted to have the default category
+    await db.query(`update words set categoryId = ? where categoryId = ?`, [
+      defaultCategory.categoryId,
+      categoryId,
+    ]);
+
+    // Deletes the category
+    await db.query(
+      `delete from categories where categoryId = ? and accountId = ?`,
+      [categoryId, req.accountId],
+    );
+
+    res.json({
+      defaultCategoryId: defaultCategory.categoryId,
+      defaultCategoryName: defaultCategory.categoryName,
+      success: true,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;
@@ -84,7 +109,7 @@ module.exports = router;
 async function selectOneCategory(categoryName, accountId) {
   try {
     const [result] = await db.query(
-      `select categoryId from categories
+      `select categoryId, categoryName from categories
       where categoryName = ? and accountId = ?`,
       [categoryName, accountId],
     );

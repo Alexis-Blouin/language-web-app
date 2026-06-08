@@ -447,6 +447,7 @@ function AppContent({ isDark, toggleTheme }) {
           element={
             <Profile
               wordsCount={words.length}
+              setWords={setWords}
               expressionsCount={expressions.length}
               notesCount={notes.length}
               chaptersCount={chapters.length}

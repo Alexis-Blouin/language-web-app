@@ -20,6 +20,7 @@ import DeleteDialog from "../dialogs/DeleteDialog";
 
 function Profile({
   wordsCount,
+  setWords,
   expressionsCount,
   notesCount,
   chaptersCount,
@@ -130,6 +131,18 @@ function Profile({
         );
 
         if (res.data.success) {
+          setWords((prevWords) =>
+            prevWords.map((word) =>
+              word.chapterId === deleteItem.chapterId
+                ? {
+                    ...word,
+                    chapterId: res.data.defaultChapterId,
+                    chapterName: res.data.defaultChapterName,
+                  }
+                : word,
+            ),
+          );
+
           setChapters((prevChapters) =>
             prevChapters.filter((c) => c.chapterId !== deleteItem.chapterId),
           );
@@ -147,6 +160,18 @@ function Profile({
         );
 
         if (res.data.success) {
+          setWords((prevWords) =>
+            prevWords.map((word) =>
+              word.categoryId === deleteItem.categoryId
+                ? {
+                    ...word,
+                    categoryId: res.data.defaultCategoryId,
+                    categoryName: res.data.defaultCategoryName,
+                  }
+                : word,
+            ),
+          );
+
           setCategories((prevCategories) =>
             prevCategories.filter(
               (c) => c.categoryId !== deleteItem.categoryId,

@@ -75,8 +75,30 @@ router.post("/update", authenticate, async (req, res) => {
 });
 
 router.delete("/delete", authenticate, async (req, res) => {
-  // TODO
-  res.json({ success: true });
+  try {
+    const chapterId = req.query.chapterId;
+    const defaultChapter = await selectOneChapter("No Chapter", req.accountId);
+    // Updates the words associated with the chapter to be deleted to have the default chapter
+    await db.query(`update words set chapterId = ? where chapterId = ?`, [
+      defaultChapter.chapterId,
+      chapterId,
+    ]);
+
+    // Deletes the chapter
+    await db.query(
+      `delete from chapters where chapterId = ? and accountId = ?`,
+      [chapterId, req.accountId],
+    );
+
+    res.json({
+      defaultChapterId: defaultChapter.chapterId,
+      defaultChapterName: defaultChapter.chapterName,
+      success: true,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;
@@ -84,7 +106,7 @@ module.exports = router;
 async function selectOneChapter(chapterName, accountId) {
   try {
     const [result] = await db.query(
-      `select chapterId from chapters
+      `select chapterId, chapterName from chapters
       where chapterName = ? and accountId = ?`,
       [chapterName, accountId],
     );
