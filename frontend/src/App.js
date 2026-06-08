@@ -3,6 +3,7 @@ import "react-simple-toasts/dist/style.css"; // Will give a warning, but works a
 import "react-simple-toasts/dist/theme/info.css";
 import "react-simple-toasts/dist/theme/success.css";
 import "react-simple-toasts/dist/theme/failure.css";
+import { toastConfig } from "react-simple-toasts";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import WordListHome from "./components/lists/WordListHome";
 import WordListHidden from "./components/lists/WordListHidden";
@@ -42,6 +43,12 @@ import Queries from "./components/activities/Queries";
 import Profile from "./components/account/Profile";
 
 axios.defaults.withCredentials = true;
+
+// specify the theme in toastConfig
+toastConfig({
+  theme: "dark",
+  zIndex: 9999,
+});
 
 // A soft, easy-on-the-eyes theme with a light neutral background and refined colors
 const lightTheme = createTheme({

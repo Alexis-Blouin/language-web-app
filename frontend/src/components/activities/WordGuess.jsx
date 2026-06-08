@@ -1,4 +1,4 @@
-import toast, { toastConfig } from "react-simple-toasts";
+import toast from "react-simple-toasts";
 import { useState } from "react";
 import { pinyin } from "pinyin-pro";
 import React from "react";
@@ -8,11 +8,6 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
-
-// specify the theme in toastConfig
-toastConfig({
-  theme: "dark",
-});
 
 function WordGuess({ words }) {
   // Set the word once words is actually loaded
