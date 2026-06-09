@@ -17,7 +17,7 @@ router.post("/analyze", async (req, res) => {
     // TODO before sending request, check if same text and question as been ak before
 
     const response = await client.chat.completions.create({
-      model: "openai/gpt-oss-120b",
+      model: process.env.OPENAI_API_MODEL,
       messages: [
         {
           role: "user",
