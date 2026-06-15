@@ -49,14 +49,35 @@ function Notes({ notes, setNotes }) {
     }
   };
 
+  const columns = [[], [], []];
+  notes.forEach((note, index) => {
+    columns[(index + 1) % 3].push({ note, index });
+  });
+
   return (
     <Box sx={{ margin: "16px auto", width: "75%" }}>
-      <Grid container spacing={2}>
-        {notes.map((note, index) => (
-          <Note key={index} note={note} index={index} handleOpen={handleOpen} />
+      <Stack direction="row" spacing={2} alignItems="stretch">
+        {columns.map((column, columnIndex) => (
+          <Stack
+            key={columnIndex}
+            direction="column"
+            spacing={2}
+            sx={{ flex: 1 }}
+          >
+            {columnIndex === 0 && (
+              <AddCell handleOpenAddNote={handleOpenAddNote} />
+            )}
+            {column.map(({ note, index }) => (
+              <Note
+                key={index}
+                note={note}
+                index={index}
+                handleOpen={handleOpen}
+              />
+            ))}
+          </Stack>
         ))}
-        <AddCell handleOpenAddNote={handleOpenAddNote} />
-      </Grid>
+      </Stack>
       <FocusedNote
         note={selectedNote}
         setNotes={setNotes}
@@ -77,27 +98,25 @@ export default Notes;
 function Note({ note, index, handleOpen }) {
   // Add Mui Divider to make it prettier and separate the notes
   return (
-    <Grid size={{ md: 4 }}>
-      <Paper
-        sx={{ p: 2, cursor: "pointer" }}
-        onClick={() => handleOpen(note, index)}
-      >
-        <Stack spacing={1} direction="column">
-          <Typography variant="h4">{note.noteTitle}</Typography>
-          <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
-            {note.noteContent.length > 100
-              ? note.noteContent.substring(0, 100) + "..."
-              : note.noteContent}
-          </Typography>
-          <Divider textAlign="left">Example</Divider>
-          <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-            {note.noteExample.length > 100
-              ? note.noteExample.substring(0, 100) + "..."
-              : note.noteExample}
-          </Typography>
-        </Stack>
-      </Paper>
-    </Grid>
+    <Paper
+      sx={{ p: 2, cursor: "pointer" }}
+      onClick={() => handleOpen(note, index)}
+    >
+      <Stack spacing={1} direction="column">
+        <Typography variant="h4">{note.noteTitle}</Typography>
+        <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
+          {note.noteContent.length > 100
+            ? note.noteContent.substring(0, 100) + "..."
+            : note.noteContent}
+        </Typography>
+        <Divider textAlign="left">Example</Divider>
+        <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+          {note.noteExample.length > 100
+            ? note.noteExample.substring(0, 100) + "..."
+            : note.noteExample}
+        </Typography>
+      </Stack>
+    </Paper>
   );
 }
 

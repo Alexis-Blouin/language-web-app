@@ -34,14 +34,28 @@ function Queries() {
       .catch((err) => console.log(err));
   }, []);
 
+  const columns = [[], [], []];
+  queries.forEach((query, index) => {
+    columns[(index + 1) % 3].push({ query, index });
+  });
+
   return (
     <Box sx={{ margin: "16px auto", width: "75%" }}>
-      <Grid container spacing={2}>
-        <ReturnCell />
-        {queries.map((query) => (
-          <Query query={query} handleOpen={handleOpen} />
+      <Stack direction="row" spacing={2} alignItems="stretch">
+        {columns.map((column, columnIndex) => (
+          <Stack
+            key={columnIndex}
+            direction="column"
+            spacing={2}
+            sx={{ flex: 1 }}
+          >
+            {columnIndex === 0 && <ReturnCell />}
+            {column.map(({ query, index }) => (
+              <Query query={query} handleOpen={handleOpen} />
+            ))}
+          </Stack>
         ))}
-      </Grid>
+      </Stack>
       <FocusedQuery
         query={selectedQuery}
         setQueries={setQueries}
@@ -63,21 +77,18 @@ function ReturnCell() {
         sx={{
           p: 2,
           height: "100%",
-          maxHeight: "100px",
           cursor: "pointer",
           position: "relative",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           transition: "color 0.25s",
-          // transition: "padding 0.25s",
-          transition: "max-height 0.25s",
+          transition: "padding 0.25s",
           color: "primary.main",
           textDecoration: "none",
           "&:hover": {
             color: "primary.dark",
-            // p: 3,
-            maxHeight: "116px",
+            p: 3,
           },
         }}
       >
@@ -154,29 +165,27 @@ function Query({ query, handleOpen }) {
   const score = query.score;
 
   return (
-    <Grid size={{ md: 4 }}>
-      <Paper sx={{ p: 2, cursor: "pointer" }} onClick={() => handleOpen(query)}>
-        <Stack spacing={1} direction="column">
-          <Typography variant="h4">{originalText}</Typography>
-          {correctedText !== originalText && (
-            <>
-              <Divider textAlign="left">Corrected Text</Divider>
-              <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-                {correctedText}
-              </Typography>
-            </>
-          )}
-          <Divider textAlign="left">Explanation</Divider>
-          {displayExplanations.map((exp) => (
+    <Paper sx={{ p: 2, cursor: "pointer" }} onClick={() => handleOpen(query)}>
+      <Stack spacing={1} direction="column">
+        <Typography variant="h4">{originalText}</Typography>
+        {correctedText !== originalText && (
+          <>
+            <Divider textAlign="left">Corrected Text</Divider>
             <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-              {exp}
+              {correctedText}
             </Typography>
-          ))}
-          <Divider textAlign="left">Score</Divider>
-          <ScoreProgressBar score={score} />
-        </Stack>
-      </Paper>
-    </Grid>
+          </>
+        )}
+        <Divider textAlign="left">Explanation</Divider>
+        {displayExplanations.map((exp) => (
+          <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+            {exp}
+          </Typography>
+        ))}
+        <Divider textAlign="left">Score</Divider>
+        <ScoreProgressBar score={score} />
+      </Stack>
+    </Paper>
   );
 }
 
