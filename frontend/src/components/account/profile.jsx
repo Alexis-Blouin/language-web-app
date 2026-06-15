@@ -17,6 +17,7 @@ import TextField from "@mui/material/TextField";
 import toast from "react-simple-toasts";
 import axios from "axios";
 import DeleteDialog from "../dialogs/DeleteDialog";
+import EditSimpleListDialog from "../dialogs/EditSimpleListDialog";
 
 function Profile({
   wordsCount,
@@ -32,7 +33,7 @@ function Profile({
 }) {
   const [newChapters, setNewChapters] = useState(chapters);
   const [newCategories, setNewCategories] = useState(categories);
-  const [open, setOpen] = useState(false);
+  const [chaptersOpen, setChaptersOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteItem, setDeleteItem] = useState(null);
@@ -40,18 +41,14 @@ function Profile({
   const handleOpen = (type) => {
     setCurrentItemType(type);
     if (type === "Chapter") {
-      setOpen(true);
+      setChaptersOpen(true);
     } else {
       setCategoriesOpen(true);
     }
   };
   const handleClose = () => {
     resetChanges();
-    setOpen(false);
-  };
-
-  const handleCategoriesClose = () => {
-    resetChanges();
+    setChaptersOpen(false);
     setCategoriesOpen(false);
   };
 
@@ -102,7 +99,7 @@ function Profile({
       if (res.data.success) {
         setChapters([...newChapters]);
         setCategories([...newCategories]);
-        setOpen(false);
+        setChaptersOpen(false);
         setCategoriesOpen(false);
         toast("Changes Saved!", { theme: "success" });
       }
@@ -227,105 +224,29 @@ function Profile({
         </Button>
       </Stack>
 
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Edit Chapters</DialogTitle>
-        <DialogContent style={{ paddingTop: "5px" }}>
-          <Stack direction="column" spacing={2}>
-            {newChapters.map((chapter, index) => (
-              <Stack direction="row" spacing={2}>
-                <TextField
-                  required
-                  id={chapter.chapterId}
-                  name={chapter.chapterId}
-                  placeholder="Name"
-                  variant="standard"
-                  value={chapter.chapterName}
-                  onChange={handleChapterChange}
-                />
-                {chapters[index].chapterName !==
-                newChapters[index].chapterName ? (
-                  <Stack direction="row" spacing={1}>
-                    <Typography variant="body1" sx={{ opacity: 0.5 }}>
-                      was
-                    </Typography>
-                    <Typography variant="body1">
-                      {chapters[index].chapterName}
-                    </Typography>
-                  </Stack>
-                ) : (
-                  <Typography variant="body1" sx={{ opacity: 0.5 }}>
-                    No change
-                  </Typography>
-                )}
-                <Button onClick={() => handleDeleteClick(chapter)}>
-                  <DeleteForeverIcon />
-                </Button>
-              </Stack>
-            ))}
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button
-            form="editForm"
-            color="primary"
-            variant="contained"
-            onClick={() => saveChanges()}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <EditSimpleListDialog
+        action="Chapters"
+        open={chaptersOpen}
+        handleClose={handleClose}
+        handleChange={handleChapterChange}
+        handleDeleteClick={handleDeleteClick}
+        saveChanges={saveChanges}
+        items={chapters}
+        newItems={newChapters}
+        config={{ id: "chapterId", name: "chapterName" }}
+      />
 
-      <Dialog open={categoriesOpen} onClose={handleCategoriesClose}>
-        <DialogTitle>Edit Categories</DialogTitle>
-        <DialogContent style={{ paddingTop: "5px" }}>
-          <Stack direction="column" spacing={2}>
-            {newCategories.map((category, index) => (
-              <Stack direction="row" spacing={2}>
-                <TextField
-                  required
-                  id={category.categoryId}
-                  name={category.categoryId}
-                  placeholder="Name"
-                  variant="standard"
-                  value={category.categoryName}
-                  onChange={handleCategoryChange}
-                />
-                {categories[index].categoryName !==
-                newCategories[index].categoryName ? (
-                  <Stack direction="row" spacing={1}>
-                    <Typography variant="body1" sx={{ opacity: 0.5 }}>
-                      was
-                    </Typography>
-                    <Typography variant="body1">
-                      {categories[index].categoryName}
-                    </Typography>
-                  </Stack>
-                ) : (
-                  <Typography variant="body1" sx={{ opacity: 0.5 }}>
-                    No change
-                  </Typography>
-                )}
-                <Button onClick={() => handleDeleteClick(category)}>
-                  <DeleteForeverIcon />
-                </Button>
-              </Stack>
-            ))}
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCategoriesClose}>Cancel</Button>
-          <Button
-            form="editForm"
-            color="primary"
-            variant="contained"
-            onClick={() => saveChanges()}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <EditSimpleListDialog
+        action="Categories"
+        open={categoriesOpen}
+        handleClose={handleClose}
+        handleChange={handleCategoryChange}
+        handleDeleteClick={handleDeleteClick}
+        saveChanges={saveChanges}
+        items={categories}
+        newItems={newCategories}
+        config={{ id: "categoryId", name: "categoryName" }}
+      />
 
       <DeleteDialog
         deleteDialogOpen={deleteDialogOpen}
