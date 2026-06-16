@@ -1,5 +1,5 @@
 import toast from "react-simple-toasts";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { pinyin } from "pinyin-pro";
 import React from "react";
 import Box from "@mui/material/Box";
@@ -8,51 +8,76 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
 
 function WordGuess({ words }) {
+  const [word, setWord] = useState();
+  const [guessHanzi, setGuessHanzi] = useState(true);
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
+  const [guess, setGuess] = useState("");
+  const [hintCount, setHintCount] = useState(0);
+  const [showPinyin, setShowPinyin] = useState(false);
+  const [answerGiven, setAnswerGiven] = useState(false);
+
+  const title = guessHanzi ? "Hanzi" : "Translation";
+
   // Set the word once words is actually loaded
-  React.useEffect(() => {
-    if (words) setWord(pickRandomWord());
+  useEffect(() => {
+    if (words) changeWord();
   }, [words]);
-
-  const concatWords = React.useMemo(() => {
-    const result = {};
-
-    words.forEach((word) => {
-      const hanzi = word.hanzi;
-      const translation = word.translation.toLowerCase();
-
-      if (result[hanzi]) {
-        result[hanzi].push(translation);
-      } else {
-        result[hanzi] = [translation];
-      }
-    });
-
-    return result;
-  }, [words]);
-
-  const pickRandomWord = () => {
-    const keys = Object.keys(concatWords);
-    const randomKey = keys[Math.floor(Math.random() * keys.length)];
-    const randomTranslations = concatWords[randomKey];
-    // const hideHanzi = Math.random() < 0.5;
-    const hideHanzi = false; // TODO fix switch between hanzi and translation
-
-    return {
-      question: hideHanzi ? randomTranslations : randomKey,
-      answer: hideHanzi ? randomKey : randomTranslations,
-      hanzi: hideHanzi,
-    };
-  };
-  const [word, setWord] = useState(pickRandomWord);
-  const title = word.hideHanzi ? "Hanzi" : "Translation";
-  console.log(word);
-
-  const [isButtonDisabled, setButtonDisabled] = useState(false);
 
   const changeWord = () => {
-    setWord(pickRandomWord());
+    setHintCount(0);
+    setShowPinyin(false);
+    setAnswerGiven(false);
+    setGuessHanzi(Math.random() < 0.75);
+    setWord(words[Math.floor(Math.random() * words.length)]);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (
+      (guessHanzi &&
+        word.translation.toLowerCase().includes(guess.toLowerCase())) ||
+      (!guessHanzi && word.hanzi.includes(guess))
+    ) {
+      setButtonsDisabled(true);
+      setTimeout(() => {
+        setGuess("");
+        setButtonsDisabled(false);
+        changeWord();
+      }, 2000);
+      toast("Correct!", { theme: "success" });
+    } else {
+      toast("Incorrect...", { theme: "failure" });
+    }
+  };
+
+  const handleGuessChange = (event) => {
+    setGuess(event.target.value);
+  };
+
+  const onHintClick = () => {
+    switch (hintCount) {
+      case 0:
+        toast("Chapter: " + word.chapterName, { theme: "info" });
+        break;
+      case 1:
+        toast("Category: " + word.categoryName, { theme: "info" });
+        break;
+      case 2:
+        toast("Pinyin: " + word.pinyin, { theme: "info" });
+        setShowPinyin(true);
+        break;
+    }
+    setHintCount(hintCount + 1);
+  };
+
+  const giveUp = () => {
+    setGuess(guessHanzi ? word.translation : word.hanzi);
+    toast("Better luck next time", { theme: "info" });
+    setAnswerGiven(true);
   };
 
   return (
@@ -62,91 +87,53 @@ function WordGuess({ words }) {
           Guess The {title}
         </Typography>
         <Typography variant="h5">
-          {word.question}
-          {!word.hideHanzi && (
-            // TODO use the pinyin from the DB instead since the function does not always return the same
-            <Typography variant="caption">
-              {" "}
-              ({pinyin(word.question)})
-            </Typography>
+          {guessHanzi ? word?.hanzi : word?.translation}
+          {showPinyin && (
+            <Typography variant="caption"> ({word?.pinyin})</Typography>
           )}
         </Typography>
 
-        {/* <button
-            id="changeGuessButton"
-            onClick={changeWord}
-            disabled={buttonDisabled}
+        <form onSubmit={handleSubmit}>
+          <Stack direction="column" spacing={2} alignItems="center">
+            <TextField
+              required
+              name="guess"
+              id="guess"
+              label="Answer"
+              placeholder={guessHanzi ? "Hi" : "你好"}
+              value={guess}
+              onChange={handleGuessChange}
+              autoComplete="off"
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={buttonsDisabled}
+            >
+              Submit
+            </Button>
+          </Stack>
+        </form>
+
+        <Stack direction="row" sx={{ mt: 2, justifyContent: "space-between" }}>
+          <Button
+            variant="contained"
+            onClick={onHintClick}
+            disabled={showPinyin || buttonsDisabled}
           >
-            <img src={reload} alt="Reload" />
-          </button> */}
-        <Guess
-          answer={word.answer}
-          hideHanzi={!word.hideHanzi}
-          changeWord={changeWord}
-          buttonDisabled={isButtonDisabled}
-          setButtonDisabled={setButtonDisabled}
-        />
+            <QuestionMarkIcon />
+          </Button>
+          <Button
+            variant="contained"
+            onClick={giveUp}
+            disabled={answerGiven || buttonsDisabled}
+          >
+            <SkipNextIcon />
+          </Button>
+        </Stack>
       </Stack>
     </Paper>
   );
 }
 
 export default WordGuess;
-
-function Guess({
-  answer,
-  hideHanzi,
-  changeWord,
-  buttonDisabled,
-  setButtonDisabled,
-}) {
-  const [guess, setGuess] = React.useState("");
-  const [pinyinHint, setPinyinHint] = React.useState("");
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (answer.includes(guess.toLowerCase())) {
-      setButtonDisabled(true);
-      setTimeout(() => {
-        setGuess("");
-        setPinyinHint("");
-        setButtonDisabled(false);
-        changeWord();
-      }, 2000);
-      toast("Correct!", { theme: "success" });
-    } else {
-      toast("Incorrect...", { theme: "failure" });
-    }
-  };
-
-  const handleChange = (event) => {
-    const val = event.target.value;
-    setGuess(val);
-    if (true) {
-      setPinyinHint(pinyin(val));
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <Stack direction="column" spacing={2} alignItems="center">
-        <TextField
-          required
-          name="guess"
-          id="guess"
-          label="Answer"
-          placeholder={hideHanzi ? "Hi" : "你好"}
-          value={guess}
-          onChange={handleChange}
-          autoComplete="off"
-        />
-        <Button type="submit" variant="contained" disabled={buttonDisabled}>
-          Submit
-        </Button>
-        {/* {!hideHanzi && pinyinHint !== "" && (
-        <span id="hanzi-hint"> ({pinyinHint})</span>
-      )} */}
-      </Stack>
-    </form>
-  );
-}
